@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXT SHOW · Mi boleta</title>
+<meta name="description" content="Tu portal personal NEXT SHOW: ver, transferir y descargar tus boletas.">
+<meta name="robots" content="noindex,nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Great+Vibes&family=Allura&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0612;
+    --bg-2: #14091f;
+    --bg-3: #1a0d2e;
+    --border: #2a1947;
+    --violet: #7c3aed;
+    --violet-2: #a855f7;
+    --magenta: #d946ef;
+    --pink: #ec4899;
+    --text: #f5f3ff;
+    --muted: #a39db8;
+    --muted-2: #6b6480;
+    --gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 35%, #d946ef 70%, #ec4899 100%);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-nextshow {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.9;
+    display: inline-block;
+  }
+  .logo-nextshow .next { color: var(--text); }
+  .logo-nextshow .show {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo-nextshow.inline { line-height: 1; }
+  .logo-nextshow.inline .next, .logo-nextshow.inline .show { display: inline; }
+  .logo-nextshow.inline .show { margin-left: 0.15em; }
+
+  header.page-header {
+    background: rgba(10, 6, 18, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  header.page-header .logo-nextshow { font-size: 24px; }
+  header.page-header .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Anton', sans-serif;
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  header.page-header .back-link:hover { color: var(--text); border-color: var(--violet); }
+
+  main {
+    flex: 1;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 56px 22px 80px;
+  }
+
+  .hero-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 44px 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(124, 58, 237, 0.18);
+    background-image:
+      radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.18) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(217, 70, 239, 0.16) 0%, transparent 40%);
+  }
+
+  .eyebrow {
+    font-family: 'Anton', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    color: var(--magenta);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(34px, 6vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .lead {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 520px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 32px auto 36px;
+    max-width: 560px;
+  }
+  .feature-grid .item {
+    background: rgba(20, 9, 31, 0.7);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-grid .item:hover { border-color: var(--violet); transform: translateY(-2px); }
+  .feature-grid .item .label {
+    font-family: 'Anton', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .feature-grid .item .desc { color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+  .actions-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .btn-primary {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    font-family: 'Anton', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 26px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 8px 28px rgba(168, 85, 247, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(217, 70, 239, 0.45);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-family: 'Anton', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--violet-2); color: var(--text); }
+
+  .ticket-info {
+    margin-top: 24px;
+    background: rgba(20, 9, 31, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .ticket-info code {
+    color: var(--text);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .badge-soon {
+    display: inline-block;
+    background: rgba(217, 70, 239, 0.16);
+    border: 1px solid rgba(217, 70, 239, 0.4);
+    color: var(--magenta);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: 'Anton', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  footer.page-footer {
+    background: #050308;
+    border-top: 1px solid var(--border);
+    padding: 32px 24px 24px;
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 12px;
+  }
+  footer.page-footer .logo-nextshow { font-size: 22px; margin-bottom: 8px; }
+  footer.page-footer a { color: var(--muted); text-decoration: none; }
+  footer.page-footer a:hover { color: var(--magenta); }
+  footer.page-footer .links {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 12px 0 8px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  :focus-visible { outline: 2px solid var(--magenta); outline-offset: 2px; }
+
+  @media (max-width: 540px) {
+    main { padding: 32px 16px 60px; }
+    .hero-card { padding: 32px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header" role="banner">
+  <a href="/" class="logo-nextshow inline" aria-label="NEXT SHOW · Inicio">
+    <span class="next">NEXT</span><span class="show">SHOW</span>
+  </a>
+  <a href="/" class="back-link" data-i18n="miboleta.back">Volver</a>
+</header>
+
+<main role="main">
+  <div class="hero-card">
+    <div class="badge-soon" data-i18n="miboleta.badge">Próximamente</div>
+    <div class="eyebrow" data-i18n="miboleta.eyebrow">Tu portal NEXT SHOW</div>
+    <h1 data-i18n="miboleta.title">Mi boleta</h1>
+    <p class="lead" data-i18n="miboleta.intro">
+      Próximamente: tu portal personal de NEXT SHOW. Acá vas a poder ver tu boleta,
+      cambiar de asiento, transferir a otro asistente y agregarla a tu Apple Wallet o Google Wallet.
+    </p>
+
+    <div class="feature-grid" aria-hidden="true">
+      <div class="item">
+        <div class="label" data-i18n="miboleta.feature.view">Ver boleta</div>
+        <div class="desc" data-i18n="miboleta.feature.view.desc">QR + datos del asistente</div>
+      </div>
+      <div class="item">
+        <div class="label" data-i18n="miboleta.feature.transfer">Transferir</div>
+        <div class="desc" data-i18n="miboleta.feature.transfer.desc">Pasársela a otra persona</div>
+      </div>
+      <div class="item">
+        <div class="label" data-i18n="miboleta.feature.seat">Cambiar asiento</div>
+        <div class="desc" data-i18n="miboleta.feature.seat.desc">Sujeto a disponibilidad</div>
+      </div>
+      <div class="item">
+        <div class="label" data-i18n="miboleta.feature.wallet">Wallet</div>
+        <div class="desc" data-i18n="miboleta.feature.wallet.desc">Apple y Google Wallet</div>
+      </div>
+    </div>
+
+    <div id="ticket-info-box" class="ticket-info" hidden>
+      <span data-i18n="miboleta.identified">Identificamos tu boleta:</span>
+      <code id="ticket-code-display"></code>
+    </div>
+
+    <div class="actions-row">
+      <a id="download-pdf" href="#" class="btn-primary" hidden data-i18n="miboleta.download">Descargar mi boleta PDF</a>
+      <a href="/" class="btn-secondary" data-i18n="miboleta.home">Volver a NEXT SHOW</a>
+    </div>
+  </div>
+</main>
+
+<footer class="page-footer" role="contentinfo">
+  <div class="logo-nextshow inline">
+    <span class="next">NEXT</span><span class="show">SHOW</span>
+  </div>
+  <div class="links">
+    <a href="/politica-privacidad.html" data-i18n="footer.privacy">Política de privacidad</a>
+    <a href="/" data-i18n="footer.home">Inicio</a>
+  </div>
+  <div>&copy; <span id="year">2026</span> NEXT SHOW · Una producción de Nexo Productions</div>
+</footer>
+
+<script type="module">
+  /* mi-boleta.html · Fase 2 stub */
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const params = new URLSearchParams(location.search);
+  const ticketCode = (params.get('t') || '').trim();
+
+  let sb = null;
+  try {
+    const mod = await import('/shared/supabase-client.js');
+    sb = mod.sb || mod.default || null;
+  } catch (_e) {
+    sb = null;
+  }
+
+  if (ticketCode) {
+    const box = document.getElementById('ticket-info-box');
+    const codeDisplay = document.getElementById('ticket-code-display');
+    codeDisplay.textContent = ticketCode;
+    box.hidden = false;
+
+    // Stub: intentar obtener PDF si existe el endpoint. Si falla silenciosamente, no mostramos botón.
+    try {
+      const baseUrl = (sb?.url ? `${sb.url}/functions/v1` : '/functions/v1');
+      const url = `${baseUrl}/get-order-status?ticket_code=${encodeURIComponent(ticketCode)}`;
+      const headers = { 'Accept': 'application/json' };
+      if (sb?.key) {
+        headers.apikey = sb.key;
+        headers.Authorization = `Bearer ${sb.key}`;
+      }
+      const res = await fetch(url, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        const pdfUrl = data?.ticket?.pdf_url || data?.pdf_url;
+        if (pdfUrl) {
+          const btn = document.getElementById('download-pdf');
+          btn.href = pdfUrl;
+          btn.hidden = false;
+        }
+      }
+    } catch (_err) {
+      // Silencioso: la función puede no estar implementada aún (stub Fase 2).
+    }
+  }
+</script>
+
+</body>
+</html>
