@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXT SHOW · Política de privacidad y tratamiento de datos</title>
+<meta name="description" content="Política de tratamiento de datos personales de NEXT SHOW · Nexo Productions, conforme a la Ley 1581 de 2012, Decreto 1377 de 2013 y Ley 1266 de 2008 de Colombia.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Great+Vibes&family=Allura&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0612;
+    --bg-2: #14091f;
+    --bg-3: #1a0d2e;
+    --border: #2a1947;
+    --violet: #7c3aed;
+    --violet-2: #a855f7;
+    --magenta: #d946ef;
+    --pink: #ec4899;
+    --text: #f5f3ff;
+    --muted: #a39db8;
+    --muted-2: #6b6480;
+    --gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 35%, #d946ef 70%, #ec4899 100%);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-nextshow {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.9;
+    display: inline-block;
+  }
+  .logo-nextshow .next { color: var(--text); }
+  .logo-nextshow .show {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo-nextshow.inline { line-height: 1; }
+  .logo-nextshow.inline .next, .logo-nextshow.inline .show { display: inline; }
+  .logo-nextshow.inline .show { margin-left: 0.15em; }
+
+  header.page-header {
+    background: rgba(10, 6, 18, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  header.page-header .logo-nextshow { font-size: 24px; }
+  header.page-header .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Anton', sans-serif;
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  header.page-header .back-link:hover { color: var(--text); border-color: var(--violet); }
+
+  main {
+    flex: 1;
+    max-width: 820px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .doc-intro { margin-bottom: 36px; }
+  .doc-intro .eyebrow {
+    font-family: 'Anton', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    color: var(--magenta);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .doc-intro h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .doc-intro p.lead { color: var(--muted); font-size: 17px; max-width: 640px; }
+  .doc-intro .updated {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--muted-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  article.doc h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-top: 44px;
+    margin-bottom: 14px;
+    color: var(--text);
+    border-left: 4px solid var(--magenta);
+    padding-left: 14px;
+  }
+  article.doc h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 22px;
+    margin-bottom: 8px;
+    color: var(--violet-2);
+  }
+  article.doc p, article.doc li {
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  article.doc p { margin-bottom: 14px; }
+  article.doc ul, article.doc ol {
+    margin: 0 0 18px 1.4em;
+  }
+  article.doc li { margin-bottom: 8px; }
+  article.doc strong { color: var(--text); font-weight: 700; }
+  article.doc a {
+    color: var(--magenta);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  article.doc a:hover { color: var(--pink); }
+
+  .info-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 18px 0;
+  }
+  .info-card .label {
+    font-size: 12px;
+    color: var(--muted-2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .info-card .value { color: var(--text); font-weight: 600; font-size: 16px; }
+
+  table.transfers {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 22px;
+    font-size: 15px;
+  }
+  table.transfers th, table.transfers td {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.transfers th {
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+  }
+  table.transfers td { color: var(--text); }
+
+  .toc {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+  }
+  .toc h4 {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    margin-bottom: 10px;
+  }
+  .toc ol { margin: 0 0 0 1.2em; padding: 0; }
+  .toc li { margin-bottom: 4px; font-size: 14px; }
+  .toc a { color: var(--text); text-decoration: none; }
+  .toc a:hover { color: var(--magenta); text-decoration: underline; }
+
+  footer.page-footer {
+    background: #050308;
+    border-top: 1px solid var(--border);
+    padding: 32px 24px 24px;
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 12px;
+  }
+  footer.page-footer .logo-nextshow { font-size: 22px; margin-bottom: 8px; }
+  footer.page-footer a { color: var(--muted); text-decoration: none; }
+  footer.page-footer a:hover { color: var(--magenta); }
+  footer.page-footer .links {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 12px 0 8px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  :focus-visible { outline: 2px solid var(--magenta); outline-offset: 2px; }
+
+  @media (max-width: 600px) {
+    main { padding: 28px 18px 60px; }
+    article.doc h2 { font-size: 22px; }
+    table.transfers { font-size: 14px; }
+    table.transfers th, table.transfers td { padding: 8px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header" role="banner">
+  <a href="/" class="logo-nextshow inline" aria-label="NEXT SHOW · Inicio">
+    <span class="next">NEXT</span><span class="show">SHOW</span>
+  </a>
+  <a href="/" class="back-link">Volver</a>
+</header>
+
+<main role="main">
+  <div class="doc-intro">
+    <div class="eyebrow">Documento legal</div>
+    <h1>Política de privacidad y tratamiento de datos personales</h1>
+    <p class="lead">
+      En NEXT SHOW respetamos tu privacidad. Esta política explica qué datos recolectamos cuando comprás boletas o
+      visitás el sitio, para qué los usamos y cuáles son tus derechos como titular, conforme al marco legal colombiano
+      vigente.
+    </p>
+    <div class="updated">Última actualización: 11 de mayo de 2026</div>
+  </div>
+
+  <nav class="toc" aria-label="Tabla de contenidos">
+    <h4>Contenido</h4>
+    <ol>
+      <li><a href="#responsable">Identificación del responsable</a></li>
+      <li><a href="#marco">Marco legal aplicable</a></li>
+      <li><a href="#datos">Datos personales que recolectamos</a></li>
+      <li><a href="#finalidades">Finalidades del tratamiento</a></li>
+      <li><a href="#base">Base de legitimación y consentimiento</a></li>
+      <li><a href="#derechos">Derechos del titular</a></li>
+      <li><a href="#procedimiento">Procedimiento para ejercer tus derechos</a></li>
+      <li><a href="#retencion">Tiempo de retención</a></li>
+      <li><a href="#transferencias">Transferencias internacionales y encargados</a></li>
+      <li><a href="#seguridad">Medidas de seguridad</a></li>
+      <li><a href="#menores">Datos de menores de edad</a></li>
+      <li><a href="#cookies">Cookies y tecnologías similares</a></li>
+      <li><a href="#vigencia">Vigencia y cambios</a></li>
+      <li><a href="#contacto">Contacto y autoridad de control</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+    <h2 id="responsable">1. Identificación del responsable</h2>
+    <p>
+      El responsable del tratamiento de los datos personales recolectados a través del sitio
+      <strong>NEXT SHOW</strong> es <strong>Nexo Productions</strong>, productora del evento, en adelante
+      "NEXT SHOW", "nosotros" o "el responsable".
+    </p>
+    <div class="info-card">
+      <div class="label">Responsable del tratamiento</div>
+      <div class="value">Nexo Productions</div>
+      <div class="label" style="margin-top: 12px;">Correo de contacto</div>
+      <div class="value"><a href="mailto:ferna.moreno10@gmail.com">ferna.moreno10@gmail.com</a></div>
+      <div class="label" style="margin-top: 12px;">País</div>
+      <div class="value">Colombia</div>
+    </div>
+
+    <h2 id="marco">2. Marco legal aplicable</h2>
+    <p>
+      El tratamiento de tus datos personales se realiza conforme a la legislación colombiana, en particular:
+    </p>
+    <ul>
+      <li><strong>Ley 1581 de 2012</strong>, por la cual se dictan disposiciones generales para la protección de datos personales.</li>
+      <li><strong>Decreto 1377 de 2013</strong>, reglamentario parcial de la Ley 1581.</li>
+      <li><strong>Ley 1266 de 2008</strong>, sobre habeas data financiero, comercial, crediticio y de servicios.</li>
+      <li>Decreto Único Reglamentario <strong>1074 de 2015</strong>, en lo aplicable a la protección de datos.</li>
+      <li>Circulares e instructivos expedidos por la <strong>Superintendencia de Industria y Comercio (SIC)</strong>.</li>
+    </ul>
+
+    <h2 id="datos">3. Datos personales que recolectamos</h2>
+    <p>Cuando interactuás con NEXT SHOW podemos recolectar las siguientes categorías de datos:</p>
+
+    <h3>3.1 Datos del comprador</h3>
+    <ul>
+      <li>Nombre completo</li>
+      <li>Número de cédula de ciudadanía o documento de identidad</li>
+      <li>Dirección de correo electrónico</li>
+      <li>Número de teléfono celular (incluyendo WhatsApp)</li>
+    </ul>
+
+    <h3>3.2 Datos del asistente</h3>
+    <p>
+      Por cada boleta vinculada a una orden, podemos recolectar el nombre completo y número de cédula de la persona
+      que efectivamente asistirá al evento, los cuales se imprimen en la boleta y se verifican en la puerta para
+      prevenir reventa o suplantación.
+    </p>
+
+    <h3>3.3 Datos de pago</h3>
+    <p>
+      Los datos financieros (número de tarjeta, CVV, datos bancarios o cualquier otro instrumento de pago) son
+      recolectados y procesados directamente por nuestra pasarela de pagos <strong>Wompi</strong> (Bancolombia S.A.).
+      <strong>NEXT SHOW no almacena ni tiene acceso</strong> a la información completa de tus medios de pago. Solo
+      conservamos el identificador de la transacción, los últimos cuatro dígitos de la tarjeta (cuando aplique) y el
+      estado del pago.
+    </p>
+
+    <h3>3.4 Datos de uso del sitio</h3>
+    <p>
+      Recolectamos datos técnicos como dirección IP, tipo de navegador, sistema operativo, páginas visitadas, fechas y
+      horas de acceso, con fines de seguridad, prevención de fraude y mejora del servicio.
+    </p>
+
+    <h2 id="finalidades">4. Finalidades del tratamiento</h2>
+    <p>Tus datos personales son tratados para las siguientes finalidades:</p>
+    <ol>
+      <li><strong>Emisión y entrega de boletas:</strong> generar la boleta digital, asociarla al asistente y enviarla por correo electrónico y/o WhatsApp.</li>
+      <li><strong>Verificación en puerta:</strong> validar la identidad del asistente al ingreso del evento.</li>
+      <li><strong>Comunicación operacional:</strong> notificarte sobre cambios de horario, ubicación, instrucciones de acceso, cancelaciones o cualquier información esencial relacionada con tu boleta.</li>
+      <li><strong>Soporte y atención al cliente:</strong> atender tus solicitudes, dudas, reclamos o requerimientos.</li>
+      <li><strong>Cumplimiento legal y contable:</strong> emisión de facturación electrónica, atención de requerimientos de autoridades, prevención de fraude y lavado de activos.</li>
+      <li><strong>Marketing de eventos futuros (opcional):</strong> enviarte información sobre próximos shows producidos por Nexo Productions, <em>únicamente si nos diste tu consentimiento explícito (opt-in)</em>. Podés revocar este consentimiento en cualquier momento.</li>
+      <li><strong>Mejora del servicio:</strong> análisis estadístico anónimo o agregado para mejorar el sitio y la experiencia de compra.</li>
+    </ol>
+
+    <h2 id="base">5. Base de legitimación y consentimiento</h2>
+    <p>
+      Al completar la compra de una boleta o ingresar tus datos en cualquier formulario del sitio, otorgás tu
+      consentimiento previo, expreso e informado para el tratamiento de tus datos con las finalidades descritas en la
+      sección anterior. Las finalidades de marketing requieren un consentimiento adicional, separado e independiente,
+      mediante una casilla específica que debés marcar de forma activa.
+    </p>
+
+    <h2 id="derechos">6. Derechos del titular (ARCO)</h2>
+    <p>Como titular de los datos personales tenés derecho a:</p>
+    <ul>
+      <li><strong>Acceso:</strong> conocer qué datos tuyos tenemos y cómo los estamos tratando.</li>
+      <li><strong>Rectificación:</strong> solicitar la corrección de datos inexactos, incompletos o desactualizados.</li>
+      <li><strong>Cancelación (supresión):</strong> solicitar la eliminación de tus datos cuando ya no sean necesarios para las finalidades autorizadas o cuando consideres que se está infringiendo la ley.</li>
+      <li><strong>Oposición:</strong> oponerte al tratamiento de tus datos para finalidades específicas, particularmente las de marketing.</li>
+      <li><strong>Revocatoria del consentimiento:</strong> retirar tu autorización en cualquier momento, sin efectos retroactivos.</li>
+      <li><strong>Conocer las modificaciones</strong> a esta política y a las autorizaciones otorgadas.</li>
+      <li><strong>Presentar quejas</strong> ante la Superintendencia de Industria y Comercio.</li>
+    </ul>
+    <p>
+      Algunos de estos derechos pueden estar limitados cuando exista una obligación legal, contractual o contable que
+      nos exija conservar la información (por ejemplo, registros tributarios o de prevención de fraude).
+    </p>
+
+    <h2 id="procedimiento">7. Procedimiento para ejercer tus derechos</h2>
+    <p>Para ejercer cualquiera de los derechos mencionados, podés enviarnos una solicitud al correo:</p>
+    <div class="info-card">
+      <div class="label">Canal de atención al titular</div>
+      <div class="value"><a href="mailto:ferna.moreno10@gmail.com?subject=Solicitud%20Habeas%20Data%20-%20NEXT%20SHOW">ferna.moreno10@gmail.com</a></div>
+    </div>
+    <p>La solicitud deberá contener, como mínimo:</p>
+    <ul>
+      <li>Nombre completo del titular y número de documento de identidad.</li>
+      <li>Descripción clara y precisa del derecho que querés ejercer y de los datos involucrados.</li>
+      <li>Dirección de correo o canal de notificación para la respuesta.</li>
+      <li>Documentos que respalden la solicitud, cuando aplique.</li>
+    </ul>
+    <p>
+      <strong>Plazos de respuesta</strong> (Ley 1581):
+    </p>
+    <ul>
+      <li>Consultas: máximo <strong>diez (10) días hábiles</strong>, prorrogables por cinco (5) días hábiles más.</li>
+      <li>Reclamos: máximo <strong>quince (15) días hábiles</strong>, prorrogables por ocho (8) días hábiles más.</li>
+    </ul>
+
+    <h2 id="retencion">8. Tiempo de retención</h2>
+    <p>
+      Conservaremos tus datos personales mientras se mantenga la relación contractual contigo y, posteriormente, por un
+      período de <strong>cinco (5) años después de la realización del evento</strong>, a fin de atender obligaciones
+      legales (contables, tributarias, de prevención de fraude) y eventuales reclamaciones. Vencido este término, los
+      datos serán suprimidos o anonimizados de manera segura, salvo que una norma específica exija un periodo mayor.
+    </p>
+
+    <h2 id="transferencias">9. Transferencias internacionales y encargados del tratamiento</h2>
+    <p>
+      Para operar el servicio compartimos algunos datos con terceros que actúan como <strong>encargados del
+      tratamiento</strong>. Algunos de ellos están ubicados fuera de Colombia. Realizamos estas transferencias amparadas
+      en niveles adecuados de protección o cláusulas contractuales conforme a la normativa colombiana:
+    </p>
+    <table class="transfers">
+      <thead>
+        <tr>
+          <th>Encargado</th>
+          <th>País</th>
+          <th>Finalidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Wompi</strong> (Bancolombia S.A.)</td>
+          <td>Colombia</td>
+          <td>Procesamiento de pagos y transacciones financieras</td>
+        </tr>
+        <tr>
+          <td><strong>Resend</strong></td>
+          <td>Estados Unidos (acogido al marco EE. UU. – DPF / equivalente)</td>
+          <td>Envío de correos electrónicos transaccionales (boletas, confirmaciones, soporte)</td>
+        </tr>
+        <tr>
+          <td><strong>Meta Platforms (WhatsApp Business)</strong></td>
+          <td>Estados Unidos (acogido al marco EE. UU. – DPF / equivalente)</td>
+          <td>Envío de mensajes operacionales y entrega de boletas por WhatsApp</td>
+        </tr>
+        <tr>
+          <td><strong>Supabase</strong> (proveedor de infraestructura)</td>
+          <td>Estados Unidos / Unión Europea</td>
+          <td>Hosting de base de datos, almacenamiento seguro y funciones de backend</td>
+        </tr>
+        <tr>
+          <td><strong>Netlify</strong></td>
+          <td>Estados Unidos</td>
+          <td>Hosting del sitio web y CDN</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Estos terceros tratan los datos exclusivamente para las finalidades indicadas y bajo nuestras instrucciones; no
+      están autorizados para usarlos con fines propios distintos a los aquí señalados.
+    </p>
+
+    <h2 id="seguridad">10. Medidas de seguridad</h2>
+    <p>
+      Implementamos medidas técnicas, humanas y administrativas razonables para proteger la confidencialidad,
+      integridad y disponibilidad de tus datos: cifrado de datos en tránsito (TLS), cifrado en reposo, control de
+      acceso por roles, registros de auditoría, copias de respaldo periódicas y políticas internas de manejo de la
+      información. Pese a estas medidas, ningún sistema es absolutamente invulnerable; en caso de un incidente de
+      seguridad relevante, te informaremos en los términos de la ley.
+    </p>
+
+    <h2 id="menores">11. Datos de menores de edad</h2>
+    <p>
+      NEXT SHOW está dirigido a personas mayores de edad. No recolectamos de manera consciente datos personales de
+      menores. Si un menor de edad debe ser registrado como asistente (por ejemplo, en eventos donde se permita el
+      ingreso con acompañante adulto), el padre, madre o representante legal deberá autorizar expresamente el
+      tratamiento de sus datos al momento de la compra.
+    </p>
+
+    <h2 id="cookies">12. Cookies y tecnologías similares</h2>
+    <p>
+      El sitio puede utilizar cookies estrictamente necesarias para el funcionamiento del checkout y, opcionalmente,
+      cookies de análisis estadístico. Podés gestionarlas desde la configuración de tu navegador. La desactivación de
+      cookies estrictamente necesarias puede afectar el funcionamiento del proceso de compra.
+    </p>
+
+    <h2 id="vigencia">13. Vigencia y cambios a esta política</h2>
+    <p>
+      Esta política entra en vigencia desde la fecha de su última actualización indicada al inicio del documento. Nos
+      reservamos el derecho a modificarla en cualquier momento para reflejar cambios legales, operativos o
+      tecnológicos. Cuando los cambios sean sustanciales te notificaremos por los canales de contacto registrados. La
+      versión vigente siempre estará disponible en
+      <a href="/politica-privacidad.html">nextshow.co/politica-privacidad</a>.
+    </p>
+
+    <h2 id="contacto">14. Contacto y autoridad de control</h2>
+    <p>
+      Si tenés dudas, comentarios o solicitudes relacionadas con esta política o con el tratamiento de tus datos
+      personales, podés escribirnos a
+      <a href="mailto:ferna.moreno10@gmail.com">ferna.moreno10@gmail.com</a>.
+    </p>
+    <p>
+      Adicionalmente, podés presentar quejas ante la <strong>Superintendencia de Industria y Comercio (SIC)</strong>,
+      autoridad de control competente en materia de protección de datos personales en Colombia
+      (<a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer">www.sic.gov.co</a>).
+    </p>
+
+  </article>
+</main>
+
+<footer class="page-footer" role="contentinfo">
+  <div class="logo-nextshow inline">
+    <span class="next">NEXT</span><span class="show">SHOW</span>
+  </div>
+  <div class="links">
+    <a href="/politica-privacidad.html">Política de privacidad</a>
+    <a href="/">Inicio</a>
+  </div>
+  <div>&copy; <span id="year">2026</span> NEXT SHOW · Una producción de Nexo Productions</div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
