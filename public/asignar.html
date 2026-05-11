@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXT SHOW · Asignar boletas</title>
+<meta name="description" content="Asigná el nombre y la cédula de cada asistente a tus boletas NEXT SHOW.">
+<meta name="robots" content="noindex,nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Great+Vibes&family=Allura&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0612;
+    --bg-2: #14091f;
+    --bg-3: #1a0d2e;
+    --border: #2a1947;
+    --violet: #7c3aed;
+    --violet-2: #a855f7;
+    --magenta: #d946ef;
+    --pink: #ec4899;
+    --text: #f5f3ff;
+    --muted: #a39db8;
+    --muted-2: #6b6480;
+    --gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 35%, #d946ef 70%, #ec4899 100%);
+    --error: #ef4444;
+    --error-bg: rgba(239, 68, 68, 0.12);
+    --success: #22c55e;
+    --success-bg: rgba(34, 197, 94, 0.12);
+    --warning: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* LOGO NEXT SHOW */
+  .logo-nextshow {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.9;
+    display: inline-block;
+  }
+  .logo-nextshow .next { color: var(--text); }
+  .logo-nextshow .show {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo-nextshow.inline { line-height: 1; }
+  .logo-nextshow.inline .next, .logo-nextshow.inline .show { display: inline; }
+  .logo-nextshow.inline .show { margin-left: 0.15em; }
+
+  /* HEADER */
+  header.page-header {
+    background: rgba(10, 6, 18, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  header.page-header .logo-nextshow { font-size: 24px; }
+  header.page-header .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Anton', sans-serif;
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  header.page-header .back-link:hover { color: var(--text); border-color: var(--violet); }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  .page-intro {
+    margin-bottom: 32px;
+  }
+  .page-intro .eyebrow {
+    font-family: 'Anton', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    color: var(--magenta);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .page-intro h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(34px, 6vw, 52px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .page-intro p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 540px;
+  }
+
+  /* ORDER METADATA CARD */
+  .order-meta {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .order-meta .field .label {
+    font-size: 11px;
+    color: var(--muted-2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .order-meta .field .value {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 15px;
+    word-break: break-word;
+  }
+
+  /* TICKETS LIST */
+  .tickets-list { display: flex; flex-direction: column; gap: 18px; margin-bottom: 28px; }
+
+  .ticket-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color 0.2s;
+  }
+  .ticket-card:focus-within { border-color: var(--violet); }
+  .ticket-card.assigned { border-color: rgba(34, 197, 94, 0.4); }
+
+  .ticket-card .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ticket-card .head .index {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+  .ticket-card .head .meta {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: right;
+  }
+  .ticket-card .head .meta .zone {
+    color: var(--magenta);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+  }
+  .ticket-card .head .meta .seat {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 2px;
+  }
+  .ticket-card .head .meta .code {
+    color: var(--muted-2);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  /* FORM FIELDS */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  @media (max-width: 540px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .form-group input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .form-group input::placeholder { color: var(--muted-2); }
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--violet-2);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.18);
+  }
+  .form-group input.invalid {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+  }
+  .form-group .hint {
+    font-size: 12px;
+    color: var(--muted-2);
+    min-height: 14px;
+  }
+  .form-group .hint.error { color: var(--error); }
+
+  /* SAVE ALL BUTTON */
+  .actions {
+    position: sticky;
+    bottom: 12px;
+    background: rgba(10, 6, 18, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    z-index: 20;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.4);
+  }
+  .actions .summary {
+    color: var(--muted);
+    font-size: 13px;
+    flex: 1;
+    min-width: 160px;
+  }
+  .actions .summary strong { color: var(--text); }
+  .btn-primary {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    font-family: 'Anton', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 26px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(168, 85, 247, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(217, 70, 239, 0.45);
+  }
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-family: 'Anton', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--violet-2); color: var(--text); }
+
+  /* SKELETON */
+  .skeleton {
+    background: linear-gradient(90deg, rgba(42,25,71,0.4) 0%, rgba(124,58,237,0.18) 50%, rgba(42,25,71,0.4) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+    border-radius: 6px;
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  .skeleton-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .skeleton-line { height: 14px; margin-bottom: 12px; }
+  .skeleton-line.w-30 { width: 30%; }
+  .skeleton-line.w-50 { width: 50%; }
+  .skeleton-line.w-70 { width: 70%; }
+  .skeleton-line.w-100 { width: 100%; }
+  .skeleton-input { height: 44px; border-radius: 8px; }
+
+  /* STATE PANELS */
+  .state-panel {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .state-panel.error { border-color: rgba(239, 68, 68, 0.4); background: var(--error-bg); }
+  .state-panel.success { border-color: rgba(34, 197, 94, 0.4); background: var(--success-bg); }
+  .state-panel h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 28px;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .state-panel p { color: var(--muted); margin-bottom: 22px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .state-panel .icon {
+    font-family: 'Anton', sans-serif;
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 12px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .state-panel .actions-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* TOAST */
+  .toast-host {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    width: min(440px, calc(100% - 24px));
+  }
+  .toast {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-size: 14px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    pointer-events: auto;
+    animation: toast-in 0.25s ease;
+  }
+  .toast.success { border-color: var(--success); background: var(--success-bg); }
+  .toast.error { border-color: var(--error); background: var(--error-bg); }
+  .toast.warning { border-color: var(--warning); background: var(--warning-bg); }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FOOTER */
+  footer.page-footer {
+    background: #050308;
+    border-top: 1px solid var(--border);
+    padding: 32px 24px 24px;
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 12px;
+  }
+  footer.page-footer .logo-nextshow { font-size: 22px; margin-bottom: 8px; }
+  footer.page-footer a { color: var(--muted); text-decoration: none; }
+  footer.page-footer a:hover { color: var(--magenta); }
+  footer.page-footer .links {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 12px 0 8px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* a11y */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  :focus-visible { outline: 2px solid var(--magenta); outline-offset: 2px; }
+
+  @media (max-width: 540px) {
+    main { padding: 22px 16px 100px; }
+    header.page-header { padding: 14px 16px; }
+    header.page-header .logo-nextshow { font-size: 20px; }
+    .ticket-card { padding: 18px; }
+    .actions { padding: 12px; flex-direction: column; align-items: stretch; }
+    .btn-primary { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header" role="banner">
+  <a href="/" class="logo-nextshow inline" aria-label="NEXT SHOW · Inicio">
+    <span class="next">NEXT</span><span class="show">SHOW</span>
+  </a>
+  <a href="/" class="back-link" data-i18n="asignar.back">Volver</a>
+</header>
+
+<main id="main" role="main">
+  <div class="page-intro">
+    <div class="eyebrow" data-i18n="asignar.eyebrow">Asignación de boletas</div>
+    <h1 data-i18n="asignar.title">Asigná tus asistentes</h1>
+    <p data-i18n="asignar.intro">
+      Ingresá el nombre completo y número de cédula de cada persona que va a usar las boletas.
+      Estos datos se imprimen en la boleta y se verifican en la puerta del evento.
+    </p>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div id="loading-state" aria-live="polite" aria-busy="true">
+    <div class="order-meta" aria-hidden="true">
+      <div class="field"><div class="skeleton skeleton-line w-50"></div><div class="skeleton skeleton-line w-70"></div></div>
+      <div class="field"><div class="skeleton skeleton-line w-50"></div><div class="skeleton skeleton-line w-70"></div></div>
+      <div class="field"><div class="skeleton skeleton-line w-50"></div><div class="skeleton skeleton-line w-70"></div></div>
+    </div>
+    <div class="tickets-list" aria-hidden="true">
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-line w-30"></div>
+        <div class="skeleton skeleton-line w-50"></div>
+        <div class="skeleton skeleton-input"></div>
+        <div style="height:10px"></div>
+        <div class="skeleton skeleton-input"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-line w-30"></div>
+        <div class="skeleton skeleton-line w-50"></div>
+        <div class="skeleton skeleton-input"></div>
+        <div style="height:10px"></div>
+        <div class="skeleton skeleton-input"></div>
+      </div>
+    </div>
+    <span class="visually-hidden" data-i18n="asignar.loading">Cargando tu orden…</span>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div id="error-state" class="state-panel error" hidden>
+    <div class="icon">!</div>
+    <h2 data-i18n="asignar.error.title">No pudimos cargar tu orden</h2>
+    <p id="error-message" data-i18n="asignar.error.generic">Verificá que el enlace sea el que recibiste por email o WhatsApp.</p>
+    <div class="actions-row">
+      <a href="/" class="btn-secondary" data-i18n="asignar.error.back">Volver al inicio</a>
+      <a href="https://wa.me/573000000000" class="btn-secondary" data-i18n="asignar.error.support">Hablar con soporte</a>
+    </div>
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div id="success-state" class="state-panel success" hidden>
+    <div class="icon">OK</div>
+    <h2 data-i18n="asignar.success.title">Asistentes guardados</h2>
+    <p data-i18n="asignar.success.body">
+      Listo. Las boletas quedaron a nombre de las personas que indicaste.
+      Recordá llevar la cédula original el día del evento.
+    </p>
+    <div class="actions-row">
+      <a id="success-view-ticket" href="#" class="btn-primary" data-i18n="asignar.success.view">Ver mi boleta</a>
+      <a href="/" class="btn-secondary" data-i18n="asignar.success.home">Volver al inicio</a>
+    </div>
+  </div>
+
+  <!-- FORM STATE -->
+  <div id="form-state" hidden>
+    <section class="order-meta" aria-label="Información de la orden">
+      <div class="field">
+        <div class="label" data-i18n="asignar.meta.order">Orden</div>
+        <div class="value" id="meta-order">—</div>
+      </div>
+      <div class="field">
+        <div class="label" data-i18n="asignar.meta.event">Evento</div>
+        <div class="value" id="meta-event">—</div>
+      </div>
+      <div class="field">
+        <div class="label" data-i18n="asignar.meta.tickets">Boletas</div>
+        <div class="value" id="meta-tickets">—</div>
+      </div>
+    </section>
+
+    <form id="assign-form" novalidate>
+      <div class="tickets-list" id="tickets-list"></div>
+
+      <div class="actions" role="region" aria-label="Acciones del formulario">
+        <div class="summary">
+          <span data-i18n="asignar.summary.prefix">Asignados:</span>
+          <strong><span id="assigned-count">0</span> / <span id="total-count">0</span></strong>
+        </div>
+        <button type="submit" id="submit-btn" class="btn-primary" data-i18n="asignar.submit">
+          Guardar todas
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer class="page-footer" role="contentinfo">
+  <div class="logo-nextshow inline">
+    <span class="next">NEXT</span><span class="show">SHOW</span>
+  </div>
+  <div class="links">
+    <a href="/politica-privacidad.html" data-i18n="footer.privacy">Política de privacidad</a>
+    <a href="/" data-i18n="footer.home">Inicio</a>
+  </div>
+  <div>&copy; <span id="year">2026</span> NEXT SHOW · Una producción de Nexo Productions</div>
+</footer>
+
+<div class="toast-host" id="toast-host" aria-live="polite" aria-atomic="true"></div>
+
+<script type="module">
+  /* ===========================================================================
+     NEXT SHOW · asignar.html
+     - Lee ?o=<order_id>&token=<signed_token>
+     - GET /functions/v1/get-order-status?id=<order_id>
+     - POST /functions/v1/assign-attendees con { order_id, signed_token, attendees }
+     - Fallback a fetch directo si shared/supabase-client.js no está disponible.
+     =========================================================================== */
+
+  // ---- helpers ------------------------------------------------------------
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  function toast(msg, kind = 'info', ms = 4200) {
+    const host = $('#toast-host');
+    const el = document.createElement('div');
+    el.className = 'toast ' + kind;
+    el.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+    el.textContent = msg;
+    host.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.3s, transform 0.3s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(8px)';
+      setTimeout(() => el.remove(), 300);
+    }, ms);
+  }
+
+  function showState(name) {
+    ['loading-state', 'error-state', 'success-state', 'form-state'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.hidden = id !== name;
+    });
+  }
+
+  function showError(message) {
+    const msgEl = $('#error-message');
+    if (msgEl && message) msgEl.textContent = message;
+    showState('error-state');
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Try to load shared client; fallback to direct fetch on /functions/v1/*.
+  // Supabase URL/key se inyectan via window.NEXTSHOW_CONFIG = {SUPABASE_URL, SUPABASE_ANON_KEY}.
+  // En Netlify: redirects en netlify.toml proxean /functions/v1/* al endpoint Supabase real.
+  let sb = null;
+  try {
+    const mod = await import('/shared/supabase-client.js');
+    sb = mod.sb || mod.default || null;
+  } catch (_e) {
+    sb = null;
+  }
+
+  const FN_FALLBACK_BASE = '/functions/v1';
+
+  async function callFunction(path, { method = 'GET', body = null, query = {} } = {}) {
+    // POST → preferir sb.fn() del cliente compartido
+    if (method === 'POST' && sb && typeof sb.fn === 'function') {
+      try {
+        return await sb.fn(path, body || {});
+      } catch (err) {
+        // Re-lanzar con shape estandarizada (ya viene con .status / .extra)
+        throw err;
+      }
+    }
+
+    // GET o sin cliente → fetch directo
+    const qs = new URLSearchParams(query).toString();
+    const baseUrl = (sb?.url ? `${sb.url}/functions/v1` : FN_FALLBACK_BASE);
+    const url = `${baseUrl}/${path}${qs ? '?' + qs : ''}`;
+
+    const opts = {
+      method,
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    };
+    if (sb?.key) {
+      opts.headers.apikey = sb.key;
+      opts.headers.Authorization = `Bearer ${sb.key}`;
+    }
+    if (body != null) opts.body = JSON.stringify(body);
+
+    const res = await fetch(url, opts);
+    const text = await res.text();
+    let data = null;
+    try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
+    if (!res.ok) {
+      const msg = (data && (data.error || data.message)) || `HTTP ${res.status}`;
+      const err = new Error(msg);
+      err.status = res.status;
+      err.data = data;
+      throw err;
+    }
+    return data;
+  }
+
+  // ---- main ----------------------------------------------------------------
+  $('#year').textContent = new Date().getFullYear();
+
+  const params = new URLSearchParams(location.search);
+  const orderId = (params.get('o') || '').trim();
+  const signedToken = (params.get('token') || '').trim();
+
+  if (!orderId || !signedToken) {
+    showError('Faltan parámetros en el enlace. Usá el link que recibiste por email o WhatsApp.');
+    throw new Error('Missing params');
+  }
+
+  let order = null;
+
+  try {
+    order = await callFunction('get-order-status', { method: 'GET', query: { id: orderId } });
+  } catch (err) {
+    if (err.status === 404) {
+      showError('No encontramos esta orden. Verificá el enlace o contactá a soporte.');
+    } else if (err.status === 401 || err.status === 403) {
+      showError('El enlace de asignación expiró o no es válido. Pedí uno nuevo escribiendo a soporte.');
+    } else {
+      showError('No pudimos cargar tu orden. Intentá de nuevo en unos segundos. ' + (err.message || ''));
+    }
+    console.warn('[asignar] get-order-status failed', err);
+    throw err;
+  }
+
+  if (!order || !Array.isArray(order.tickets) || order.tickets.length === 0) {
+    showError('Esta orden no tiene boletas asociadas todavía. Si pagaste hace menos de un minuto, recargá la página.');
+    throw new Error('No tickets');
+  }
+
+  // Render meta
+  $('#meta-order').textContent = order.order_number || order.id || orderId;
+  $('#meta-event').textContent = order.event_name || order.event?.name || 'NEXT SHOW';
+  $('#meta-tickets').textContent = order.tickets.length;
+
+  // Render tickets
+  const listEl = $('#tickets-list');
+  order.tickets.forEach((t, i) => {
+    const idx = i + 1;
+    const card = document.createElement('div');
+    card.className = 'ticket-card';
+    card.dataset.ticketId = t.ticket_id || t.id || '';
+    card.dataset.ticketCode = t.ticket_code || '';
+    card.innerHTML = `
+      <div class="head">
+        <div class="index"><span data-i18n="asignar.ticket.label">Boleta</span> #${idx}</div>
+        <div class="meta">
+          <div class="zone">${escapeHtml(t.zone || t.zone_name || 'General')}</div>
+          ${t.seat_label ? `<div class="seat">${escapeHtml(t.seat_label)}</div>` : ''}
+          ${t.ticket_code ? `<div class="code">${escapeHtml(t.ticket_code)}</div>` : ''}
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="form-group">
+          <label for="name-${idx}" data-i18n="asignar.field.name">Nombre completo del asistente</label>
+          <input
+            type="text"
+            id="name-${idx}"
+            name="name-${idx}"
+            data-field="name"
+            autocomplete="name"
+            required
+            minlength="3"
+            maxlength="120"
+            placeholder="Ej: María Camila Pérez García"
+            value="${escapeHtml(t.attendee_name || '')}"
+            aria-describedby="name-${idx}-hint"
+          >
+          <div class="hint" id="name-${idx}-hint" data-i18n="asignar.field.name.hint">Tal cual aparece en la cédula.</div>
+        </div>
+        <div class="form-group">
+          <label for="id-${idx}" data-i18n="asignar.field.id">Número de cédula</label>
+          <input
+            type="text"
+            id="id-${idx}"
+            name="id-${idx}"
+            data-field="id"
+            inputmode="numeric"
+            autocomplete="off"
+            required
+            pattern="[0-9]{6,12}"
+            placeholder="Solo números"
+            value="${escapeHtml(t.attendee_id_number || '')}"
+            aria-describedby="id-${idx}-hint"
+          >
+          <div class="hint" id="id-${idx}-hint" data-i18n="asignar.field.id.hint">Entre 6 y 12 dígitos, sin puntos ni espacios.</div>
+        </div>
+      </div>
+    `;
+    listEl.appendChild(card);
+  });
+
+  $('#total-count').textContent = order.tickets.length;
+  updateSummary();
+
+  // Validation + summary tracking
+  function validateInput(input) {
+    const field = input.dataset.field;
+    const val = (input.value || '').trim();
+    let ok = true;
+    let msg = '';
+    if (field === 'name') {
+      if (val.length < 3) { ok = false; msg = 'Mínimo 3 caracteres.'; }
+      else if (val.length > 120) { ok = false; msg = 'Máximo 120 caracteres.'; }
+    } else if (field === 'id') {
+      if (!/^[0-9]{6,12}$/.test(val)) { ok = false; msg = 'Solo números, entre 6 y 12 dígitos.'; }
+    }
+    const hint = document.getElementById(input.getAttribute('aria-describedby'));
+    if (!ok) {
+      input.classList.add('invalid');
+      input.setAttribute('aria-invalid', 'true');
+      if (hint) { hint.textContent = msg; hint.classList.add('error'); }
+    } else {
+      input.classList.remove('invalid');
+      input.removeAttribute('aria-invalid');
+      if (hint) {
+        hint.classList.remove('error');
+        // restore default hint
+        if (field === 'name') hint.textContent = 'Tal cual aparece en la cédula.';
+        else hint.textContent = 'Entre 6 y 12 dígitos, sin puntos ni espacios.';
+      }
+    }
+    return ok;
+  }
+
+  function cardComplete(card) {
+    const inputs = $$('input[data-field]', card);
+    return inputs.every((i) => {
+      const v = (i.value || '').trim();
+      if (i.dataset.field === 'name') return v.length >= 3;
+      if (i.dataset.field === 'id') return /^[0-9]{6,12}$/.test(v);
+      return true;
+    });
+  }
+
+  function updateSummary() {
+    const cards = $$('.ticket-card');
+    let n = 0;
+    cards.forEach((c) => {
+      if (cardComplete(c)) { n++; c.classList.add('assigned'); }
+      else c.classList.remove('assigned');
+    });
+    $('#assigned-count').textContent = n;
+  }
+
+  document.addEventListener('input', (ev) => {
+    if (ev.target.matches && ev.target.matches('input[data-field]')) {
+      // sanitize id field on the fly
+      if (ev.target.dataset.field === 'id') {
+        ev.target.value = ev.target.value.replace(/\D+/g, '').slice(0, 12);
+      }
+      validateInput(ev.target);
+      updateSummary();
+    }
+  });
+
+  // Show form
+  showState('form-state');
+  // Focus first input for keyboard users
+  const firstInput = $('input[data-field]');
+  if (firstInput) firstInput.focus({ preventScroll: true });
+
+  // Submit
+  $('#assign-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const cards = $$('.ticket-card');
+    const inputs = $$('input[data-field]');
+    let allValid = true;
+    inputs.forEach((i) => { if (!validateInput(i)) allValid = false; });
+
+    if (!allValid) {
+      toast('Revisá los campos marcados en rojo.', 'warning');
+      const firstInvalid = $('input.invalid');
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    const attendees = cards.map((card) => ({
+      ticket_id: card.dataset.ticketId,
+      name: $('input[data-field="name"]', card).value.trim(),
+      id_number: $('input[data-field="id"]', card).value.trim(),
+    }));
+
+    const btn = $('#submit-btn');
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = 'Guardando…';
+
+    try {
+      await callFunction('assign-attendees', {
+        method: 'POST',
+        body: { order_id: orderId, signed_token: signedToken, attendees },
+      });
+      toast('Asistentes guardados correctamente.', 'success');
+      // Build "Ver mi boleta" link from first ticket
+      const firstCode = cards[0]?.dataset.ticketCode || '';
+      const viewLink = $('#success-view-ticket');
+      if (firstCode) viewLink.href = `/mi-boleta.html?t=${encodeURIComponent(firstCode)}`;
+      else viewLink.href = '/mi-boleta.html';
+      showState('success-state');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      console.warn('[asignar] assign-attendees failed', err);
+      let msg = 'No pudimos guardar los asistentes. Intentá de nuevo.';
+      if (err.status === 401 || err.status === 403) {
+        msg = 'El enlace ya no es válido. Solicitá uno nuevo a soporte.';
+      } else if (err.status === 422 || err.status === 400) {
+        msg = err.message || 'Algunos datos no son válidos. Revisá nombres y cédulas.';
+      } else if (err.message) {
+        msg = err.message;
+      }
+      toast(msg, 'error', 6000);
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  });
+
+  // Keyboard: Enter on input moves to next input
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' && ev.target.matches && ev.target.matches('input[data-field]')) {
+      const inputs = $$('input[data-field]');
+      const idx = inputs.indexOf(ev.target);
+      if (idx > -1 && idx < inputs.length - 1) {
+        ev.preventDefault();
+        inputs[idx + 1].focus();
+      }
+    }
+  });
+</script>
+</body>
+</html>
