@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>NEXT SHOW · Puerta</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/scanner-manifest.json">
+<meta name="theme-color" content="#7c3aed">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Validador de boletas NEXT SHOW en puerta del evento">
+
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NS Puerta">
+<link rel="apple-touch-icon" href="/assets/icons/scanner-192.png">
+<link rel="icon" type="image/svg+xml" href="/assets/icons/scanner-icon.svg">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0612;
+    --bg-2: #14091f;
+    --bg-3: #1a0d2e;
+    --border: #2a1947;
+    --violet: #7c3aed;
+    --violet-2: #a855f7;
+    --magenta: #d946ef;
+    --pink: #ec4899;
+    --text: #f5f3ff;
+    --muted: #a39db8;
+    --muted-2: #6b6480;
+    --ok: #16a34a;
+    --ok-2: #22c55e;
+    --warn: #f59e0b;
+    --err: #dc2626;
+    --err-2: #ef4444;
+    --gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 35%, #d946ef 70%, #ec4899 100%);
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input, select { font: inherit; color: inherit; }
+  a { color: var(--violet-2); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  /* ===========================================================
+     LOGO
+     =========================================================== */
+  .logo {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .logo .show {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* ===========================================================
+     SCREEN ROUTING
+     =========================================================== */
+  .screen { display: none; flex-direction: column; flex: 1; min-height: 0; }
+  .screen.active { display: flex; }
+
+  /* ===========================================================
+     LOGIN SCREEN
+     =========================================================== */
+  #screen-login {
+    padding: calc(24px + var(--safe-top)) 24px calc(24px + var(--safe-bottom));
+    background:
+      radial-gradient(ellipse at top, rgba(124,58,237,0.18), transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(217,70,239,0.10), transparent 50%),
+      var(--bg);
+    overflow-y: auto;
+  }
+  .login-wrap {
+    max-width: 420px;
+    width: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .login-header { text-align: center; padding: 12px 0 4px; }
+  .login-header .logo { font-size: 32px; }
+  .login-header .subtitle {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .login-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .field input, .field select {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 18px;
+    color: var(--text);
+    transition: border 0.15s;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--violet);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.25);
+  }
+  .pin-input {
+    text-align: center;
+    font-size: 32px !important;
+    letter-spacing: 0.5em;
+    padding-left: 0.5em !important;
+    font-variant-numeric: tabular-nums;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 16px;
+    background: var(--gradient);
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 10px;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary {
+    padding: 14px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .login-error {
+    background: rgba(220,38,38,0.12);
+    border: 1px solid rgba(220,38,38,0.4);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #fca5a5;
+    font-size: 13px;
+  }
+  .login-error:empty { display: none; }
+  .login-footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted-2);
+    letter-spacing: 0.1em;
+  }
+  .install-prompt {
+    background: rgba(124,58,237,0.10);
+    border: 1px solid rgba(124,58,237,0.4);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .install-prompt.visible { display: flex; }
+  .install-prompt button {
+    margin-left: auto;
+    padding: 8px 14px;
+    background: var(--violet);
+    color: white;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===========================================================
+     SCANNER MAIN
+     =========================================================== */
+  #screen-scanner { background: #000; position: relative; }
+  .scanner-header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 30;
+    padding: calc(12px + var(--safe-top)) 16px 12px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+  }
+  .scanner-header .logo { font-size: 16px; }
+  .scanner-header .meta {
+    flex: 1;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+  }
+  .scanner-header .meta strong { color: #fff; }
+  .scanner-header .conn-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok-2);
+    box-shadow: 0 0 8px var(--ok-2);
+  }
+  .scanner-header .conn-dot.offline {
+    background: var(--warn);
+    box-shadow: 0 0 8px var(--warn);
+  }
+  .scanner-header button.icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    color: white;
+  }
+
+  .video-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #000;
+  }
+  #cam {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translateZ(0);
+  }
+  /* Reticle / aiming frame */
+  .reticle {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: min(70vw, 320px);
+    height: min(70vw, 320px);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 20;
+  }
+  .reticle::before, .reticle::after,
+  .reticle > .br, .reticle > .bl {
+    content: '';
+    position: absolute;
+    width: 36px; height: 36px;
+    border: 4px solid rgba(255,255,255,0.95);
+    border-radius: 4px;
+  }
+  .reticle::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .reticle::after { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .reticle > .br { bottom: 0; right: 0; border-left: none; border-top: none; }
+  .reticle > .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .reticle .hint {
+    position: absolute;
+    top: calc(100% + 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    white-space: nowrap;
+  }
+
+  /* Stats footer */
+  .scanner-footer {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 30;
+    padding: 12px 16px calc(16px + var(--safe-bottom));
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    display: flex;
+    gap: 16px;
+    color: white;
+    align-items: center;
+  }
+  .stat {
+    flex: 1;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .stat.ok .stat-num { color: var(--ok-2); }
+  .stat.err .stat-num { color: var(--err-2); }
+  .stat.queue .stat-num { color: var(--warn); }
+
+  /* ===========================================================
+     RESULT OVERLAY
+     =========================================================== */
+  #result {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding: calc(20px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));
+    color: white;
+    text-align: center;
+    overflow-y: auto;
+  }
+  #result.visible { display: flex; }
+  #result.ok { background: linear-gradient(160deg, #15803d 0%, #16a34a 60%, #14532d 100%); }
+  #result.err { background: linear-gradient(160deg, #991b1b 0%, #dc2626 60%, #7f1d1d 100%); }
+  #result.warn { background: linear-gradient(160deg, #b45309 0%, #f59e0b 60%, #78350f 100%); }
+  #result.info { background: linear-gradient(160deg, #5b21b6 0%, #7c3aed 60%, #4c1d95 100%); }
+
+  .result-icon {
+    font-size: 96px;
+    line-height: 1;
+    margin: 24px auto 16px;
+    font-weight: 800;
+  }
+  .result-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+  .result-subtitle {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .result-card {
+    background: rgba(0,0,0,0.30);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 16px auto 24px;
+    max-width: 360px;
+    text-align: left;
+    width: 100%;
+  }
+  .result-card .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+  }
+  .result-card .row:last-child { border-bottom: none; }
+  .result-card .row .lbl {
+    color: rgba(255,255,255,0.65);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    align-self: center;
+  }
+  .result-card .row .val {
+    font-weight: 600;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 12px;
+    flex-wrap: wrap;
+  }
+  .result-actions button {
+    flex: 1;
+    min-width: 130px;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(255,255,255,0.18);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.35);
+  }
+  .result-actions button.primary {
+    background: white;
+    color: #0a0612;
+    border-color: white;
+  }
+  .result-actions button:active { transform: scale(0.97); }
+
+  /* ===========================================================
+     ADMIN MODE
+     =========================================================== */
+  #screen-admin {
+    background: var(--bg);
+    overflow-y: auto;
+    padding: calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
+  }
+  .admin-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .admin-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .admin-header h1 .badge {
+    display: inline-block;
+    background: var(--gradient);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.08em;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .admin-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .admin-stats .stat-num { font-size: 24px; }
+  .admin-section {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .admin-section h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .scan-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .scan-list li {
+    background: var(--bg-3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .scan-list .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .scan-list .dot.ok { background: var(--ok-2); }
+  .scan-list .dot.err { background: var(--err-2); }
+  .scan-list .dot.warn { background: var(--warn); }
+  .scan-list .scan-code { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted); }
+  .scan-list .scan-time { margin-left: auto; font-size: 11px; color: var(--muted-2); }
+  .search-row { display: flex; gap: 8px; }
+  .search-row input { flex: 1; }
+  .search-results {
+    max-height: 240px;
+    overflow-y: auto;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .search-results .item {
+    background: var(--bg-3);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+  }
+  .search-results .item .name { font-weight: 600; }
+  .search-results .item .meta { font-size: 11px; color: var(--muted); }
+  .search-results .item button {
+    align-self: flex-end;
+    padding: 6px 10px;
+    background: var(--violet);
+    color: white;
+    border-radius: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .admin-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .admin-actions button {
+    flex: 1;
+    min-width: 130px;
+    padding: 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ===========================================================
+     FLASH (toast)
+     =========================================================== */
+  #flash {
+    position: fixed;
+    top: calc(var(--safe-top) + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-200%);
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    z-index: 100;
+    transition: transform 0.25s;
+    max-width: calc(100vw - 32px);
+  }
+  #flash.visible { transform: translateX(-50%) translateY(0); }
+  #flash.ok { border-color: var(--ok-2); color: var(--ok-2); }
+  #flash.err { border-color: var(--err-2); color: var(--err-2); }
+
+  /* ===========================================================
+     RESPONSIVE — desktop wider scanner test
+     =========================================================== */
+  @media (min-width: 768px) {
+    .reticle { width: 360px; height: 360px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
+<section id="screen-login" class="screen active" aria-label="Iniciar sesión en scanner">
+  <div class="login-wrap">
+    <header class="login-header">
+      <div class="logo" aria-label="NEXT SHOW">NEXT <span class="show">SHOW</span></div>
+      <div class="subtitle">Validador de puerta</div>
+    </header>
+
+    <div class="install-prompt" id="install-prompt" role="region" aria-label="Instalar app">
+      <span>Instalá la app para mejor experiencia.</span>
+      <button id="btn-install" type="button">Instalar</button>
+    </div>
+
+    <form class="login-card" id="login-form" autocomplete="off">
+      <div class="field">
+        <label for="pin">PIN de puerta</label>
+        <input
+          id="pin"
+          name="pin"
+          class="pin-input"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          maxlength="4"
+          autocomplete="one-time-code"
+          required
+          placeholder="••••"
+          aria-describedby="pin-help">
+        <small id="pin-help" class="sr-only">PIN de 4 dígitos provisto por administración</small>
+      </div>
+
+      <div class="field">
+        <label for="staff">Tu nombre</label>
+        <select id="staff" name="staff" required aria-describedby="staff-help">
+          <option value="">— Elegí tu nombre —</option>
+        </select>
+        <small id="staff-help" class="sr-only">Quedará registrado en cada validación</small>
+      </div>
+
+      <div class="login-error" id="login-error" role="alert" aria-live="polite"></div>
+
+      <button type="submit" class="btn-primary" id="btn-login">Entrar</button>
+    </form>
+
+    <div class="login-footer">
+      <span id="version-tag">NS Scanner v1 · </span>
+      <a href="?admin=1">Modo admin</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCANNER MAIN
+     ============================================================ -->
+<section id="screen-scanner" class="screen" aria-label="Escáner de boletas">
+  <div class="video-wrap">
+    <video id="cam" playsinline autoplay muted aria-hidden="true"></video>
+    <canvas id="frame-canvas" hidden></canvas>
+  </div>
+
+  <header class="scanner-header">
+    <div class="logo" aria-label="NEXT SHOW Puerta">NEXT <span class="show">SHOW</span></div>
+    <div class="meta" aria-live="polite">
+      Puerta · <strong id="staff-name">—</strong>
+    </div>
+    <span class="conn-dot" id="conn-dot" title="Estado de conexión" aria-label="Estado de conexión"></span>
+    <button class="icon-btn" id="btn-flip" type="button" aria-label="Cambiar cámara">⟲</button>
+    <button class="icon-btn" id="btn-logout" type="button" aria-label="Cerrar sesión">×</button>
+  </header>
+
+  <div class="reticle" aria-hidden="true">
+    <span class="br"></span><span class="bl"></span>
+    <div class="hint">Apuntá al QR</div>
+  </div>
+
+  <footer class="scanner-footer" aria-live="polite">
+    <div class="stat ok">
+      <div class="stat-num" id="stat-ok">0</div>
+      <div class="stat-label">Válidos</div>
+    </div>
+    <div class="stat err">
+      <div class="stat-num" id="stat-err">0</div>
+      <div class="stat-label">Rechazados</div>
+    </div>
+    <div class="stat queue">
+      <div class="stat-num" id="stat-queue">0</div>
+      <div class="stat-label">En cola</div>
+    </div>
+  </footer>
+
+  <!-- Result overlay -->
+  <div id="result" role="alertdialog" aria-modal="true" aria-labelledby="result-title">
+    <div class="result-icon" id="result-icon" aria-hidden="true">✓</div>
+    <h2 class="result-title" id="result-title">Entrada válida</h2>
+    <p class="result-subtitle" id="result-subtitle"></p>
+    <div class="result-card" id="result-card"></div>
+    <div class="result-actions" id="result-actions"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ADMIN SCREEN
+     ============================================================ -->
+<section id="screen-admin" class="screen" aria-label="Modo administrador">
+  <header class="admin-header">
+    <div class="logo">NEXT <span class="show">SHOW</span></div>
+    <h1>Admin <span class="badge">PUERTA</span></h1>
+    <button class="icon-btn" id="btn-admin-logout" type="button" aria-label="Salir admin">×</button>
+  </header>
+
+  <div class="admin-stats">
+    <div class="stat ok">
+      <div class="stat-num" id="adm-stat-ok">0</div>
+      <div class="stat-label">Válidos</div>
+    </div>
+    <div class="stat err">
+      <div class="stat-num" id="adm-stat-err">0</div>
+      <div class="stat-label">Rechazos</div>
+    </div>
+    <div class="stat queue">
+      <div class="stat-num" id="adm-stat-queue">0</div>
+      <div class="stat-label">Cola</div>
+    </div>
+  </div>
+
+  <section class="admin-section" aria-labelledby="adm-search-title">
+    <h2 id="adm-search-title">Buscar manifest <small style="color:var(--muted-2);font-weight:400">(<span id="adm-manifest-count">0</span>)</small></h2>
+    <div class="search-row">
+      <input id="adm-search" type="search" placeholder="Nombre, cédula u orden #" aria-label="Buscar boleta por nombre, cédula u orden">
+    </div>
+    <div class="search-results" id="adm-search-results" role="list"></div>
+  </section>
+
+  <section class="admin-section" aria-labelledby="adm-recent-title">
+    <h2 id="adm-recent-title">Últimos 20 escaneos
+      <button class="btn-secondary" id="adm-refresh-list" type="button" style="padding:4px 10px;font-size:11px">↻</button>
+    </h2>
+    <ul class="scan-list" id="adm-scan-list"></ul>
+  </section>
+
+  <div class="admin-actions">
+    <button id="adm-go-scanner" type="button">← Volver al scanner</button>
+    <button id="adm-drain" type="button">Sincronizar cola</button>
+    <button id="adm-export" type="button">Exportar JSON</button>
+  </div>
+</section>
+
+<div id="flash" role="status" aria-live="polite"></div>
+
+<!-- ============================================================
+     APP LOGIC
+     ============================================================ -->
+<script>
+'use strict';
+
+(() => {
+  // ----------------------------------------------------------
+  // Config
+  // ----------------------------------------------------------
+  // Endpoints relativos para que el Service Worker los intercepte (same-origin).
+  // En producción Netlify hace rewrite /functions/v1/* → Supabase Edge Functions.
+  // En dev local sin proxy hay que correr `supabase functions serve` + un rewrite.
+  const FALLBACK_STAFF = ['Carlos', 'Andrés', 'María', 'Luis'];
+  const ENDPOINT_VALIDATE = '/functions/v1/validate-ticket';
+  const ENDPOINT_MANIFEST = '/functions/v1/scanner-manifest';
+  const RESULT_AUTOCLOSE_MS = 4000;
+  const ADMIN_QS = new URLSearchParams(location.search).get('admin') === '1';
+  const SCAN_COOLDOWN_MS = 1500; // evitar relecturas del mismo QR
+  const MANIFEST_REFRESH_MS = 5 * 60 * 1000;
+
+  // ----------------------------------------------------------
+  // State
+  // ----------------------------------------------------------
+  const state = {
+    staff_name: null,
+    door_pin: null,
+    is_admin: false,
+    manifest: null,        // { tickets: [...], event_id, fetched_at }
+    last_scan_code: null,
+    last_scan_at: 0,
+    stream: null,
+    detector: null,        // BarcodeDetector instance
+    jsqr_loaded: false,
+    facingMode: 'environment',
+    rafId: null,
+    scanning: false,
+    deferredInstallEvent: null,
+  };
+
+  // ----------------------------------------------------------
+  // Util: encode/decode local secrets (NOT secure — base64 obfuscation)
+  // ----------------------------------------------------------
+  const obf = {
+    enc: (s) => btoa(unescape(encodeURIComponent(s))),
+    dec: (s) => { try { return decodeURIComponent(escape(atob(s))); } catch { return null; } },
+  };
+
+  const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+  const lsDel = (k) => { try { localStorage.removeItem(k); } catch {} };
+
+  // ----------------------------------------------------------
+  // IndexedDB local — scans log
+  // ----------------------------------------------------------
+  const DB_NAME = 'ns-scanner';
+  const STORE_SCANS = 'scans';
+
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_SCANS)) {
+          const store = db.createObjectStore(STORE_SCANS, { keyPath: 'id', autoIncrement: true });
+          store.createIndex('ts', 'ts');
+          store.createIndex('result', 'result');
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function saveScan(scan) {
+    try {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_SCANS, 'readwrite');
+        const req = tx.objectStore(STORE_SCANS).add(scan);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    } catch (e) {
+      console.warn('saveScan err', e);
+    }
+  }
+
+  async function listScans({ limit = 20, since = null } = {}) {
+    try {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_SCANS, 'readonly');
+        const store = tx.objectStore(STORE_SCANS);
+        const idx = store.index('ts');
+        const out = [];
+        const range = since ? IDBKeyRange.lowerBound(since) : null;
+        idx.openCursor(range, 'prev').onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor && out.length < limit) {
+            out.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(out);
+          }
+        };
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (e) {
+      console.warn('listScans err', e);
+      return [];
+    }
+  }
+
+  async function countScansToday() {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const since = today.toISOString();
+    const all = await listScans({ limit: 9999, since });
+    let ok = 0, err = 0;
+    for (const s of all) {
+      if (s.result === 'ok') ok++;
+      else if (['already_used','invalid','unpaid','wrong_date'].includes(s.result)) err++;
+    }
+    return { ok, err, total: all.length };
+  }
+
+  // ----------------------------------------------------------
+  // DOM helpers
+  // ----------------------------------------------------------
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+  function show(screenId) {
+    $$('.screen').forEach(s => s.classList.remove('active'));
+    const target = $('#' + screenId);
+    if (target) target.classList.add('active');
+  }
+
+  let flashTimer = null;
+  function flash(msg, type = '') {
+    const el = $('#flash');
+    el.textContent = msg;
+    el.className = '';
+    if (type) el.classList.add(type);
+    el.classList.add('visible');
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => el.classList.remove('visible'), 3000);
+  }
+
+  // ----------------------------------------------------------
+  // Network helpers
+  // ----------------------------------------------------------
+  function isOnline() { return navigator.onLine !== false; }
+
+  function updateConnDot() {
+    const dot = $('#conn-dot');
+    if (!dot) return;
+    if (isOnline()) {
+      dot.classList.remove('offline');
+      dot.title = 'En línea';
+    } else {
+      dot.classList.add('offline');
+      dot.title = 'Sin conexión — modo offline';
+    }
+  }
+
+  async function fetchManifest(pin) {
+    const url = `${ENDPOINT_MANIFEST}?pin=${encodeURIComponent(pin)}`;
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'accept': 'application/json' },
+      cache: 'no-store',
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`manifest_fetch_failed_${res.status}: ${text.slice(0,120)}`);
+    }
+    return res.json();
+  }
+
+  async function postValidate(payload) {
+    const res = await fetch(ENDPOINT_VALIDATE, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'accept': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  }
+
+  // ----------------------------------------------------------
+  // Login
+  // ----------------------------------------------------------
+  function populateStaffOptions(names) {
+    const sel = $('#staff');
+    sel.innerHTML = '<option value="">— Elegí tu nombre —</option>';
+    for (const n of names) {
+      const o = document.createElement('option');
+      o.value = n; o.textContent = n;
+      sel.appendChild(o);
+    }
+  }
+
+  async function tryLogin(pin, staff) {
+    // 1) Pedir manifest al backend con el PIN
+    let manifest = null;
+    try {
+      manifest = await fetchManifest(pin);
+    } catch (e) {
+      // Si offline: si hay manifest cacheado y el PIN coincide con el guardado, permitimos
+      if (!isOnline()) {
+        const cached = lsGet('tickets_manifest');
+        const cachedPin = obf.dec(lsGet('door_pin') || '');
+        if (cached && cachedPin === pin) {
+          return { ok: true, manifest: JSON.parse(cached), offline: true };
+        }
+      }
+      return { ok: false, error: 'PIN inválido o servidor no responde. Verificá conexión.' };
+    }
+    return { ok: true, manifest, offline: false };
+  }
+
+  async function loadStaffNames() {
+    // Spec: events.settings.staff_names. En login no tenemos el manifest aún.
+    // Estrategia: probar cargar settings públicos via un endpoint o caer a fallback.
+    // Si hay un manifest cacheado previo con staff_names, usarlo.
+    try {
+      const cached = lsGet('staff_names');
+      if (cached) {
+        const arr = JSON.parse(cached);
+        if (Array.isArray(arr) && arr.length) return arr;
+      }
+    } catch {}
+    return FALLBACK_STAFF;
+  }
+
+  async function bootLogin() {
+    const names = await loadStaffNames();
+    populateStaffOptions(names);
+
+    // Pre-fill si hay sesión
+    const savedStaff = lsGet('staff_name');
+    if (savedStaff) $('#staff').value = savedStaff;
+
+    $('#login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pin = $('#pin').value.trim();
+      const staff = $('#staff').value;
+      const errEl = $('#login-error');
+      errEl.textContent = '';
+
+      if (!/^\d{4}$/.test(pin)) {
+        errEl.textContent = 'PIN debe ser 4 dígitos.';
+        return;
+      }
+      if (!staff) {
+        errEl.textContent = 'Elegí tu nombre.';
+        return;
+      }
+
+      const btn = $('#btn-login');
+      btn.disabled = true;
+      btn.textContent = 'Verificando…';
+      try {
+        const res = await tryLogin(pin, staff);
+        if (!res.ok) {
+          errEl.textContent = res.error || 'No se pudo iniciar sesión.';
+          return;
+        }
+
+        state.staff_name = staff;
+        state.door_pin = pin;
+        state.manifest = res.manifest;
+
+        lsSet('staff_name', staff);
+        lsSet('door_pin', obf.enc(pin));
+        lsSet('tickets_manifest', JSON.stringify(res.manifest));
+        lsSet('tickets_manifest_at', String(Date.now()));
+
+        // Si manifest trae staff_names, persistirlo para próximo login
+        if (res.manifest && Array.isArray(res.manifest.staff_names)) {
+          lsSet('staff_names', JSON.stringify(res.manifest.staff_names));
+        }
+
+        if (res.offline) {
+          flash('Modo offline — usando manifest cacheado', 'err');
+        } else {
+          flash('Manifest descargado', 'ok');
+        }
+
+        await goToScanner();
+      } catch (err) {
+        console.error(err);
+        errEl.textContent = err && err.message ? err.message : 'Error inesperado.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      }
+    });
+  }
+
+  function logout() {
+    stopCamera();
+    lsDel('staff_name');
+    lsDel('door_pin');
+    lsDel('tickets_manifest');
+    lsDel('tickets_manifest_at');
+    state.staff_name = null;
+    state.door_pin = null;
+    state.manifest = null;
+    show('screen-login');
+    $('#pin').value = '';
+    $('#login-error').textContent = '';
+  }
+
+  // ----------------------------------------------------------
+  // Camera + QR
+  // ----------------------------------------------------------
+  async function startCamera() {
+    if (state.stream) return;
+    try {
+      const constraints = {
+        audio: false,
+        video: {
+          facingMode: { ideal: state.facingMode },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      state.stream = stream;
+      const video = $('#cam');
+      video.srcObject = stream;
+      await video.play().catch(() => {});
+      await initDetector();
+      state.scanning = true;
+      requestScanFrame();
+    } catch (err) {
+      console.error('camera err', err);
+      flash('No se pudo abrir la cámara: ' + (err.message || err.name), 'err');
+    }
+  }
+
+  function stopCamera() {
+    state.scanning = false;
+    if (state.rafId) cancelAnimationFrame(state.rafId);
+    state.rafId = null;
+    if (state.stream) {
+      state.stream.getTracks().forEach(t => t.stop());
+      state.stream = null;
+    }
+    const video = $('#cam');
+    if (video) video.srcObject = null;
+  }
+
+  async function flipCamera() {
+    state.facingMode = state.facingMode === 'environment' ? 'user' : 'environment';
+    stopCamera();
+    await startCamera();
+  }
+
+  async function initDetector() {
+    if (state.detector || state.jsqr_loaded) return;
+    if ('BarcodeDetector' in window) {
+      try {
+        const formats = await window.BarcodeDetector.getSupportedFormats();
+        if (formats.includes('qr_code')) {
+          state.detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+          return;
+        }
+      } catch (e) {
+        console.warn('BarcodeDetector falló, usando jsQR fallback', e);
+      }
+    }
+    // Fallback: jsQR
+    await loadJsQR();
+  }
+
+  function loadJsQR() {
+    return new Promise((resolve, reject) => {
+      if (window.jsQR) { state.jsqr_loaded = true; return resolve(); }
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+      s.async = true;
+      s.onload = () => { state.jsqr_loaded = true; resolve(); };
+      s.onerror = () => reject(new Error('jsqr_load_failed'));
+      document.head.appendChild(s);
+    });
+  }
+
+  function requestScanFrame() {
+    if (!state.scanning) return;
+    state.rafId = requestAnimationFrame(scanTick);
+  }
+
+  let lastTick = 0;
+  async function scanTick(now) {
+    if (!state.scanning) return;
+    // Throttle ~10fps para no quemar batería
+    if (now - lastTick < 100) {
+      return requestScanFrame();
+    }
+    lastTick = now;
+    const video = $('#cam');
+    if (video.readyState < 2 || video.videoWidth === 0) {
+      return requestScanFrame();
+    }
+    try {
+      let raw = null;
+      if (state.detector) {
+        const codes = await state.detector.detect(video);
+        if (codes && codes.length) raw = codes[0].rawValue;
+      } else if (window.jsQR) {
+        raw = scanWithJsQR(video);
+      }
+      if (raw) {
+        const code = extractTicketCode(raw);
+        if (code) handleScannedCode(code);
+      }
+    } catch (e) {
+      // ignore — el frame siguiente lo intenta
+    }
+    requestScanFrame();
+  }
+
+  function scanWithJsQR(video) {
+    const canvas = $('#frame-canvas');
+    const w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return null;
+    // Sub-sample para perf: cuadrante central 480px máx
+    const target = Math.min(480, w, h);
+    canvas.width = target;
+    canvas.height = target;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const sx = (w - target) / 2;
+    const sy = (h - target) / 2;
+    ctx.drawImage(video, sx, sy, target, target, 0, 0, target, target);
+    const img = ctx.getImageData(0, 0, target, target);
+    const code = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'attemptBoth' });
+    return code ? code.data : null;
+  }
+
+  function extractTicketCode(raw) {
+    if (!raw) return null;
+    raw = raw.trim();
+    // URL formato `<base>/v?t=<code>`
+    try {
+      const u = new URL(raw);
+      const t = u.searchParams.get('t');
+      if (t) return t.trim();
+    } catch { /* no es URL, podría ser solo el code */ }
+    // Solo un code: alfanumérico razonable, evitamos ruido
+    if (/^[A-Za-z0-9_-]{6,64}$/.test(raw)) return raw;
+    return null;
+  }
+
+  // ----------------------------------------------------------
+  // Manejo de un código escaneado
+  // ----------------------------------------------------------
+  async function handleScannedCode(code, opts = {}) {
+    if (!code) return;
+    const now = Date.now();
+    if (state.last_scan_code === code && now - state.last_scan_at < SCAN_COOLDOWN_MS) return;
+    state.last_scan_code = code;
+    state.last_scan_at = now;
+
+    // 1) Buscar en manifest local primero
+    const local = findInManifest(code);
+
+    // 2) Si online → POST a validate-ticket
+    if (isOnline()) {
+      try {
+        const res = await postValidate({
+          ticket_code: code,
+          staff_name: state.staff_name,
+          forced: !!opts.forced,
+        });
+        await processValidationResponse(code, res, local);
+      } catch (e) {
+        console.warn('validate err', e);
+        // Falla de red: tratar como offline
+        await offlineValidate(code, local);
+      }
+    } else {
+      await offlineValidate(code, local);
+    }
+  }
+
+  function findInManifest(code) {
+    if (!state.manifest) return null;
+    const tickets = state.manifest.tickets || state.manifest;
+    if (!Array.isArray(tickets)) return null;
+    return tickets.find(t => t.ticket_code === code) || null;
+  }
+
+  async function processValidationResponse(code, response, local) {
+    const data = response.data || {};
+    const result = data.result || (response.ok ? 'ok' : 'invalid');
+
+    // 'offline_queued' es respuesta sintética del SW cuando no hay red
+    if (result === 'offline_queued') {
+      return offlineValidate(code, local, { queued: true });
+    }
+
+    const scan = {
+      ticket_code: code,
+      result,
+      attendee_name: data.attendee_name || (local && local.attendee_name) || null,
+      zone: data.zone || (local && local.zone) || null,
+      seat: data.seat || data.seat_label || (local && local.seat_label) || null,
+      order_number: data.order_number || (local && local.order_number) || null,
+      previous_at: data.previous_checkin_at || data.previous_at || null,
+      previous_staff: data.previous_staff || data.checked_in_by || null,
+      staff: state.staff_name,
+      ts: new Date().toISOString(),
+      synced: true,
+    };
+    await saveScan(scan);
+    showResult(scan);
+  }
+
+  async function offlineValidate(code, local, ctx = {}) {
+    let scan;
+    if (!local) {
+      scan = {
+        ticket_code: code,
+        result: 'invalid',
+        staff: state.staff_name,
+        ts: new Date().toISOString(),
+        synced: false,
+        offline: true,
+      };
+    } else {
+      // Asumimos OK; SW encolará para resync. Si conflict en sync, alertamos después.
+      scan = {
+        ticket_code: code,
+        result: 'ok',
+        attendee_name: local.attendee_name,
+        zone: local.zone,
+        seat: local.seat_label,
+        order_number: local.order_number,
+        staff: state.staff_name,
+        ts: new Date().toISOString(),
+        synced: false,
+        offline: true,
+      };
+    }
+    await saveScan(scan);
+    if (!ctx.queued) {
+      // Si llegamos acá por catch (sin SW respondiendo), mandar al SW manualmente
+      navigator.serviceWorker?.controller?.postMessage({ type: 'drain-queue' });
+    }
+    showResult(scan);
+  }
+
+  // ----------------------------------------------------------
+  // Result UI
+  // ----------------------------------------------------------
+  let resultTimer = null;
+  function showResult(scan) {
+    const el = $('#result');
+    const icon = $('#result-icon');
+    const title = $('#result-title');
+    const subtitle = $('#result-subtitle');
+    const card = $('#result-card');
+    const actions = $('#result-actions');
+
+    el.className = '';
+    actions.innerHTML = '';
+    card.innerHTML = '';
+    subtitle.textContent = '';
+
+    let vibrate = [];
+    let kind = 'info';
+    let titleText = '';
+    let iconText = '';
+
+    switch (scan.result) {
+      case 'ok':
+        kind = 'ok'; iconText = '✓'; titleText = 'ENTRADA VÁLIDA';
+        vibrate = [200];
+        if (scan.offline) subtitle.textContent = 'Validado offline · sincroniza al recuperar red';
+        renderTicketCard(card, scan);
+        actions.appendChild(makeBtn('Siguiente', closeResult, 'primary'));
+        break;
+      case 'already_used':
+        kind = 'err'; iconText = '✗'; titleText = 'BOLETA YA USADA';
+        vibrate = [200, 100, 200, 100, 200];
+        if (scan.previous_at) {
+          subtitle.textContent = `Ingresó ${formatTime(scan.previous_at)}` +
+            (scan.previous_staff ? ` · ${scan.previous_staff}` : '');
+        }
+        renderTicketCard(card, scan);
+        actions.appendChild(makeBtn('No, salir', closeResult, ''));
+        actions.appendChild(makeBtn('Sí, registrar igual', () => {
+          closeResult();
+          handleScannedCode(scan.ticket_code, { forced: true });
+        }, 'primary'));
+        break;
+      case 'unpaid':
+        kind = 'warn'; iconText = '$'; titleText = 'ORDEN NO PAGADA';
+        vibrate = [400];
+        subtitle.textContent = 'La orden no está marcada como pagada.';
+        renderTicketCard(card, scan);
+        actions.appendChild(makeBtn('Volver', closeResult, 'primary'));
+        break;
+      case 'wrong_date':
+        kind = 'warn'; iconText = '!'; titleText = 'FECHA INCORRECTA';
+        vibrate = [400];
+        subtitle.textContent = 'Esta boleta no es para hoy.';
+        renderTicketCard(card, scan);
+        actions.appendChild(makeBtn('Volver', closeResult, 'primary'));
+        break;
+      case 'invalid':
+      default:
+        kind = 'err'; iconText = '✗'; titleText = 'BOLETA INVÁLIDA';
+        vibrate = [600];
+        subtitle.textContent = 'No se encontró este código en el manifest.';
+        const codeRow = document.createElement('div'); codeRow.className = 'row';
+        codeRow.innerHTML = `<span class="lbl">Código</span><span class="val" style="font-family:ui-monospace,monospace">${escapeHtml(scan.ticket_code || '—')}</span>`;
+        card.appendChild(codeRow);
+        actions.appendChild(makeBtn('Volver', closeResult, 'primary'));
+        break;
+    }
+
+    el.classList.add(kind, 'visible');
+    icon.textContent = iconText;
+    title.textContent = titleText;
+
+    // Anuncio screen reader
+    title.setAttribute('aria-live', 'assertive');
+
+    try {
+      if (vibrate.length && navigator.vibrate) navigator.vibrate(vibrate);
+    } catch {}
+
+    refreshStats();
+    if (state.is_admin) renderAdminScans();
+
+    clearTimeout(resultTimer);
+    if (scan.result === 'ok' || scan.result === 'invalid') {
+      resultTimer = setTimeout(closeResult, RESULT_AUTOCLOSE_MS);
+    }
+  }
+
+  function renderTicketCard(card, scan) {
+    const rows = [
+      ['Asistente', scan.attendee_name],
+      ['Zona', scan.zone],
+      ['Asiento', scan.seat],
+      ['Orden', scan.order_number ? `#${scan.order_number}` : null],
+      ['Staff', scan.staff],
+      ['Hora', formatTime(scan.ts)],
+    ];
+    for (const [lbl, val] of rows) {
+      if (!val) continue;
+      const r = document.createElement('div'); r.className = 'row';
+      r.innerHTML = `<span class="lbl">${escapeHtml(lbl)}</span><span class="val">${escapeHtml(val)}</span>`;
+      card.appendChild(r);
+    }
+  }
+
+  function makeBtn(label, onClick, cls = '') {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    if (cls) b.classList.add(cls);
+    b.addEventListener('click', onClick);
+    return b;
+  }
+
+  function closeResult() {
+    clearTimeout(resultTimer);
+    $('#result').classList.remove('visible');
+    state.last_scan_code = null; // permite reescanear
+  }
+
+  function formatTime(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString('es-CO', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
+    } catch { return iso; }
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, ch => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
+
+  // ----------------------------------------------------------
+  // Stats
+  // ----------------------------------------------------------
+  async function refreshStats() {
+    const c = await countScansToday();
+    $('#stat-ok').textContent = c.ok;
+    $('#stat-err').textContent = c.err;
+    if ($('#adm-stat-ok')) {
+      $('#adm-stat-ok').textContent = c.ok;
+      $('#adm-stat-err').textContent = c.err;
+    }
+    // Pendientes en cola del SW
+    const pending = await countPendingQueue();
+    $('#stat-queue').textContent = pending;
+    if ($('#adm-stat-queue')) $('#adm-stat-queue').textContent = pending;
+  }
+
+  async function countPendingQueue() {
+    try {
+      return await new Promise((resolve) => {
+        const req = indexedDB.open('ns-scanner-queue', 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('pending_validations')) {
+            db.createObjectStore('pending_validations', { keyPath: 'id', autoIncrement: true });
+          }
+        };
+        req.onsuccess = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains('pending_validations')) {
+            return resolve(0);
+          }
+          const tx = db.transaction('pending_validations', 'readonly');
+          const count = tx.objectStore('pending_validations').count();
+          count.onsuccess = () => resolve(count.result || 0);
+          count.onerror = () => resolve(0);
+        };
+        req.onerror = () => resolve(0);
+      });
+    } catch { return 0; }
+  }
+
+  // ----------------------------------------------------------
+  // Periodic manifest refresh
+  // ----------------------------------------------------------
+  let manifestTimer = null;
+  function startManifestRefresh() {
+    clearInterval(manifestTimer);
+    manifestTimer = setInterval(async () => {
+      if (!isOnline() || !state.door_pin) return;
+      try {
+        const m = await fetchManifest(state.door_pin);
+        state.manifest = m;
+        lsSet('tickets_manifest', JSON.stringify(m));
+        lsSet('tickets_manifest_at', String(Date.now()));
+      } catch (e) {
+        console.warn('manifest refresh failed', e);
+      }
+    }, MANIFEST_REFRESH_MS);
+  }
+
+  // ----------------------------------------------------------
+  // Goto scanner
+  // ----------------------------------------------------------
+  async function goToScanner() {
+    $('#staff-name').textContent = state.staff_name;
+    show('screen-scanner');
+    await startCamera();
+    refreshStats();
+    startManifestRefresh();
+  }
+
+  // ----------------------------------------------------------
+  // Admin mode
+  // ----------------------------------------------------------
+  async function goToAdmin() {
+    state.is_admin = true;
+    show('screen-admin');
+    refreshStats();
+    renderAdminScans();
+    renderManifestCount();
+  }
+
+  function renderManifestCount() {
+    const tickets = (state.manifest && (state.manifest.tickets || state.manifest)) || [];
+    const n = Array.isArray(tickets) ? tickets.length : 0;
+    $('#adm-manifest-count').textContent = n;
+  }
+
+  async function renderAdminScans() {
+    const list = $('#adm-scan-list');
+    if (!list) return;
+    const scans = await listScans({ limit: 20 });
+    list.innerHTML = '';
+    if (!scans.length) {
+      const li = document.createElement('li');
+      li.textContent = 'Sin escaneos todavía';
+      li.style.color = 'var(--muted-2)';
+      list.appendChild(li);
+      return;
+    }
+    for (const s of scans) {
+      const li = document.createElement('li');
+      const dotCls = s.result === 'ok' ? 'ok' : (s.result === 'already_used' ? 'warn' : 'err');
+      li.innerHTML = `
+        <span class="dot ${dotCls}" aria-hidden="true"></span>
+        <span>
+          <strong>${escapeHtml(s.attendee_name || s.ticket_code || '—')}</strong><br>
+          <span class="scan-code">${escapeHtml(s.result)}${s.zone ? ' · ' + escapeHtml(s.zone) : ''}${s.seat ? ' · ' + escapeHtml(s.seat) : ''}</span>
+        </span>
+        <span class="scan-time">${formatTime(s.ts)}</span>
+      `;
+      list.appendChild(li);
+    }
+  }
+
+  function searchManifest(query) {
+    const q = query.trim().toLowerCase();
+    if (!q || q.length < 2) return [];
+    const tickets = (state.manifest && (state.manifest.tickets || state.manifest)) || [];
+    if (!Array.isArray(tickets)) return [];
+    return tickets.filter(t => {
+      const hay = [
+        t.attendee_name, t.attendee_id_number, t.attendee_email,
+        t.order_number ? '#' + t.order_number : null, t.order_number,
+        t.ticket_code, t.zone, t.seat_label, t.seat,
+      ].filter(Boolean).join(' ').toLowerCase();
+      return hay.includes(q);
+    }).slice(0, 30);
+  }
+
+  function renderSearchResults(items) {
+    const wrap = $('#adm-search-results');
+    wrap.innerHTML = '';
+    if (!items.length) {
+      wrap.innerHTML = '<div class="item" style="color:var(--muted-2)">Sin resultados</div>';
+      return;
+    }
+    for (const t of items) {
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.setAttribute('role', 'listitem');
+      div.innerHTML = `
+        <div class="name">${escapeHtml(t.attendee_name || '—')}</div>
+        <div class="meta">
+          ${escapeHtml(t.zone || '')}${t.seat_label ? ' · ' + escapeHtml(t.seat_label) : ''}
+          ${t.order_number ? ' · #' + escapeHtml(t.order_number) : ''}
+          ${t.attendee_id_number ? ' · CC ' + escapeHtml(t.attendee_id_number) : ''}
+        </div>
+        <div class="meta scan-code">${escapeHtml(t.ticket_code)}</div>
+      `;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = 'Marcar manual';
+      btn.addEventListener('click', () => {
+        if (!confirm(`Marcar como entrada válida a "${t.attendee_name}" (manual)?`)) return;
+        handleScannedCode(t.ticket_code, { forced: true });
+      });
+      div.appendChild(btn);
+      wrap.appendChild(div);
+    }
+  }
+
+  async function exportScans() {
+    const scans = await listScans({ limit: 9999 });
+    const blob = new Blob([JSON.stringify(scans, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ns-scans-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ----------------------------------------------------------
+  // Service worker registration + sync hooks
+  // ----------------------------------------------------------
+  function registerSW() {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.register('/scanner-sw.js')
+      .then((reg) => {
+        console.log('[ns] SW registrado', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('[ns] SW falló al registrar', err);
+      });
+
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      const msg = e.data || {};
+      if (msg.type === 'sync-complete') {
+        const r = msg.report || {};
+        if (r.processed) flash(`Sincronizadas ${r.processed} validaciones`, 'ok');
+        if (r.conflicts && r.conflicts.length) {
+          flash(`${r.conflicts.length} conflictos al sincronizar (revisá admin)`, 'err');
+        }
+        refreshStats();
+        if (state.is_admin) renderAdminScans();
+      }
+    });
+  }
+
+  function setupOnlineHandlers() {
+    window.addEventListener('online', () => {
+      updateConnDot();
+      flash('Conexión restablecida — sincronizando…', 'ok');
+      navigator.serviceWorker?.controller?.postMessage({ type: 'drain-queue' });
+    });
+    window.addEventListener('offline', () => {
+      updateConnDot();
+      flash('Sin conexión — modo offline activo', 'err');
+    });
+    updateConnDot();
+  }
+
+  // ----------------------------------------------------------
+  // Install prompt (Add to Home Screen)
+  // ----------------------------------------------------------
+  function setupInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      state.deferredInstallEvent = e;
+      $('#install-prompt').classList.add('visible');
+    });
+    $('#btn-install').addEventListener('click', async () => {
+      const ev = state.deferredInstallEvent;
+      if (!ev) return;
+      ev.prompt();
+      await ev.userChoice.catch(() => {});
+      state.deferredInstallEvent = null;
+      $('#install-prompt').classList.remove('visible');
+    });
+    window.addEventListener('appinstalled', () => {
+      flash('App instalada', 'ok');
+      $('#install-prompt').classList.remove('visible');
+    });
+  }
+
+  // ----------------------------------------------------------
+  // Boot
+  // ----------------------------------------------------------
+  function wireScannerUI() {
+    $('#btn-flip').addEventListener('click', flipCamera);
+    $('#btn-logout').addEventListener('click', () => {
+      if (confirm('¿Cerrar sesión?')) logout();
+    });
+  }
+
+  function wireAdminUI() {
+    $('#adm-go-scanner').addEventListener('click', () => {
+      state.is_admin = false;
+      goToScanner();
+    });
+    $('#btn-admin-logout').addEventListener('click', () => {
+      if (confirm('¿Salir del modo admin?')) {
+        state.is_admin = false;
+        // Si hay sesión normal, ir a scanner; si no, login
+        if (state.staff_name) goToScanner();
+        else show('screen-login');
+      }
+    });
+    $('#adm-refresh-list').addEventListener('click', () => renderAdminScans());
+    $('#adm-drain').addEventListener('click', () => {
+      navigator.serviceWorker?.controller?.postMessage({ type: 'drain-queue' });
+      flash('Sincronización solicitada', 'ok');
+    });
+    $('#adm-export').addEventListener('click', exportScans);
+
+    let searchTimer = null;
+    $('#adm-search').addEventListener('input', (e) => {
+      clearTimeout(searchTimer);
+      const v = e.target.value;
+      searchTimer = setTimeout(() => {
+        renderSearchResults(searchManifest(v));
+      }, 150);
+    });
+  }
+
+  async function tryRestoreSession() {
+    const staff = lsGet('staff_name');
+    const pinEnc = lsGet('door_pin');
+    const cachedManifest = lsGet('tickets_manifest');
+    if (staff && pinEnc) {
+      state.staff_name = staff;
+      state.door_pin = obf.dec(pinEnc);
+      if (cachedManifest) {
+        try { state.manifest = JSON.parse(cachedManifest); } catch {}
+      }
+      return true;
+    }
+    return false;
+  }
+
+  async function boot() {
+    registerSW();
+    setupOnlineHandlers();
+    setupInstallPrompt();
+    wireScannerUI();
+    wireAdminUI();
+    await bootLogin();
+
+    const restored = await tryRestoreSession();
+
+    if (ADMIN_QS) {
+      // Modo admin requiere sesión activa. Si manifest tiene admin_pins,
+      // pedir confirmación adicional.
+      if (!restored) {
+        $('#login-error').textContent = 'Iniciá sesión normal y luego accedé a admin.';
+        return;
+      }
+      const adminPins = (state.manifest && state.manifest.admin_pins) || null;
+      if (Array.isArray(adminPins) && adminPins.length) {
+        const adm = window.prompt('PIN admin (6 dígitos):');
+        if (!adm || !adminPins.includes(adm)) {
+          alert('PIN admin inválido. Volviendo al scanner.');
+          await goToScanner();
+          return;
+        }
+      }
+      await goToAdmin();
+      return;
+    }
+
+    if (restored) {
+      await goToScanner();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  // Cleanup al cerrar / recargar
+  window.addEventListener('pagehide', () => stopCamera());
+})();
+</script>
+
+</body>
+</html>
