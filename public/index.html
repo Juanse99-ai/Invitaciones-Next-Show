@@ -9,6 +9,20 @@
 <meta property="og:description" content="Una noche que va a quedar en la memoria de Sabanalarga. 300 cupos. Pre-venta abierta.">
 <meta property="og:type" content="website">
 
+<!-- NEXT SHOW runtime config (overridden por build/env en prod) -->
+<script>
+  window.NEXTSHOW_CONFIG = {
+    SUPABASE_URL: 'http://127.0.0.1:54321',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+    EVENT_SLUG: 'nextshow-torombolo-jair-2026',
+    WOMPI_PUBLIC_KEY: 'pub_test_REPLACE_ME',
+    META_PIXEL_ID: '',
+    TIKTOK_PIXEL_ID: '',
+    GA4_MEASUREMENT_ID: '',
+    DEFAULT_LANG: 'es',
+  };
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Great+Vibes&family=Allura&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1469,15 +1483,16 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// Delegado al modal de checkout (definido en el <script type="module"> al final del body).
+// Si por algun motivo el modal aun no se inicializo, hacemos fallback al lead form.
 function comprarBoleta(tipo) {
-  const urls = { risas: CONFIG.eventbriteRisasUrl, cantas: CONFIG.eventbriteCantasUrl };
-  const url = urls[tipo];
-  if (!url || url.includes('REEMPLAZAR')) {
-    alert('La pre-venta abre pronto. Déjanos tus datos abajo y te avisamos antes que a nadie.');
-    document.getElementById('lead-form').scrollIntoView({ behavior: 'smooth' });
+  if (typeof window.openCheckoutModal === 'function') {
+    window.openCheckoutModal(tipo);
     return;
   }
-  window.open(url, '_blank');
+  console.warn('[checkout] modal aun no listo, scroll a lead form');
+  const lead = document.getElementById('lead-form');
+  if (lead) lead.scrollIntoView({ behavior: 'smooth' });
 }
 
 async function submitLead(e) {
@@ -1538,6 +1553,1403 @@ async function submitLead(e) {
   submitBtn.textContent = 'Quiero el código de pre-venta';
   setTimeout(() => { feedback.className = 'feedback'; feedback.textContent = ''; }, 8000);
 }
+</script>
+
+<!-- ============================================================
+     CHECKOUT MODAL · NEXT SHOW
+     Insertado por Phase 3 · single-file pattern
+     ============================================================ -->
+
+<!-- CHECKOUT MODAL -->
+<div id="checkout-modal" class="checkout-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+  <div class="checkout-backdrop" data-close></div>
+  <div class="checkout-panel" role="document">
+    <header class="checkout-header">
+      <div class="checkout-titlebar">
+        <h2 id="checkout-title" class="checkout-title">Comprar boletas</h2>
+        <button class="checkout-close" data-close aria-label="Cerrar">✕</button>
+      </div>
+      <ol class="checkout-stepper" aria-label="Pasos">
+        <li class="active" data-step="1"><span aria-hidden="true">1</span> <em>Selección</em></li>
+        <li data-step="2"><span aria-hidden="true">2</span> <em>Datos</em></li>
+        <li data-step="3"><span aria-hidden="true">3</span> <em>Pago</em></li>
+        <li data-step="4"><span aria-hidden="true">4</span> <em>Confirmación</em></li>
+      </ol>
+    </header>
+    <main class="checkout-body" aria-live="polite">
+      <section class="step step-select" data-step="1"></section>
+      <section class="step step-data hidden" data-step="2"></section>
+      <section class="step step-pay hidden" data-step="3"></section>
+      <section class="step step-confirm hidden" data-step="4"></section>
+    </main>
+    <footer class="checkout-footer">
+      <div class="checkout-summary" id="ck-summary">Selecciona tus boletas</div>
+      <div class="checkout-actions">
+        <button class="checkout-back" id="ck-back" hidden>Atrás</button>
+        <button class="checkout-cta" id="ck-cta" disabled>Continuar</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<!-- FOMO POPUP CONTAINER -->
+<div id="fomo-container" aria-hidden="true"></div>
+
+<style>
+  /* ============ CHECKOUT MODAL ============ */
+  .checkout-modal { position: fixed; inset: 0; z-index: 1000; display: none; }
+  .checkout-modal[aria-hidden="false"] { display: block; }
+  .checkout-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: ckFadeIn .2s ease-out;
+  }
+  .checkout-panel {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    width: min(720px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 80px rgba(124, 58, 237, 0.35);
+    overflow: hidden;
+    animation: ckPanelIn .25s cubic-bezier(.2,.9,.3,1);
+  }
+  @keyframes ckFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ckPanelIn {
+    from { opacity: 0; transform: translate(-50%, -45%) scale(.97); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  .checkout-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 14px;
+    background: linear-gradient(180deg, rgba(124,58,237,.08), transparent);
+  }
+  .checkout-titlebar { display: flex; justify-content: space-between; align-items: center; }
+  .checkout-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px; letter-spacing: .04em;
+    color: var(--text); margin: 0;
+  }
+  .checkout-stepper {
+    display: flex; gap: 8px; list-style: none; padding: 0; margin: 0; flex-wrap: wrap;
+  }
+  .checkout-stepper li {
+    font-size: 12px; color: var(--muted-2);
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    transition: color .2s, background .2s;
+  }
+  .checkout-stepper li em { font-style: normal; }
+  .checkout-stepper li span {
+    display: inline-grid; place-items: center;
+    width: 22px; height: 22px;
+    border: 1px solid currentColor;
+    border-radius: 50%; font-size: 11px;
+    font-weight: 600;
+  }
+  .checkout-stepper li.active {
+    color: var(--magenta); font-weight: 600;
+    background: rgba(217, 70, 239, 0.1);
+  }
+  .checkout-stepper li.active span {
+    background: var(--magenta); color: white; border-color: var(--magenta);
+  }
+  .checkout-stepper li.done { color: var(--violet-2); }
+  .checkout-stepper li.done span { background: var(--violet-2); color: white; border-color: var(--violet-2); }
+  .checkout-close {
+    background: none; border: none; color: var(--text);
+    font-size: 22px; cursor: pointer; padding: 4px 10px;
+    border-radius: 6px; line-height: 1;
+  }
+  .checkout-close:hover, .checkout-close:focus-visible { background: var(--bg-3); outline: none; }
+  .checkout-body {
+    padding: 22px; overflow-y: auto; flex: 1;
+    min-height: 240px;
+  }
+  .step.hidden { display: none; }
+  .checkout-footer {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    background: var(--bg-2);
+  }
+  .checkout-summary { font-size: 14px; color: var(--muted); flex: 1; min-width: 0; }
+  .checkout-summary strong { color: var(--text); font-weight: 600; }
+  .checkout-actions { display: flex; gap: 10px; }
+  .checkout-back {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border); padding: 10px 16px;
+    border-radius: 8px; cursor: pointer; font-size: 13px;
+  }
+  .checkout-back:hover { color: var(--text); border-color: var(--violet-2); }
+  .checkout-cta {
+    background: var(--gradient); color: white; border: none;
+    padding: 12px 28px; font-family: 'Anton', sans-serif; font-size: 15px;
+    letter-spacing: 0.1em; text-transform: uppercase; border-radius: 8px;
+    cursor: pointer; transition: transform .2s, opacity .2s, box-shadow .2s;
+  }
+  .checkout-cta:disabled { opacity: 0.4; cursor: not-allowed; }
+  .checkout-cta:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(217, 70, 239, 0.35); }
+  .checkout-cta.shake { animation: ckShake .35s; }
+  @keyframes ckShake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  /* ============ STEP HEADERS ============ */
+  .step h3 {
+    font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: .04em;
+    margin: 0 0 16px; color: var(--text);
+  }
+  .step .step-sub { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+
+  /* ============ MAPA SVG ============ */
+  .seat-map-wrap { display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
+  .stage {
+    width: 100%; padding: 6px 0;
+    background: linear-gradient(90deg, transparent 0%, var(--violet) 25%, var(--magenta) 50%, var(--violet) 75%, transparent 100%);
+    text-align: center; font-family: 'Anton', sans-serif; font-size: 13px;
+    letter-spacing: 0.4em; color: white;
+    border-radius: 4px;
+    box-shadow: 0 0 24px rgba(217, 70, 239, .3);
+  }
+  .seat-svg { width: 100%; max-width: 640px; align-self: center; user-select: none; touch-action: pan-x pan-y; }
+  .seat {
+    fill: var(--violet); stroke: var(--violet-2); stroke-width: 1;
+    cursor: pointer; transition: fill .15s, transform .15s, filter .15s;
+  }
+  .seat:hover, .seat:focus { transform: scale(1.12); transform-origin: center; outline: none; }
+  .seat:focus { filter: drop-shadow(0 0 4px var(--magenta)); }
+  .seat[data-status="held"] { fill: #4a3a5a; cursor: not-allowed; animation: ckPulse 1.5s infinite; }
+  .seat[data-status="sold"] { fill: #2a1f3a; cursor: not-allowed; opacity: 0.45; }
+  .seat[data-status="selected"] { fill: var(--magenta); filter: drop-shadow(0 0 6px var(--magenta)); }
+  .seat-row-label, .seat-num-label { fill: var(--muted-2); font-size: 9px; font-family: 'Inter', sans-serif; pointer-events: none; }
+  .aisle-label { fill: var(--muted-2); font-size: 8px; font-style: italic; pointer-events: none; }
+  @keyframes ckPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+  .seat-legend {
+    display: flex; flex-wrap: wrap; gap: 14px; justify-content: center;
+    font-size: 12px; color: var(--muted); padding-top: 6px;
+  }
+  .seat-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .seat-legend i {
+    width: 12px; height: 12px; border-radius: 3px; display: inline-block;
+  }
+  .seat-legend i.free { background: var(--violet); }
+  .seat-legend i.held { background: #4a3a5a; }
+  .seat-legend i.sold { background: #2a1f3a; opacity: .6; }
+  .seat-legend i.selected { background: var(--magenta); box-shadow: 0 0 6px var(--magenta); }
+
+  /* ============ STEPPER CANTIDAD ============ */
+  .qty-wrap { display: flex; align-items: center; justify-content: center; gap: 28px; padding: 28px 0 12px; }
+  .qty-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid var(--violet-2); background: transparent;
+    color: white; font-size: 26px; cursor: pointer; line-height: 1;
+    transition: background .15s, transform .15s;
+  }
+  .qty-btn:hover:not(:disabled) { background: rgba(168, 85, 247, .15); transform: scale(1.05); }
+  .qty-btn:disabled { opacity: .35; cursor: not-allowed; }
+  .qty-value {
+    font-family: 'Anton', sans-serif; font-size: 60px; min-width: 100px;
+    text-align: center; color: var(--text); line-height: 1;
+  }
+  .qty-info { text-align: center; color: var(--muted); margin-top: 6px; font-size: 13px; }
+  .qty-meter {
+    margin: 18px auto 0; max-width: 320px;
+    height: 6px; background: var(--bg-3); border-radius: 999px; overflow: hidden;
+  }
+  .qty-meter-fill { height: 100%; background: var(--gradient); transition: width .3s; }
+
+  /* ============ FORM ============ */
+  .ck-form { display: grid; gap: 14px; }
+  .ck-form .field { display: grid; gap: 6px; }
+  .ck-form label { font-size: 12px; color: var(--muted); }
+  .ck-form input[type="text"],
+  .ck-form input[type="email"],
+  .ck-form input[type="tel"] {
+    width: 100%; padding: 12px 14px;
+    background: var(--bg-3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 15px;
+    font-family: inherit;
+  }
+  .ck-form input:focus { outline: 2px solid var(--magenta); outline-offset: 2px; border-color: var(--magenta); }
+  .ck-form input[aria-invalid="true"] { border-color: #ef4444; }
+  .ck-form .field-error { color: #ef4444; font-size: 12px; min-height: 14px; }
+  .ck-form .checkbox-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--muted); }
+  .ck-form .checkbox-row input { margin-top: 3px; accent-color: var(--magenta); }
+  .ck-form .checkbox-row a { color: var(--violet-2); text-decoration: underline; }
+  .coupon-row { display: flex; gap: 8px; }
+  .coupon-row input { flex: 1; }
+  .coupon-row button {
+    background: var(--bg-3); color: var(--text);
+    border: 1px solid var(--violet-2);
+    padding: 0 18px; border-radius: 8px; cursor: pointer;
+    font-size: 13px; letter-spacing: .05em;
+  }
+  .coupon-row button:hover { background: var(--violet); border-color: var(--violet); }
+  .coupon-feedback { font-size: 12px; margin-top: 6px; min-height: 14px; }
+  .coupon-feedback.ok { color: #10b981; }
+  .coupon-feedback.err { color: #ef4444; }
+
+  /* ============ PAY ============ */
+  .pay-summary {
+    background: var(--bg-3); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; display: grid; gap: 10px;
+  }
+  .pay-summary .row { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+  .pay-summary .row.total { font-size: 18px; color: var(--text); font-weight: 700; padding-top: 10px; border-top: 1px solid var(--border); }
+  .pay-countdown {
+    margin: 18px 0; text-align: center; font-size: 13px;
+    color: var(--muted-2);
+  }
+  .pay-countdown strong { color: var(--magenta); font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: .05em; }
+
+  /* ============ CONFIRM ============ */
+  .confirm-card { text-align: center; display: grid; gap: 16px; }
+  .confirm-emoji { font-size: 48px; }
+  .confirm-title { font-family: 'Anton', sans-serif; font-size: 28px; color: var(--text); }
+  .confirm-msg { color: var(--muted); font-size: 14px; }
+  .confirm-qr {
+    margin: 0 auto; padding: 16px; background: white; border-radius: 12px;
+    width: max-content;
+  }
+  .confirm-qr img { display: block; width: 200px; height: 200px; }
+  .confirm-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .confirm-actions button, .confirm-actions a {
+    background: var(--bg-3); color: var(--text);
+    border: 1px solid var(--violet-2); padding: 10px 18px;
+    border-radius: 8px; cursor: pointer; font-size: 13px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .confirm-actions button:hover, .confirm-actions a:hover { border-color: var(--magenta); color: var(--magenta); }
+  .confirm-pending {
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    padding: 30px 0;
+  }
+  .ck-spinner {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 3px solid var(--bg-3); border-top-color: var(--magenta);
+    animation: ckSpin .9s linear infinite;
+  }
+  @keyframes ckSpin { to { transform: rotate(360deg); } }
+
+  /* ============ SKELETON ============ */
+  .ck-skeleton {
+    background: linear-gradient(90deg, var(--bg-3) 25%, #2a1947 50%, var(--bg-3) 75%);
+    background-size: 200% 100%;
+    animation: ckShimmer 1.4s ease-in-out infinite;
+    border-radius: 6px;
+  }
+  @keyframes ckShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* ============ TOAST ============ */
+  #toast-container {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+    z-index: 2000; pointer-events: none;
+  }
+  .toast {
+    background: var(--bg-3); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 16px;
+    border-radius: 8px; max-width: 360px; font-size: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity .25s, transform .25s;
+    pointer-events: auto;
+  }
+  .toast.toast-in { opacity: 1; transform: translateY(0); }
+  .toast.toast-out { opacity: 0; transform: translateY(8px); }
+  .toast.toast-success { border-color: #10b981; }
+  .toast.toast-error { border-color: #ef4444; }
+  .toast.toast-info { border-color: var(--violet-2); }
+
+  /* ============ FOMO ============ */
+  #fomo-container {
+    position: fixed; bottom: 24px; left: 24px;
+    z-index: 1500; pointer-events: none;
+    display: flex; flex-direction: column; gap: 8px;
+    max-width: 280px;
+  }
+  .fomo-pop {
+    background: var(--bg-3); border: 1px solid var(--border);
+    padding: 10px 14px 10px 12px; border-radius: 10px;
+    font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.4);
+    animation: fomoIn .4s ease-out, fomoOut .4s ease-in 7s forwards;
+    pointer-events: auto;
+  }
+  .fomo-pop strong { color: var(--text); font-weight: 600; }
+  .fomo-pop .fomo-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #10b981; box-shadow: 0 0 6px #10b981;
+    flex-shrink: 0;
+  }
+  @keyframes fomoIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes fomoOut { to { opacity: 0; transform: translateY(10px); } }
+
+  /* ============ MOBILE BOTTOM SHEET ============ */
+  @media (max-width: 640px) {
+    .checkout-panel {
+      inset: 0; transform: none; left: 0; top: 0;
+      width: 100%; max-height: 100%; height: 100%;
+      border-radius: 0; border: none;
+      animation: ckSheetIn .3s cubic-bezier(.2,.9,.3,1);
+    }
+    @keyframes ckSheetIn {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .checkout-stepper li:not(.active) em { display: none; }
+    .checkout-stepper li:not(.active) { padding: 4px 6px; }
+    .checkout-title { font-size: 18px; }
+    .checkout-body { padding: 16px; }
+    .checkout-footer { padding: 12px 16px; flex-direction: column; align-items: stretch; }
+    .checkout-actions { width: 100%; }
+    .checkout-cta { flex: 1; padding: 14px; }
+    #toast-container, #fomo-container { left: 12px; right: 12px; bottom: 12px; max-width: none; }
+    #fomo-container { left: 12px; right: 12px; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .checkout-panel, .checkout-backdrop, .toast, .fomo-pop, .seat, .qty-btn, .ck-skeleton {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* View Transitions API support */
+  ::view-transition-old(ck-step), ::view-transition-new(ck-step) {
+    animation-duration: .25s;
+  }
+  .step[data-step] { view-transition-name: ck-step; }
+</style>
+
+<!-- ============================================================
+     CHECKOUT MODAL · SCRIPT (ESM)
+     ============================================================ -->
+<script type="module">
+  import { sb } from '/shared/supabase-client.js';
+  import { openCheckout as wompiOpen } from '/shared/wompi-client.js';
+  import { loadI18n, t } from '/shared/i18n.js';
+  import { Toast } from '/shared/toast.js';
+  import * as analytics from '/shared/analytics.js';
+
+  const cfg = window.NEXTSHOW_CONFIG || {};
+  const toast = new Toast('toast-container');
+
+  /* ============ UTILIDADES ============ */
+  const fmtCOP = (cents) =>
+    '$' + Math.round(cents / 100).toLocaleString('es-CO');
+  const fmtCOPraw = (cop) =>
+    '$' + Math.round(cop).toLocaleString('es-CO');
+  const escapeHTML = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[c]);
+
+  function safeViewTransition(fn) {
+    if (document.startViewTransition) {
+      document.startViewTransition(fn);
+    } else {
+      fn();
+    }
+  }
+
+  /* ============ URL ATTRIBUTION (UTMs + ?ref=) ============ */
+  class UrlAttribution {
+    constructor() {
+      this.STORAGE_KEY = 'nextshow_attribution';
+      this.captureOnLoad();
+    }
+    captureOnLoad() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const data = {
+          utm_source:   params.get('utm_source'),
+          utm_medium:   params.get('utm_medium'),
+          utm_campaign: params.get('utm_campaign'),
+          utm_term:     params.get('utm_term'),
+          utm_content:  params.get('utm_content'),
+          ref:          params.get('ref'),
+          first_landing: window.location.pathname,
+          captured_at: new Date().toISOString(),
+          referrer: document.referrer || null,
+        };
+        const hasAny = Object.entries(data).some(([k,v]) => v && !['captured_at','first_landing','referrer'].includes(k));
+        const existing = sessionStorage.getItem(this.STORAGE_KEY);
+        if (hasAny || !existing) {
+          sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+        }
+      } catch (err) {
+        console.warn('[attribution] no se pudo capturar:', err);
+      }
+    }
+    get() {
+      try {
+        const raw = sessionStorage.getItem(this.STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch { return {}; }
+    }
+  }
+  const attribution = new UrlAttribution();
+
+  /* ============ FOMO ENGINE ============ */
+  class FomoEngine {
+    constructor() {
+      this.container = document.getElementById('fomo-container');
+      this.recent = [];
+      this.intervalMs = 30000;
+      this.idx = 0;
+      this.timer = null;
+    }
+    async start() {
+      try {
+        const since = new Date(Date.now() - 24*3600*1000).toISOString();
+        const orders = await sb.query('orders', {
+          select: 'id,buyer_name,buyer_city,paid_at',
+          filters: { status: 'eq.paid', paid_at: `gte.${since}` },
+          order: 'paid_at.desc',
+          limit: 5,
+        }).catch(() => []);
+        this.recent = orders.map(o => ({
+          name: this.anonymize(o.buyer_name),
+          city: o.buyer_city || 'Sabanalarga',
+        }));
+      } catch (err) {
+        // Silencioso: si no hay datos, no mostramos FOMO
+        this.recent = [];
+      }
+      if (!this.recent.length) return;
+      this.timer = setInterval(() => this.tick(), this.intervalMs);
+      // primer popup tras 5s
+      setTimeout(() => this.tick(), 5000);
+    }
+    anonymize(fullName) {
+      if (!fullName) return 'Alguien';
+      const parts = String(fullName).trim().split(/\s+/);
+      const first = parts[0];
+      const lastInitial = parts[1] ? ` ${parts[1][0].toUpperCase()}.` : '';
+      return first + lastInitial;
+    }
+    tick() {
+      if (!this.recent.length) return;
+      const item = this.recent[this.idx % this.recent.length];
+      this.idx++;
+      const el = document.createElement('div');
+      el.className = 'fomo-pop';
+      el.innerHTML = `<span class="fomo-dot"></span><span><strong>${escapeHTML(item.name)}</strong> de ${escapeHTML(item.city)} acaba de comprar</span>`;
+      this.container.appendChild(el);
+      setTimeout(() => el.remove(), 7800);
+    }
+  }
+
+  /* ============ SEAT MAP (SVG 4×25, pasillo entre 12 y 13) ============ */
+  class SeatMap {
+    constructor({ zoneId, maxSelect = 10, onChange }) {
+      this.zoneId = zoneId;
+      this.maxSelect = maxSelect;
+      this.onChange = onChange || (() => {});
+      this.seats = [];          // {seat_id, row_label, seat_number, status}
+      this.selected = new Set(); // seat_id
+      this.pollTimer = null;
+      this.realtimeChannel = null;
+      this.container = null;
+    }
+
+    async mount(container) {
+      this.container = container;
+      container.innerHTML = `<div class="seat-map-wrap">
+        <div class="stage" aria-hidden="true">${escapeHTML(t('seats.stage') || 'ESCENARIO')}</div>
+        <div class="ck-skeleton" style="height: 220px;" id="seat-skeleton"></div>
+        <div class="seat-legend" hidden>
+          <span><i class="free"></i> ${escapeHTML(t('seats.legend.free'))}</span>
+          <span><i class="selected"></i> ${escapeHTML(t('seats.legend.selected'))}</span>
+          <span><i class="held"></i> ${escapeHTML(t('seats.legend.held'))}</span>
+          <span><i class="sold"></i> ${escapeHTML(t('seats.legend.sold'))}</span>
+        </div>
+      </div>`;
+      await this.refresh();
+      this.startPolling();
+      this.subscribeRealtime();
+    }
+
+    async refresh() {
+      try {
+        const seats = await sb.query('v_seat_availability', {
+          select: 'seat_id,row_label,seat_number,status',
+          filters: { zone_id: `eq.${this.zoneId}` },
+          order: 'row_label.asc,seat_number.asc',
+        });
+        this.seats = seats || [];
+        this.render();
+      } catch (err) {
+        console.warn('[seatmap] refresh error:', err);
+        if (this.container) {
+          this.container.innerHTML = `<p style="color:var(--muted)">No se pudo cargar el mapa. ${escapeHTML(err.message)}</p>`;
+        }
+      }
+    }
+
+    startPolling() {
+      this.stopPolling();
+      this.pollTimer = setInterval(() => this.refresh(), 3000);
+    }
+    stopPolling() {
+      if (this.pollTimer) clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
+
+    async subscribeRealtime() {
+      try {
+        const client = await sb.loadRealtime();
+        if (!client) return;
+        this.realtimeChannel = client
+          .channel(`seats-zone-${this.zoneId}`)
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'seat_holds' }, () => this.refresh())
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => this.refresh())
+          .subscribe();
+      } catch (err) {
+        // Realtime opcional, si falla seguimos con polling
+        console.warn('[seatmap] realtime no disponible:', err.message);
+      }
+    }
+
+    destroy() {
+      this.stopPolling();
+      if (this.realtimeChannel) {
+        try { this.realtimeChannel.unsubscribe(); } catch {}
+      }
+    }
+
+    render() {
+      const wrap = this.container.querySelector('.seat-map-wrap');
+      if (!wrap) return;
+      const skeleton = wrap.querySelector('#seat-skeleton');
+      const legend = wrap.querySelector('.seat-legend');
+      // Build SVG
+      const ROWS = ['A','B','C','D'];
+      const SEATS_PER_ROW = 25;
+      const AISLE_AFTER = 12;
+      const AISLE_GAP = 14;
+      const seatSize = 18;
+      const seatGap = 4;
+      const rowGap = 14;
+      const labelGutter = 24;
+      const xUnit = seatSize + seatGap;
+      const totalWidth = labelGutter + (SEATS_PER_ROW * xUnit) + AISLE_GAP + 8;
+      const totalHeight = (ROWS.length * (seatSize + rowGap)) + 22;
+
+      const byKey = {};
+      for (const s of this.seats) byKey[`${s.row_label}-${s.seat_number}`] = s;
+
+      let svg = `<svg class="seat-svg" viewBox="0 0 ${totalWidth} ${totalHeight}" role="grid" aria-label="Mapa de asientos Cantas">`;
+      // Numeros arriba
+      svg += `<g aria-hidden="true">`;
+      for (let n = 1; n <= SEATS_PER_ROW; n++) {
+        const offset = n > AISLE_AFTER ? AISLE_GAP : 0;
+        const x = labelGutter + (n - 1) * xUnit + offset + seatSize/2;
+        if (n === 1 || n === 12 || n === 13 || n === 25 || n % 5 === 0) {
+          svg += `<text class="seat-num-label" x="${x}" y="10" text-anchor="middle">${n}</text>`;
+        }
+      }
+      svg += `</g>`;
+
+      // Aisle label
+      const aisleX = labelGutter + AISLE_AFTER * xUnit + AISLE_GAP/2;
+      svg += `<text class="aisle-label" x="${aisleX}" y="${totalHeight/2 + 12}" text-anchor="middle" transform="rotate(-90 ${aisleX} ${totalHeight/2 + 12})" aria-hidden="true">${escapeHTML(t('seats.aisle'))}</text>`;
+
+      ROWS.forEach((row, rIdx) => {
+        const y = 18 + rIdx * (seatSize + rowGap);
+        // Row label
+        svg += `<text class="seat-row-label" x="6" y="${y + seatSize - 4}">${row}</text>`;
+        for (let n = 1; n <= SEATS_PER_ROW; n++) {
+          const seat = byKey[`${row}-${n}`];
+          if (!seat) continue;
+          const offset = n > AISLE_AFTER ? AISLE_GAP : 0;
+          const x = labelGutter + (n - 1) * xUnit + offset;
+          const isSelected = this.selected.has(seat.seat_id);
+          const status = isSelected ? 'selected' : seat.status;
+          const tooltip = t('seats.tooltip', { row, num: n });
+          const ariaLabel = `${tooltip} · ${escapeHTML(t('seats.legend.' + status, { row, num: n }) || status)}`;
+          const interactive = (seat.status === 'free' || isSelected);
+          svg += `<rect class="seat" data-seat-id="${seat.seat_id}" data-status="${status}" `
+               + `x="${x}" y="${y}" width="${seatSize}" height="${seatSize}" rx="3" `
+               + `${interactive ? 'tabindex="0"' : ''} role="button" aria-label="${ariaLabel}" aria-pressed="${isSelected}">`
+               + `<title>${escapeHTML(tooltip)} · ${escapeHTML(t('seats.legend.' + status))}</title>`
+               + `</rect>`;
+        }
+      });
+      svg += `</svg>`;
+
+      const svgWrap = document.createElement('div');
+      svgWrap.innerHTML = svg;
+      // Replace skeleton
+      if (skeleton) skeleton.replaceWith(svgWrap.firstChild);
+      else {
+        const existing = wrap.querySelector('.seat-svg');
+        if (existing) existing.replaceWith(svgWrap.firstChild);
+        else wrap.insertBefore(svgWrap.firstChild, legend);
+      }
+      if (legend) legend.hidden = false;
+
+      // Wire events
+      wrap.querySelectorAll('.seat').forEach(el => {
+        const sid = el.getAttribute('data-seat-id');
+        const status = el.getAttribute('data-status');
+        if (status !== 'free' && status !== 'selected') return;
+        const handler = (ev) => {
+          if (ev.type === 'keydown' && !['Enter',' '].includes(ev.key)) return;
+          if (ev.type === 'keydown') ev.preventDefault();
+          this.toggle(sid);
+        };
+        el.addEventListener('click', handler);
+        el.addEventListener('keydown', handler);
+      });
+    }
+
+    toggle(seatId) {
+      if (this.selected.has(seatId)) {
+        this.selected.delete(seatId);
+      } else {
+        if (this.selected.size >= this.maxSelect) {
+          toast.error(t('seats.max_reached', { max: this.maxSelect }));
+          return;
+        }
+        const s = this.seats.find(x => String(x.seat_id) === String(seatId));
+        if (!s || s.status !== 'free') {
+          toast.error(t('error.seats_taken'));
+          this.refresh();
+          return;
+        }
+        this.selected.add(seatId);
+      }
+      this.render();
+      this.onChange(this.getSelection());
+    }
+
+    getSelection() {
+      return [...this.selected];
+    }
+  }
+
+  /* ============ QUANTITY STEPPER ============ */
+  class QuantityStepper {
+    constructor({ zoneId, maxPerOrder = 10, onChange }) {
+      this.zoneId = zoneId;
+      this.maxPerOrder = maxPerOrder;
+      this.value = 1;
+      this.available = maxPerOrder;
+      this.onChange = onChange || (() => {});
+      this.container = null;
+      this.refreshTimer = null;
+    }
+
+    async mount(container) {
+      this.container = container;
+      container.innerHTML = `
+        <h3>${escapeHTML(t('qty.heading'))}</h3>
+        <div class="qty-wrap">
+          <button class="qty-btn" data-act="dec" aria-label="Quitar una boleta">−</button>
+          <div class="qty-value" id="qty-val" aria-live="polite">1</div>
+          <button class="qty-btn" data-act="inc" aria-label="Agregar una boleta">+</button>
+        </div>
+        <p class="qty-info" id="qty-info">…</p>
+        <div class="qty-meter" aria-hidden="true"><div class="qty-meter-fill" id="qty-meter-fill" style="width:0%"></div></div>
+      `;
+      container.querySelector('[data-act="dec"]').addEventListener('click', () => this.set(this.value - 1));
+      container.querySelector('[data-act="inc"]').addEventListener('click', () => this.set(this.value + 1));
+      await this.refresh();
+      this.refreshTimer = setInterval(() => this.refresh(), 5000);
+      this.set(1);
+    }
+
+    async refresh() {
+      try {
+        const rows = await sb.query('v_zone_availability', {
+          select: 'available,capacity',
+          filters: { zone_id: `eq.${this.zoneId}` },
+        });
+        const r = rows && rows[0];
+        if (r) {
+          this.available = Math.max(0, r.available);
+          this.capacity = r.capacity;
+          this.updateInfo();
+        }
+      } catch (err) {
+        // sin datos: dejamos lo que ya teniamos
+      }
+    }
+
+    set(n) {
+      const max = Math.min(this.maxPerOrder, this.available);
+      if (n < 1) n = 1;
+      if (n > max) {
+        n = max;
+        toast.info(t(this.available < this.maxPerOrder ? 'qty.available' : 'qty.max_reached', { n: this.available, max: this.maxPerOrder }));
+      }
+      this.value = n;
+      const valEl = this.container.querySelector('#qty-val');
+      if (valEl) valEl.textContent = String(n);
+      this.updateInfo();
+      this.onChange(this.value);
+    }
+
+    updateInfo() {
+      const info = this.container.querySelector('#qty-info');
+      const fill = this.container.querySelector('#qty-meter-fill');
+      if (info) info.textContent = t('qty.available', { n: this.available });
+      if (fill && this.capacity) {
+        const pct = Math.max(0, Math.min(100, ((this.capacity - this.available) / this.capacity) * 100));
+        fill.style.width = pct.toFixed(1) + '%';
+      }
+    }
+
+    destroy() {
+      if (this.refreshTimer) clearInterval(this.refreshTimer);
+    }
+  }
+
+  /* ============ BUYER FORM ============ */
+  class BuyerForm {
+    constructor({ container, onValidChange }) {
+      this.container = container;
+      this.onValidChange = onValidChange || (() => {});
+      this.errors = {};
+      this.coupon = null; // { code, discount_cop }
+      this.render();
+    }
+
+    render() {
+      this.container.innerHTML = `
+        <h3>${escapeHTML(t('form.heading'))}</h3>
+        <form class="ck-form" id="ck-buyer-form" novalidate>
+          <div class="field">
+            <label for="bf-name">${escapeHTML(t('form.name'))}</label>
+            <input type="text" id="bf-name" name="name" required autocomplete="name">
+            <div class="field-error" data-for="name"></div>
+          </div>
+          <div class="field">
+            <label for="bf-id">${escapeHTML(t('form.id'))}</label>
+            <input type="text" id="bf-id" name="id" required inputmode="numeric" autocomplete="off">
+            <div class="field-error" data-for="id"></div>
+          </div>
+          <div class="field">
+            <label for="bf-phone">${escapeHTML(t('form.phone'))}</label>
+            <input type="tel" id="bf-phone" name="phone" required inputmode="numeric" maxlength="10" autocomplete="tel-national">
+            <div class="field-error" data-for="phone"></div>
+          </div>
+          <div class="field">
+            <label for="bf-email">${escapeHTML(t('form.email'))}</label>
+            <input type="email" id="bf-email" name="email" required autocomplete="email">
+            <div class="field-error" data-for="email"></div>
+          </div>
+          <div class="field">
+            <label for="bf-coupon">${escapeHTML(t('form.coupon'))}</label>
+            <div class="coupon-row">
+              <input type="text" id="bf-coupon" name="coupon" placeholder="${escapeHTML(t('form.coupon.placeholder'))}" autocomplete="off">
+              <button type="button" id="bf-coupon-apply">${escapeHTML(t('form.coupon.apply'))}</button>
+            </div>
+            <div class="coupon-feedback" id="bf-coupon-feedback"></div>
+          </div>
+          <label class="checkbox-row">
+            <input type="checkbox" id="bf-policy" required>
+            <span>${escapeHTML(t('form.policy'))} (<a href="/politica-privacidad.html" target="_blank">ver</a>)</span>
+          </label>
+        </form>
+      `;
+
+      const form = this.container.querySelector('#ck-buyer-form');
+      form.addEventListener('input', () => this.notify());
+      form.addEventListener('blur', (ev) => this.validateField(ev.target), true);
+      this.container.querySelector('#bf-coupon-apply').addEventListener('click', () => this.applyCoupon());
+    }
+
+    validateField(el) {
+      if (!el || !el.name) return;
+      const v = (el.value || '').trim();
+      let err = '';
+      if (el.required && !v) err = t('form.error.required');
+      else if (el.name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) err = t('form.error.email');
+      else if (el.name === 'phone' && !/^[0-9]{10}$/.test(v)) err = t('form.error.phone');
+      else if (el.name === 'id' && !/^[0-9]{6,12}$/.test(v)) err = t('form.error.id');
+      this.errors[el.name] = err;
+      el.setAttribute('aria-invalid', err ? 'true' : 'false');
+      const errEl = this.container.querySelector(`.field-error[data-for="${el.name}"]`);
+      if (errEl) errEl.textContent = err;
+      this.notify();
+    }
+
+    notify() {
+      this.onValidChange(this.isValid());
+    }
+
+    isValid() {
+      const data = this.getData();
+      if (!data.name) return false;
+      if (!/^[0-9]{6,12}$/.test(data.id)) return false;
+      if (!/^[0-9]{10}$/.test(data.phone)) return false;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return false;
+      if (!data.policy) return false;
+      return true;
+    }
+
+    getData() {
+      const q = (id) => this.container.querySelector(id);
+      return {
+        name:  q('#bf-name')?.value.trim() || '',
+        id:    q('#bf-id')?.value.trim() || '',
+        phone: q('#bf-phone')?.value.trim() || '',
+        email: q('#bf-email')?.value.trim() || '',
+        policy: q('#bf-policy')?.checked || false,
+        coupon_code: this.coupon?.code || null,
+      };
+    }
+
+    async applyCoupon() {
+      const code = (this.container.querySelector('#bf-coupon')?.value || '').trim().toUpperCase();
+      const fb = this.container.querySelector('#bf-coupon-feedback');
+      if (!code) { fb.textContent = ''; this.coupon = null; return; }
+      fb.className = 'coupon-feedback';
+      fb.textContent = '...';
+      try {
+        const rows = await sb.query('coupons', {
+          select: 'code,discount_cop,status,max_uses,uses_count',
+          filters: { code: `eq.${code}`, status: 'eq.active' },
+        });
+        const c = rows && rows[0];
+        if (!c) {
+          fb.className = 'coupon-feedback err';
+          fb.textContent = t('error.invalid_coupon');
+          this.coupon = null;
+        } else if (c.max_uses && c.uses_count >= c.max_uses) {
+          fb.className = 'coupon-feedback err';
+          fb.textContent = t('error.coupon_used');
+          this.coupon = null;
+        } else {
+          this.coupon = { code: c.code, discount_cop: c.discount_cop };
+          fb.className = 'coupon-feedback ok';
+          fb.textContent = `−${fmtCOPraw(c.discount_cop)} aplicado`;
+        }
+      } catch (err) {
+        fb.className = 'coupon-feedback err';
+        fb.textContent = t('error.network');
+        this.coupon = null;
+      }
+      this.notify();
+    }
+
+    getCoupon() { return this.coupon; }
+  }
+
+  /* ============ CHECKOUT MODAL (controller) ============ */
+  class CheckoutModal {
+    constructor() {
+      this.el = document.getElementById('checkout-modal');
+      this.summaryEl = document.getElementById('ck-summary');
+      this.ctaEl = document.getElementById('ck-cta');
+      this.backEl = document.getElementById('ck-back');
+      this.titleEl = document.getElementById('checkout-title');
+      this.stepEls = {
+        1: this.el.querySelector('.step-select'),
+        2: this.el.querySelector('.step-data'),
+        3: this.el.querySelector('.step-pay'),
+        4: this.el.querySelector('.step-confirm'),
+      };
+      this.currentStep = 1;
+      this.zone = null;        // {id, code, name, price_cop, capacity, seating_mode}
+      this.seatMap = null;
+      this.qtyStepper = null;
+      this.buyerForm = null;
+      this.order = null;       // respuesta de create-order
+      this.lockTimer = null;
+      this.previousFocus = null;
+
+      this.bindGlobalEvents();
+    }
+
+    bindGlobalEvents() {
+      // Cierre con backdrop / X
+      this.el.addEventListener('click', (ev) => {
+        if (ev.target.matches('[data-close]')) this.close();
+      });
+      // Esc
+      document.addEventListener('keydown', (ev) => {
+        if (this.isOpen() && ev.key === 'Escape') this.close();
+        // Focus trap
+        if (this.isOpen() && ev.key === 'Tab') this.handleTab(ev);
+      });
+      // CTA + back
+      this.ctaEl.addEventListener('click', () => this.handleCta());
+      this.backEl.addEventListener('click', () => this.handleBack());
+    }
+
+    isOpen() { return this.el.getAttribute('aria-hidden') === 'false'; }
+
+    handleTab(ev) {
+      const focusables = this.el.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (ev.shiftKey && document.activeElement === first) {
+        last.focus(); ev.preventDefault();
+      } else if (!ev.shiftKey && document.activeElement === last) {
+        first.focus(); ev.preventDefault();
+      }
+    }
+
+    async open(zoneCode) {
+      this.previousFocus = document.activeElement;
+      this.el.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      this.currentStep = 1;
+      this.order = null;
+      this.titleEl.textContent = t('checkout.title');
+      this.renderStep(1);
+      this.summaryEl.textContent = '...';
+      this.ctaEl.disabled = true;
+      this.backEl.hidden = true;
+
+      try {
+        const zones = await sb.query('zones', {
+          select: 'id,code,name,price_cop,capacity,seating_mode',
+          filters: { code: `eq.${zoneCode}` },
+        }).catch(() => []);
+        this.zone = zones && zones[0];
+        if (!this.zone) {
+          // Fallback: zona no existe en DB local
+          this.summaryEl.textContent = 'Catálogo no disponible. Probá la pre-venta más abajo.';
+          this.stepEls[1].innerHTML = `
+            <h3>${escapeHTML(zoneCode === 'cantas' ? t('checkout.zone.cantas') : t('checkout.zone.risas'))}</h3>
+            <p class="step-sub">No pudimos conectar al catálogo en este momento. Por favor regresá pronto o dejá tus datos en la sección de pre-venta para que te avisemos en el lanzamiento.</p>
+          `;
+          return;
+        }
+        analytics.trackViewContent({ zone: this.zone.code });
+        await this.renderStep1();
+      } catch (err) {
+        console.error('[checkout] open error:', err);
+        toast.error(t('error.network'));
+      }
+      // Focus first focusable
+      setTimeout(() => {
+        const first = this.el.querySelector('button:not([disabled]), input:not([disabled])');
+        if (first) first.focus();
+      }, 50);
+    }
+
+    close() {
+      this.el.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (this.seatMap) this.seatMap.destroy();
+      if (this.qtyStepper) this.qtyStepper.destroy();
+      if (this.lockTimer) { clearInterval(this.lockTimer); this.lockTimer = null; }
+      if (this.previousFocus && this.previousFocus.focus) this.previousFocus.focus();
+    }
+
+    goToStep(n) {
+      safeViewTransition(() => {
+        for (const [k, el] of Object.entries(this.stepEls)) {
+          el.classList.toggle('hidden', String(k) !== String(n));
+        }
+        this.el.querySelectorAll('.checkout-stepper li').forEach((li, i) => {
+          const step = i + 1;
+          li.classList.toggle('active', step === Number(n));
+          li.classList.toggle('done', step < Number(n));
+        });
+        this.currentStep = Number(n);
+        this.backEl.hidden = (n <= 1 || n >= 4);
+      });
+    }
+
+    async renderStep(n) { this.goToStep(n); }
+
+    async renderStep1() {
+      const sec = this.stepEls[1];
+      sec.innerHTML = '';
+      this.ctaEl.textContent = t('btn.continue');
+      this.ctaEl.disabled = true;
+
+      if (this.zone.seating_mode === 'numbered') {
+        this.seatMap = new SeatMap({
+          zoneId: this.zone.id,
+          maxSelect: 10,
+          onChange: (sel) => this.onSelectionChange(sel),
+        });
+        await this.seatMap.mount(sec);
+        this.updateSummaryStep1([]);
+      } else {
+        this.qtyStepper = new QuantityStepper({
+          zoneId: this.zone.id,
+          maxPerOrder: 10,
+          onChange: (val) => this.onQtyChange(val),
+        });
+        await this.qtyStepper.mount(sec);
+      }
+    }
+
+    onSelectionChange(seatIds) {
+      this.updateSummaryStep1(seatIds);
+      this.ctaEl.disabled = seatIds.length === 0;
+      if (seatIds.length > 0) {
+        analytics.trackAddToCart({ zone: this.zone.code, qty: seatIds.length, value: seatIds.length * this.zone.price_cop });
+      }
+    }
+
+    onQtyChange(qty) {
+      const total = qty * this.zone.price_cop;
+      this.summaryEl.innerHTML = `<strong>${qty}</strong> × ${this.zone.name} · <strong>${fmtCOPraw(total)}</strong>`;
+      this.ctaEl.disabled = qty < 1;
+      analytics.trackAddToCart({ zone: this.zone.code, qty, value: total });
+    }
+
+    updateSummaryStep1(seatIds) {
+      if (seatIds.length === 0) {
+        this.summaryEl.textContent = t('seats.empty');
+      } else {
+        const total = seatIds.length * this.zone.price_cop;
+        this.summaryEl.innerHTML = `<strong>${seatIds.length}</strong> ${t('summary.qty').toLowerCase()} · <strong>${fmtCOPraw(total)}</strong>`;
+      }
+    }
+
+    async renderStep2() {
+      const sec = this.stepEls[2];
+      this.ctaEl.textContent = t('btn.continue');
+      this.ctaEl.disabled = true;
+      if (!this.buyerForm) {
+        this.buyerForm = new BuyerForm({
+          container: sec,
+          onValidChange: (valid) => { this.ctaEl.disabled = !valid; this.refreshFooterStep2(); },
+        });
+      }
+      this.refreshFooterStep2();
+      this.goToStep(2);
+    }
+
+    refreshFooterStep2() {
+      const qty = this.zone.seating_mode === 'numbered'
+        ? (this.seatMap?.getSelection().length || 0)
+        : (this.qtyStepper?.value || 0);
+      const subtotal = qty * this.zone.price_cop;
+      const coupon = this.buyerForm?.getCoupon();
+      const discount = coupon?.discount_cop || 0;
+      const total = Math.max(0, subtotal - discount);
+      let html = `<strong>${qty}</strong> × ${this.zone.name} · ${t('summary.total')}: <strong>${fmtCOPraw(total)}</strong>`;
+      if (discount > 0) html += ` <span style="color:#10b981">(−${fmtCOPraw(discount)})</span>`;
+      this.summaryEl.innerHTML = html;
+    }
+
+    async renderStep3() {
+      const sec = this.stepEls[3];
+      this.ctaEl.textContent = t('btn.pay');
+      this.ctaEl.disabled = true;
+
+      const order = this.order;
+      const totalCents = (order?.total_cop || 0) * 100;
+      sec.innerHTML = `
+        <h3>${escapeHTML(t('checkout.step.pay'))}</h3>
+        <div class="pay-summary">
+          <div class="row"><span>${escapeHTML(t('summary.zone'))}</span><span>${escapeHTML(this.zone.name)}</span></div>
+          <div class="row"><span>${escapeHTML(t('summary.qty'))}</span><span>${order?.tickets_count || 1}</span></div>
+          <div class="row"><span>${escapeHTML(t('summary.subtotal'))}</span><span>${fmtCOPraw(order?.subtotal_cop || 0)}</span></div>
+          ${order?.discount_cop > 0 ? `<div class="row"><span>${escapeHTML(t('summary.discount'))}</span><span style="color:#10b981">−${fmtCOPraw(order.discount_cop)}</span></div>` : ''}
+          <div class="row total"><span>${escapeHTML(t('summary.total'))}</span><span>${fmtCOPraw(order?.total_cop || 0)}</span></div>
+        </div>
+        <div class="pay-countdown" id="pay-countdown" aria-live="polite"></div>
+      `;
+      this.summaryEl.innerHTML = `${escapeHTML(t('summary.total'))}: <strong>${fmtCOPraw(order?.total_cop || 0)}</strong>`;
+      this.startLockCountdown(order?.expires_at);
+      this.ctaEl.disabled = false;
+      this.goToStep(3);
+    }
+
+    startLockCountdown(expiresAt) {
+      if (!expiresAt) return;
+      const target = new Date(expiresAt).getTime();
+      const el = this.stepEls[3].querySelector('#pay-countdown');
+      const tick = () => {
+        const diff = target - Date.now();
+        if (diff <= 0) {
+          if (el) el.textContent = t('lock.expired');
+          if (this.lockTimer) clearInterval(this.lockTimer);
+          toast.error(t('lock.expired'));
+          this.goToStep(1);
+          if (this.seatMap) this.seatMap.refresh();
+          return;
+        }
+        const m = Math.floor(diff / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        const txt = `${m}:${String(s).padStart(2,'0')}`;
+        if (el) el.innerHTML = t('lock.expires', { time: `<strong>${txt}</strong>` });
+      };
+      tick();
+      if (this.lockTimer) clearInterval(this.lockTimer);
+      this.lockTimer = setInterval(tick, 1000);
+    }
+
+    async renderStep4(payResult) {
+      const sec = this.stepEls[4];
+      this.ctaEl.textContent = t('btn.close');
+      this.ctaEl.disabled = false;
+      if (this.lockTimer) { clearInterval(this.lockTimer); this.lockTimer = null; }
+
+      const conf = new OrderConfirmation({
+        container: sec,
+        order: this.order,
+        transaction: payResult?.transaction,
+      });
+      await conf.render();
+      this.goToStep(4);
+    }
+
+    handleBack() {
+      if (this.currentStep === 2) {
+        this.goToStep(1);
+        this.ctaEl.textContent = t('btn.continue');
+        this.ctaEl.disabled = false;
+      } else if (this.currentStep === 3) {
+        // Volver a Step 2 mantiene la orden creada — no recomendado, pero damos opcion
+        this.goToStep(2);
+        this.ctaEl.textContent = t('btn.continue');
+        this.ctaEl.disabled = !this.buyerForm?.isValid();
+      }
+    }
+
+    async handleCta() {
+      if (this.currentStep === 1) {
+        await this.renderStep2();
+      } else if (this.currentStep === 2) {
+        await this.submitStep2();
+      } else if (this.currentStep === 3) {
+        await this.startPayment();
+      } else if (this.currentStep === 4) {
+        this.close();
+      }
+    }
+
+    async submitStep2() {
+      const data = this.buyerForm.getData();
+      if (!data.policy) { toast.error('Aceptá la política para continuar'); return; }
+      this.ctaEl.disabled = true;
+      this.ctaEl.textContent = '...';
+      const seatIds = this.zone.seating_mode === 'numbered' ? this.seatMap.getSelection() : [];
+      const qty = this.zone.seating_mode === 'numbered' ? seatIds.length : this.qtyStepper.value;
+
+      try {
+        const resp = await sb.fn('create-order', {
+          zone_code: this.zone.code,
+          seat_ids: seatIds,
+          quantity: qty,
+          buyer: { name: data.name, id: data.id, phone: data.phone, email: data.email },
+          coupon_code: data.coupon_code,
+          attribution: attribution.get(),
+        });
+        // Esperamos: { order_id, wompi_reference, integrity_signature, public_key, total_cop, subtotal_cop, discount_cop, expires_at, tickets_count }
+        this.order = resp;
+        analytics.trackInitiateCheckout({ value: resp.total_cop });
+        await this.renderStep3();
+      } catch (err) {
+        console.error('[checkout] create-order error:', err);
+        const code = err.code || '';
+        if (err.status === 409 || code.includes('SEAT') || code.includes('UNAVAIL')) {
+          toast.error(t('error.seats_taken'));
+          this.goToStep(1);
+          if (this.seatMap) await this.seatMap.refresh();
+        } else if (code.includes('COUPON')) {
+          toast.error(t('error.invalid_coupon'));
+        } else if (code.includes('SOLD_OUT')) {
+          toast.error(t('error.sold_out'));
+        } else {
+          toast.error(err.message || t('error.generic'));
+        }
+        this.ctaEl.disabled = !this.buyerForm.isValid();
+        this.ctaEl.textContent = t('btn.continue');
+      }
+    }
+
+    async startPayment() {
+      this.ctaEl.disabled = true;
+      this.ctaEl.textContent = t('pay.processing');
+      try {
+        const result = await wompiOpen({
+          publicKey: this.order.public_key || cfg.WOMPI_PUBLIC_KEY,
+          reference: this.order.wompi_reference || `ORD-${this.order.order_id}`,
+          amountInCents: (this.order.total_cop || 0) * 100,
+          integrity: this.order.integrity_signature,
+          customerEmail: this.buyerForm.getData().email,
+        });
+        if (result.dismissed) {
+          toast.info('Pago cancelado');
+          this.ctaEl.disabled = false;
+          this.ctaEl.textContent = t('btn.pay');
+          return;
+        }
+        if (result.transaction?.status === 'APPROVED' || result.mocked) {
+          analytics.trackPurchase({ value: this.order.total_cop, orderId: this.order.order_id });
+          await this.renderStep4(result);
+          if (result.mocked) toast.info('Sandbox no configurado, simulando pago aprobado');
+        } else if (result.transaction?.status === 'PENDING') {
+          await this.renderStep4(result);
+        } else {
+          toast.error(t('pay.declined'));
+          this.ctaEl.disabled = false;
+          this.ctaEl.textContent = t('btn.retry');
+        }
+      } catch (err) {
+        console.error('[checkout] payment error:', err);
+        toast.error(err.message || t('error.generic'));
+        this.ctaEl.disabled = false;
+        this.ctaEl.textContent = t('btn.retry');
+      }
+    }
+  }
+
+  /* ============ ORDER CONFIRMATION ============ */
+  class OrderConfirmation {
+    constructor({ container, order, transaction }) {
+      this.container = container;
+      this.order = order;
+      this.transaction = transaction;
+      this.pollTimer = null;
+    }
+
+    async render() {
+      const status = this.transaction?.status || 'PENDING';
+      if (status === 'APPROVED') {
+        await this.renderApproved();
+      } else if (status === 'PENDING') {
+        this.renderPending();
+        this.startPolling();
+      } else {
+        this.renderDeclined();
+      }
+    }
+
+    renderPending() {
+      this.container.innerHTML = `
+        <div class="confirm-pending">
+          <div class="ck-spinner" aria-hidden="true"></div>
+          <p>${escapeHTML(t('pay.pending'))}</p>
+        </div>
+      `;
+    }
+
+    renderDeclined() {
+      this.container.innerHTML = `
+        <div class="confirm-card">
+          <div class="confirm-emoji" aria-hidden="true">⚠️</div>
+          <h3 class="confirm-title">${escapeHTML(t('pay.declined'))}</h3>
+          <p class="confirm-msg">El pago no fue aprobado. Podés reintentar desde el paso anterior.</p>
+        </div>
+      `;
+    }
+
+    async renderApproved() {
+      const orderId = this.order?.order_id || 'pendiente';
+      const qrPayload = this.transaction?.id
+        ? `nextshow://order/${orderId}?tx=${encodeURIComponent(this.transaction.id)}`
+        : `nextshow://order/${orderId}`;
+
+      let qrDataUrl = '';
+      try {
+        const QR = await import('https://esm.sh/qrcode@1.5.4');
+        qrDataUrl = await QR.toDataURL(qrPayload, { margin: 1, width: 220, color: { dark: '#0a0612', light: '#ffffff' } });
+      } catch (err) {
+        console.warn('[qr] no se pudo generar:', err.message);
+      }
+
+      this.container.innerHTML = `
+        <div class="confirm-card">
+          <div class="confirm-emoji" aria-hidden="true">🎉</div>
+          <h3 class="confirm-title">${escapeHTML(t('confirm.success_title'))}</h3>
+          <p class="confirm-msg">${escapeHTML(t('confirm.success_msg'))}</p>
+          <p class="confirm-msg">${escapeHTML(t('confirm.order', { id: orderId }))}</p>
+          ${qrDataUrl ? `<div class="confirm-qr"><img src="${qrDataUrl}" alt="${escapeHTML(t('confirm.qr_alt'))}"></div>` : ''}
+          <div class="confirm-actions">
+            <a href="/asignar.html?o=${encodeURIComponent(orderId)}" class="ck-link-assign">${escapeHTML(t('btn.assign'))}</a>
+            <button type="button" data-act="apple-wallet">${escapeHTML(t('btn.add_apple_wallet'))}</button>
+            <button type="button" data-act="google-wallet">${escapeHTML(t('btn.add_google_wallet'))}</button>
+          </div>
+        </div>
+      `;
+
+      this.container.querySelectorAll('[data-act]').forEach(btn => {
+        btn.addEventListener('click', () => this.requestWalletPass(btn.dataset.act, btn));
+      });
+    }
+
+    async requestWalletPass(kind, btn) {
+      const platform = kind === 'apple-wallet' ? 'apple' : 'google';
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = '...';
+      try {
+        const resp = await sb.fn('generate-wallet-pass', {
+          order_id: this.order.order_id,
+          platform,
+        });
+        if (resp.url) {
+          window.open(resp.url, '_blank');
+        } else {
+          toast.info('Pase no disponible aún. Te lo enviamos por email.');
+        }
+      } catch (err) {
+        toast.error(err.message || 'No se pudo generar el pase');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    }
+
+    startPolling() {
+      const orderId = this.order?.order_id;
+      if (!orderId) return;
+      let attempts = 0;
+      this.pollTimer = setInterval(async () => {
+        attempts++;
+        if (attempts > 60) { clearInterval(this.pollTimer); return; } // 5 min máx
+        try {
+          const resp = await sb.fn('get-order-status', { order_id: orderId });
+          if (resp.status === 'paid') {
+            clearInterval(this.pollTimer);
+            this.transaction = { status: 'APPROVED', id: resp.transaction_id };
+            await this.renderApproved();
+          } else if (resp.status === 'declined' || resp.status === 'cancelled') {
+            clearInterval(this.pollTimer);
+            this.renderDeclined();
+          }
+        } catch {}
+      }, 5000);
+    }
+  }
+
+  /* ============ INIT ============ */
+  (async () => {
+    await loadI18n(cfg.DEFAULT_LANG || 'es');
+    const modal = new CheckoutModal();
+    const fomo = new FomoEngine();
+    fomo.start().catch(() => {});
+
+    // Exponemos para el handler legacy comprarBoleta()
+    window.openCheckoutModal = (zoneCode) => modal.open(zoneCode);
+
+    // Expose para debugging desde devtools
+    window.__nextshow = { modal, fomo, sb, t, attribution };
+  })();
 </script>
 
 </body>
