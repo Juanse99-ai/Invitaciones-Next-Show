@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="35%" stop-color="#a855f7"/>
+      <stop offset="70%" stop-color="#d946ef"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="#0a0612"/>
+  <rect x="24" y="24" width="464" height="464" rx="96" fill="#14091f" stroke="url(#g)" stroke-width="6"/>
+  <text x="256" y="240" font-family="Helvetica, Arial, sans-serif" font-weight="900" font-size="180" fill="#ffffff" text-anchor="middle" letter-spacing="-6">NS</text>
+  <text x="256" y="350" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="56" fill="url(#g)" text-anchor="middle" letter-spacing="6">PUERTA</text>
+  <rect x="120" y="400" width="272" height="6" rx="3" fill="url(#g)"/>
+</svg>
