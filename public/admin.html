@@ -1,0 +1,2830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NEXT SHOW · Admin</title>
+<meta name="description" content="Panel de administracion NEXT SHOW: ventas en vivo, ordenes, cupones, referrers, heatmap y puerta.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0a0612">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* =========================================================
+     NEXT SHOW · Admin styles
+     Tokens identicos a landing + asignar (theme dark violeta)
+     ========================================================= */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0612;
+    --bg-2: #14091f;
+    --bg-3: #1a0d2e;
+    --bg-4: #221039;
+    --border: #2a1947;
+    --border-hi: #3d2466;
+    --violet: #7c3aed;
+    --violet-2: #a855f7;
+    --magenta: #d946ef;
+    --pink: #ec4899;
+    --text: #f5f3ff;
+    --muted: #a39db8;
+    --muted-2: #6b6480;
+    --gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 35%, #d946ef 70%, #ec4899 100%);
+    --error: #ef4444;
+    --error-bg: rgba(239, 68, 68, 0.12);
+    --success: #22c55e;
+    --success-bg: rgba(34, 197, 94, 0.12);
+    --warning: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.12);
+    --info: #38bdf8;
+    --info-bg: rgba(56, 189, 248, 0.12);
+
+    --sidebar-w: 240px;
+    --header-h: 64px;
+    --tabbar-h: 60px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Hide native scrollbar a bit */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-hi); }
+
+  .gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* LOGO NEXT SHOW */
+  .logo-nextshow {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    display: inline-block;
+  }
+  .logo-nextshow .next { color: var(--text); }
+  .logo-nextshow .show {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .logo-nextshow.inline .next, .logo-nextshow.inline .show { display: inline; }
+  .logo-nextshow.inline .show { margin-left: 0.15em; }
+
+  /* =================== LOGIN ==================== */
+  .login-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+      radial-gradient(1000px 600px at 20% 0%, rgba(124,58,237,0.18), transparent 60%),
+      radial-gradient(800px 500px at 80% 100%, rgba(217,70,239,0.14), transparent 60%),
+      var(--bg);
+  }
+  .login-card {
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-3) 100%);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 28px 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .login-card .logo-nextshow { font-size: 30px; }
+  .login-card h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px;
+    margin-top: 18px;
+    letter-spacing: 0.02em;
+  }
+  .login-card .sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 6px 0 24px;
+  }
+
+  .login-card label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: 'Anton', sans-serif;
+  }
+
+  .pin-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 22px;
+    font-family: 'Inter', monospace;
+    letter-spacing: 0.4em;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .pin-input:focus { border-color: var(--violet-2); box-shadow: 0 0 0 4px rgba(168,85,247,0.18); }
+  .pin-input::placeholder { letter-spacing: 0.4em; color: var(--muted-2); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+  }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(124,58,237,0.35); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn.full { width: 100%; }
+  .btn.ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn.ghost:hover:not(:disabled) {
+    border-color: var(--violet-2);
+    background: var(--bg-2);
+  }
+  .btn.danger {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+  }
+  .btn.sm { padding: 7px 12px; font-size: 13px; border-radius: 8px; }
+
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+    text-align: center;
+  }
+  .otp-box {
+    background: var(--info-bg);
+    border: 1px dashed var(--info);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--info);
+  }
+  .otp-box code { font-family: 'Inter', monospace; font-size: 22px; letter-spacing: 0.4em; color: var(--text); }
+
+  .err-msg {
+    color: var(--error);
+    background: var(--error-bg);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 14px;
+    font-size: 13px;
+  }
+
+  /* =================== APP SHELL ==================== */
+  .app-shell {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    grid-template-rows: var(--header-h) 1fr;
+    grid-template-areas:
+      "sidebar header"
+      "sidebar main";
+    min-height: 100vh;
+  }
+
+  /* Sidebar (desktop) */
+  .sidebar {
+    grid-area: sidebar;
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+    border-right: 1px solid var(--border);
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px 18px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .sidebar .brand .logo-nextshow { font-size: 22px; }
+  .sidebar .brand small {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-family: 'Anton', sans-serif;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .nav-link:hover { color: var(--text); background: var(--bg-2); }
+  .nav-link.active {
+    color: var(--text);
+    background: linear-gradient(90deg, rgba(124,58,237,0.18), transparent);
+    border-left: 3px solid var(--violet-2);
+    padding-left: 9px;
+  }
+  .nav-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.85; }
+
+  /* Header */
+  .topbar {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(10,6,18,0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    gap: 16px;
+  }
+  .topbar .event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .topbar .event-info strong {
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar .event-info small {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .top-actions { display: flex; align-items: center; gap: 10px; }
+
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .live-pill.on { color: var(--success); border-color: rgba(34,197,94,0.4); background: var(--success-bg); }
+  .live-pill.off { color: var(--error); border-color: rgba(239,68,68,0.4); background: var(--error-bg); }
+  .live-pill .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .live-pill.on .dot { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.25); }
+  }
+
+  /* Main */
+  main.app-main {
+    grid-area: main;
+    padding: 24px 28px 96px;
+    overflow-x: hidden;
+  }
+
+  .page-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 24px;
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+  }
+  .page-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+
+  /* =================== CARDS ==================== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    position: relative;
+    background: linear-gradient(160deg, var(--bg-2) 0%, var(--bg-3) 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 18px 16px;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--g, transparent);
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .stat-card .label {
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .stat-card .value {
+    font-family: 'Anton', sans-serif;
+    font-size: 32px;
+    line-height: 1.1;
+    color: var(--text);
+    position: relative;
+  }
+  .stat-card .delta {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    position: relative;
+  }
+  .stat-card.green   { --g: linear-gradient(135deg, #22c55e, #14532d); }
+  .stat-card.violet  { --g: linear-gradient(135deg, #7c3aed, #a855f7); }
+  .stat-card.magenta { --g: linear-gradient(135deg, #d946ef, #ec4899); }
+  .stat-card.warning { --g: linear-gradient(135deg, #f59e0b, #b45309); }
+
+  .progress {
+    width: 100%; height: 6px;
+    background: var(--bg);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+    position: relative;
+  }
+  .progress > span {
+    display: block;
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 999px;
+    transition: width 0.6s ease;
+  }
+
+  /* Panels */
+  .panel {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+  .panel-h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .panel-h h3 {
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* =================== TABLES ==================== */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-2);
+  }
+  table.tbl {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+    font-size: 13px;
+  }
+  table.tbl th, table.tbl td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  table.tbl thead th {
+    background: var(--bg-3);
+    color: var(--muted);
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  table.tbl tbody tr {
+    transition: background 0.12s;
+    cursor: pointer;
+  }
+  table.tbl tbody tr:hover { background: var(--bg-3); }
+  table.tbl tbody tr:last-child td { border-bottom: none; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid currentColor;
+  }
+  .badge.paid     { color: var(--success); background: var(--success-bg); }
+  .badge.pending  { color: var(--warning); background: var(--warning-bg); }
+  .badge.expired  { color: var(--muted); background: rgba(160,160,180,0.08); }
+  .badge.failed   { color: var(--error); background: var(--error-bg); }
+  .badge.refunded { color: var(--info); background: var(--info-bg); }
+  .badge.manual_review { color: var(--magenta); background: rgba(217,70,239,0.12); }
+  .badge.active   { color: var(--success); background: var(--success-bg); }
+  .badge.disabled { color: var(--muted); background: rgba(160,160,180,0.08); }
+  .badge.exhausted{ color: var(--warning); background: var(--warning-bg); }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .filters input, .filters select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .filters input:focus, .filters select:focus { border-color: var(--violet-2); }
+  .filters input::placeholder { color: var(--muted-2); }
+  .search-input { min-width: 240px; flex: 1; }
+
+  /* Empty states */
+  .empty {
+    text-align: center;
+    padding: 48px 18px;
+    color: var(--muted);
+  }
+  .empty svg {
+    width: 64px; height: 64px;
+    opacity: 0.6;
+    margin-bottom: 14px;
+  }
+  .empty .ttl {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* =================== MODALS ==================== */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,6,18,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    width: 100%;
+    max-width: 720px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-3) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+  }
+  .modal h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .modal .close-x {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .modal .close-x:hover { background: var(--bg-3); }
+
+  .form-grid { display: grid; gap: 12px; }
+  .form-grid label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .form-grid input, .form-grid select, .form-grid textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+  }
+  .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus { border-color: var(--violet-2); }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  /* =================== SVG MAP ==================== */
+  .map-wrap {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    overflow-x: auto;
+  }
+  .map-stage {
+    text-align: center;
+    margin-bottom: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .map-stage::before {
+    content: '';
+    display: block;
+    width: 80%;
+    margin: 0 auto 10px;
+    height: 18px;
+    background: linear-gradient(180deg, rgba(124,58,237,0.4), transparent);
+    border-radius: 50%;
+  }
+  .seat {
+    cursor: pointer;
+    transition: transform 0.12s;
+  }
+  .seat:hover { transform: scale(1.18); }
+  .seat-tip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--text);
+    font-size: 12px;
+    z-index: 300;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    display: none;
+  }
+  .legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend .sw {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* Heatmap gradient swatches */
+  .heat-bar {
+    width: 200px;
+    height: 8px;
+    background: linear-gradient(90deg, #d946ef, #7c3aed, #2a1947);
+    border-radius: 999px;
+  }
+
+  /* Sales stat list */
+  .live-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .live-stat {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .live-stat .l {
+    color: var(--muted); font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.1em; font-family: 'Anton', sans-serif; margin-bottom: 4px;
+  }
+  .live-stat .v {
+    font-family: 'Anton', sans-serif; font-size: 22px; color: var(--text);
+  }
+
+  .feed-list {
+    list-style: none;
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-3);
+  }
+  .feed-list li {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .feed-list li:last-child { border-bottom: none; }
+  .feed-list .name { color: var(--text); }
+  .feed-list .meta { color: var(--muted); font-size: 11px; }
+
+  /* =================== TABBAR (mobile) ==================== */
+  .tabbar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--tabbar-h);
+    background: rgba(10,6,18,0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    z-index: 80;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .tabbar .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 10px;
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    gap: 2px;
+    transition: color 0.15s;
+  }
+  .tabbar .tab svg { width: 22px; height: 22px; }
+  .tabbar .tab.active { color: var(--violet-2); }
+
+  /* =================== TOAST ==================== */
+  #toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .toast {
+    pointer-events: auto;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--violet-2);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    max-width: 320px;
+  }
+  .toast.toast-in { transform: translateX(0); opacity: 1; }
+  .toast.toast-out { transform: translateX(120%); opacity: 0; }
+  .toast.toast-success { border-left-color: var(--success); }
+  .toast.toast-error   { border-left-color: var(--error); }
+  .toast.toast-info    { border-left-color: var(--info); }
+
+  /* =================== CHARTS ==================== */
+  .chart-box {
+    position: relative;
+    height: 280px;
+  }
+  .chart-box.short { height: 200px; }
+
+  /* helpers */
+  .row-2col { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .mb-12 { margin-bottom: 12px; }
+  .mb-18 { margin-bottom: 18px; }
+  .mt-12 { margin-top: 12px; }
+
+  .copy-mono {
+    font-family: 'Inter', monospace;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .danger-zone {
+    border: 1px solid rgba(239,68,68,0.4);
+    background: var(--error-bg);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 18px;
+  }
+  .danger-zone h3 { color: var(--error); }
+
+  /* =================== RESPONSIVE ==================== */
+  @media (max-width: 900px) { .row-2col { grid-template-columns: 1fr; } }
+
+  @media (max-width: 768px) {
+    .app-shell {
+      grid-template-columns: 1fr;
+      grid-template-rows: var(--header-h) 1fr;
+      grid-template-areas: "header" "main";
+    }
+    .sidebar { display: none; }
+    .tabbar { display: flex; }
+    main.app-main { padding: 16px 14px calc(var(--tabbar-h) + 32px); }
+    .modal-bg { align-items: flex-end; padding: 0; }
+    .modal {
+      max-width: 100%;
+      max-height: 92vh;
+      border-radius: 18px 18px 0 0;
+      padding: 20px 18px 28px;
+    }
+    .topbar { padding: 0 14px; }
+    .topbar .event-info strong { font-size: 14px; }
+    .topbar .event-info small { display: none; }
+    .stat-card .value { font-size: 26px; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* =================== PRINT (manifest) ==================== */
+  @media print {
+    body { background: white; color: black; }
+    .sidebar, .tabbar, .topbar, .panel-h .actions, .filters, .btn, .modal-bg { display: none !important; }
+    main.app-main { padding: 0; }
+    .panel { border: none; background: white; color: black; }
+    table.tbl thead th, table.tbl tbody tr:hover { background: #eee; color: black; }
+    table.tbl, table.tbl th, table.tbl td { color: black; border-color: #999; }
+    .badge { border-color: #999 !important; color: black !important; background: white !important; }
+    a, a:visited { color: black; text-decoration: none; }
+    .print-only { display: block !important; }
+    @page { margin: 1.5cm; size: A4; }
+  }
+  .print-only { display: none; }
+
+  /* a11y focus */
+  :focus-visible {
+    outline: 2px solid var(--violet-2);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     1) LOGIN VIEW
+     ============================================================ -->
+<div id="login-view" class="login-shell">
+  <form id="login-form" class="login-card" autocomplete="off" novalidate>
+    <span class="logo-nextshow inline" aria-label="NEXT SHOW"><span class="next">NEXT</span><span class="show">SHOW</span></span>
+    <h1>Panel Admin</h1>
+    <p class="sub">Acceso restringido. Ingresa tu PIN de 6 digitos.</p>
+
+    <label for="pin">PIN admin</label>
+    <input id="pin" class="pin-input" type="password" inputmode="numeric" maxlength="6"
+           autocomplete="off" pattern="\d{6}" placeholder="------" required>
+
+    <div id="otp-step" style="display:none; margin-top:14px;">
+      <label for="otp">Codigo OTP (WhatsApp)</label>
+      <input id="otp" class="pin-input" type="text" inputmode="numeric" maxlength="6"
+             autocomplete="one-time-code" pattern="\d{6}" placeholder="------">
+      <div id="otp-mock-box" class="otp-box" style="display:none;">
+        Modo mock local. OTP simulado: <code id="otp-mock-value">------</code>
+      </div>
+    </div>
+
+    <div id="login-err" class="err-msg" style="display:none;"></div>
+
+    <button id="btn-login" type="submit" class="btn full" style="margin-top:18px;">Continuar</button>
+
+    <p class="hint">Sesion 8h. Logs de auditoria activos.</p>
+  </form>
+</div>
+
+<!-- ============================================================
+     2) APP SHELL (post-login)
+     ============================================================ -->
+<div id="app-view" class="app-shell" style="display:none;">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" aria-label="Navegacion principal">
+    <div class="brand">
+      <span class="logo-nextshow inline"><span class="next">NEXT</span><span class="show">SHOW</span></span>
+    </div>
+    <nav id="sidebar-nav">
+      <a class="nav-link active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-link" data-view="orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 14h6"/></svg>
+        Ordenes
+      </a>
+      <a class="nav-link" data-view="coupons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a3 3 0 013-3h12a3 3 0 013 3v2a2 2 0 000 4v2a3 3 0 01-3 3H6a3 3 0 01-3-3v-2a2 2 0 000-4V8z"/></svg>
+        Cupones
+      </a>
+      <a class="nav-link" data-view="referrers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M14 20c0-2 2-4 5-4"/></svg>
+        Referrers
+      </a>
+      <a class="nav-link" data-view="heatmap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><rect x="15" y="15" width="6" height="6"/></svg>
+        Heatmap
+      </a>
+      <a class="nav-link" data-view="door">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V5a2 2 0 012-2h8a2 2 0 012 2v16M4 21h12M9 12h.01M16 8h4v13h-4"/></svg>
+        Puerta en vivo
+      </a>
+      <a class="nav-link" data-view="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 01-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3h.1a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5h.1a1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8v.1a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+        Configuracion
+      </a>
+    </nav>
+    <div style="margin-top:auto; padding: 12px 6px 4px; border-top: 1px solid var(--border);">
+      <button id="btn-logout" class="btn ghost sm full">Cerrar sesion</button>
+    </div>
+  </aside>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="event-info">
+      <strong id="topbar-event-name">NEXT SHOW</strong>
+      <small id="topbar-event-meta">Cargando evento...</small>
+    </div>
+    <div class="top-actions">
+      <span id="live-pill" class="live-pill off"><span class="dot"></span><span id="live-pill-text">Offline</span></span>
+      <button class="btn ghost sm" id="btn-logout-mobile" style="display:none;">Salir</button>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="app-main">
+    <!-- Views inserted by JS -->
+    <section id="view-dashboard" class="view"></section>
+    <section id="view-orders" class="view" style="display:none;"></section>
+    <section id="view-coupons" class="view" style="display:none;"></section>
+    <section id="view-referrers" class="view" style="display:none;"></section>
+    <section id="view-heatmap" class="view" style="display:none;"></section>
+    <section id="view-door" class="view" style="display:none;"></section>
+    <section id="view-settings" class="view" style="display:none;"></section>
+  </main>
+
+  <!-- Mobile tabbar -->
+  <nav class="tabbar" aria-label="Navegacion movil">
+    <div class="tab active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+      <span>Hoy</span>
+    </div>
+    <div class="tab" data-view="orders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>
+      <span>Ordenes</span>
+    </div>
+    <div class="tab" data-view="door">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V5a2 2 0 012-2h8a2 2 0 012 2v16M9 12h.01"/></svg>
+      <span>Puerta</span>
+    </div>
+    <div class="tab" data-view="heatmap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="15" width="6" height="6"/></svg>
+      <span>Mapa</span>
+    </div>
+    <div class="tab" data-view="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+      <span>Mas</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ============================================================
+     3) MODAL ROOT
+     ============================================================ -->
+<div id="modal-root" class="modal-bg" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" id="modal-box"></div>
+</div>
+
+<!-- Tooltip for SVG seats -->
+<div id="seat-tip" class="seat-tip"></div>
+
+<!-- Toast container -->
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ============================================================
+     4) DEPENDENCIES
+     ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- ============================================================
+     5) APP SCRIPT
+     ============================================================ -->
+<script type="module">
+/* ===================================================================
+   NEXT SHOW · admin.html
+   Single-file SPA con login PIN+OTP, dashboard, ordenes, cupones,
+   referrers, heatmap, puerta en vivo y configuracion.
+   =================================================================== */
+
+const CFG = {
+  SUPABASE_URL: window.NEXTSHOW_CONFIG?.SUPABASE_URL || 'http://127.0.0.1:54321',
+  SUPABASE_ANON_KEY: window.NEXTSHOW_CONFIG?.SUPABASE_ANON_KEY || '',
+  EVENT_SLUG: 'nextshow-torombolo-jair-2026',
+};
+
+const STORAGE_KEY = 'nextshow_admin_session_v1';
+
+/* =========================
+   Utils
+   ========================= */
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+function fmtCOP(n) {
+  if (n == null || isNaN(n)) return '$0';
+  return '$' + Math.round(n).toLocaleString('es-CO');
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return '—';
+  return d.toLocaleString('es-CO', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+}
+function fmtDateShort(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+function fmtTime(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+}
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function debounce(fn, ms = 250) {
+  let t;
+  return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+}
+function downloadFile(filename, text, mime = 'text/csv;charset=utf-8') {
+  const blob = new Blob(['﻿' + text], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 500);
+}
+function toCSV(rows, headers) {
+  const esc = v => {
+    if (v == null) return '';
+    const s = String(v).replace(/"/g, '""');
+    return /[",\n]/.test(s) ? `"${s}"` : s;
+  };
+  const head = headers.map(h => esc(h.label)).join(',');
+  const body = rows.map(r => headers.map(h => esc(typeof h.get === 'function' ? h.get(r) : r[h.key])).join(',')).join('\n');
+  return head + '\n' + body;
+}
+
+/* =========================
+   Toast
+   ========================= */
+const toast = {
+  show(msg, type = 'info', dur = 3500) {
+    const el = document.createElement('div');
+    el.className = `toast toast-${type}`;
+    el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    el.textContent = msg;
+    $('#toast-container').appendChild(el);
+    requestAnimationFrame(() => el.classList.add('toast-in'));
+    setTimeout(() => {
+      el.classList.remove('toast-in');
+      el.classList.add('toast-out');
+      setTimeout(() => el.remove(), 300);
+    }, dur);
+  },
+  success(m) { this.show(m, 'success'); },
+  error(m)   { this.show(m, 'error', 5000); },
+  info(m)    { this.show(m, 'info'); },
+};
+window.__toast = toast;
+
+/* =========================
+   Modal helpers
+   ========================= */
+const modal = {
+  open(html) {
+    $('#modal-box').innerHTML = html;
+    $('#modal-root').classList.add('show');
+    $('#modal-root').setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  },
+  close() {
+    $('#modal-root').classList.remove('show');
+    $('#modal-root').setAttribute('aria-hidden', 'true');
+    $('#modal-box').innerHTML = '';
+    document.body.style.overflow = '';
+  },
+};
+$('#modal-root').addEventListener('click', e => {
+  if (e.target.id === 'modal-root') modal.close();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') modal.close();
+});
+
+/* =========================
+   API client
+   ========================= */
+const api = {
+  get session() {
+    try { return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null'); }
+    catch { return null; }
+  },
+  set session(v) {
+    if (!v) sessionStorage.removeItem(STORAGE_KEY);
+    else sessionStorage.setItem(STORAGE_KEY, JSON.stringify(v));
+  },
+
+  authHeaders() {
+    const s = this.session;
+    const tok = s?.jwt || CFG.SUPABASE_ANON_KEY;
+    return {
+      apikey: CFG.SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${tok}`,
+      ...(s?.adminSecret ? { 'x-admin-secret': s.adminSecret } : {}),
+    };
+  },
+
+  async fn(name, body = {}) {
+    const r = await fetch(`${CFG.SUPABASE_URL}/functions/v1/${name}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...this.authHeaders() },
+      body: JSON.stringify(body),
+    });
+    let data = {};
+    try { data = await r.json(); } catch {}
+    if (!r.ok) {
+      const err = new Error(data.message || data.error || `HTTP ${r.status}`);
+      err.status = r.status; err.payload = data;
+      throw err;
+    }
+    return data;
+  },
+
+  async query(table, { select = '*', filters = {}, order, limit, offset, count } = {}) {
+    const params = new URLSearchParams({ select });
+    for (const [k, v] of Object.entries(filters)) params.set(k, v);
+    if (order) params.set('order', order);
+    if (limit != null) params.set('limit', String(limit));
+    if (offset != null) params.set('offset', String(offset));
+    const headers = this.authHeaders();
+    if (count) headers.Prefer = `count=${count}`;
+    const r = await fetch(`${CFG.SUPABASE_URL}/rest/v1/${table}?${params}`, { headers });
+    if (!r.ok) {
+      const txt = await r.text().catch(() => '');
+      throw new Error(`Query ${table}: ${r.status} ${txt.slice(0, 200)}`);
+    }
+    return r.json();
+  },
+
+  async patch(table, filters, payload) {
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(filters)) params.set(k, v);
+    const r = await fetch(`${CFG.SUPABASE_URL}/rest/v1/${table}?${params}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Prefer: 'return=representation', ...this.authHeaders() },
+      body: JSON.stringify(payload),
+    });
+    if (!r.ok) {
+      const txt = await r.text().catch(() => '');
+      throw new Error(`Patch ${table}: ${r.status} ${txt.slice(0, 200)}`);
+    }
+    return r.json();
+  },
+
+  async insert(table, payload) {
+    const r = await fetch(`${CFG.SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Prefer: 'return=representation', ...this.authHeaders() },
+      body: JSON.stringify(payload),
+    });
+    if (!r.ok) {
+      const txt = await r.text().catch(() => '');
+      throw new Error(`Insert ${table}: ${r.status} ${txt.slice(0, 200)}`);
+    }
+    return r.json();
+  },
+};
+
+/* =========================
+   Realtime client (lazy)
+   ========================= */
+const realtime = {
+  client: null,
+  channel: null,
+  status: 'disconnected', // connecting | live | offline
+  listeners: new Map(),
+
+  on(event, cb) {
+    if (!this.listeners.has(event)) this.listeners.set(event, new Set());
+    this.listeners.get(event).add(cb);
+    return () => this.listeners.get(event)?.delete(cb);
+  },
+  emit(event, payload) {
+    this.listeners.get(event)?.forEach(cb => { try { cb(payload); } catch (e) { console.error(e); } });
+  },
+
+  async connect() {
+    if (this.client) return this.client;
+    setLiveStatus('connecting');
+    try {
+      const mod = await import('https://esm.sh/@supabase/supabase-js@2.45.0');
+      this.client = mod.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+        realtime: { params: { eventsPerSecond: 5 } },
+      });
+      this.channel = this.client.channel('admin-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, p => this.emit('orders', p))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, p => this.emit('tickets', p))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'seat_holds' }, p => this.emit('seat_holds', p))
+        .subscribe(s => {
+          if (s === 'SUBSCRIBED') setLiveStatus('live');
+          else if (s === 'CHANNEL_ERROR' || s === 'TIMED_OUT' || s === 'CLOSED') setLiveStatus('offline');
+        });
+      return this.client;
+    } catch (err) {
+      console.warn('[realtime] no disponible:', err.message);
+      setLiveStatus('offline');
+      return null;
+    }
+  },
+};
+
+function setLiveStatus(s) {
+  realtime.status = s;
+  const pill = $('#live-pill');
+  const txt = $('#live-pill-text');
+  if (!pill || !txt) return;
+  pill.classList.remove('on', 'off');
+  if (s === 'live')        { pill.classList.add('on');  txt.textContent = 'LIVE'; }
+  else if (s === 'connecting') { pill.classList.add('off'); txt.textContent = 'Conectando'; }
+  else                     { pill.classList.add('off'); txt.textContent = 'Offline'; }
+}
+
+/* =========================
+   App state
+   ========================= */
+const state = {
+  event: null,
+  zones: [],
+  seats: [],
+  orders: [],
+  ordersTotal: 0,
+  tickets: [],
+  coupons: [],
+  referrers: [],
+  heatmap: [],
+  zoneAvailability: [],
+  filters: {
+    status: '',
+    zone: '',
+    coupon: '',
+    referrer: '',
+    from: '',
+    to: '',
+    q: '',
+  },
+  charts: {},
+};
+
+/* =========================
+   LOGIN flow
+   ========================= */
+const loginForm = $('#login-form');
+const loginErr = $('#login-err');
+let pendingPin = null;
+
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  loginErr.style.display = 'none';
+  const btn = $('#btn-login');
+  const pin = $('#pin').value.trim();
+  const otp = $('#otp').value.trim();
+
+  if (!/^\d{6}$/.test(pin)) {
+    return showLoginErr('PIN debe ser 6 digitos.');
+  }
+
+  btn.disabled = true;
+  const origLabel = btn.textContent;
+  btn.textContent = 'Validando...';
+
+  try {
+    if (!pendingPin) {
+      // Step 1: request OTP
+      let res = null;
+      try {
+        res = await api.fn('admin-auth', { pin });
+      } catch (err) {
+        // Fallback path: si admin-auth no existe (404) o backend no corre,
+        // permitir entrada offline para preview/dev. Esto NO concede acceso a datos
+        // privados (RLS sigue activa), solo desbloquea la UI.
+        if (err.status === 404 || err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError')) {
+          console.warn('[login] admin-auth no disponible, modo preview offline.');
+          api.session = { jwt: null, expiresAt: Date.now() + 8*3600*1000, mode: 'preview' };
+          await onLoginSuccess();
+          return;
+        }
+        throw err;
+      }
+
+      if (res?.otp_pending) {
+        pendingPin = pin;
+        $('#otp-step').style.display = 'block';
+        $('#otp').focus();
+        if (res.mock_otp) {
+          $('#otp-mock-box').style.display = 'block';
+          $('#otp-mock-value').textContent = res.mock_otp;
+        }
+        btn.textContent = 'Verificar OTP';
+      } else if (res?.jwt) {
+        // Single-step (sin OTP) - acepta directo
+        api.session = { jwt: res.jwt, expiresAt: Date.now() + (res.expires_in_sec || 28800)*1000 };
+        await onLoginSuccess();
+      } else {
+        showLoginErr('Respuesta inesperada del servidor.');
+      }
+    } else {
+      // Step 2: verify OTP
+      if (!/^\d{6}$/.test(otp)) {
+        return showLoginErr('OTP debe ser 6 digitos.');
+      }
+      const res = await api.fn('admin-auth', { pin: pendingPin, otp });
+      if (res?.jwt) {
+        api.session = { jwt: res.jwt, expiresAt: Date.now() + (res.expires_in_sec || 28800)*1000 };
+        await onLoginSuccess();
+      } else {
+        showLoginErr('OTP invalido.');
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    showLoginErr(err.message || 'Error de autenticacion.');
+  } finally {
+    btn.disabled = false;
+    if (btn.textContent === 'Validando...') btn.textContent = origLabel;
+  }
+});
+
+function showLoginErr(msg) {
+  loginErr.textContent = msg;
+  loginErr.style.display = 'block';
+}
+
+async function onLoginSuccess() {
+  toast.success('Bienvenido al panel admin');
+  $('#login-view').style.display = 'none';
+  $('#app-view').style.display = 'grid';
+  await bootApp();
+}
+
+/* =========================
+   Logout
+   ========================= */
+function doLogout() {
+  api.session = null;
+  pendingPin = null;
+  if (realtime.channel) {
+    try { realtime.client?.removeChannel(realtime.channel); } catch {}
+    realtime.channel = null;
+  }
+  $('#app-view').style.display = 'none';
+  $('#login-view').style.display = 'flex';
+  $('#pin').value = '';
+  $('#otp').value = '';
+  $('#otp-step').style.display = 'none';
+  loginErr.style.display = 'none';
+  $('#btn-login').textContent = 'Continuar';
+}
+$('#btn-logout').addEventListener('click', doLogout);
+$('#btn-logout-mobile').addEventListener('click', doLogout);
+
+/* =========================
+   Auto-resume
+   ========================= */
+(function tryResume() {
+  const s = api.session;
+  if (s && s.expiresAt && s.expiresAt > Date.now()) {
+    // Resume
+    $('#login-view').style.display = 'none';
+    $('#app-view').style.display = 'grid';
+    bootApp();
+  }
+})();
+
+/* =========================
+   App boot
+   ========================= */
+async function bootApp() {
+  setLiveStatus('connecting');
+  // Cargar datos base. Si fallan, mostrar empty states.
+  await Promise.allSettled([
+    loadEvent(),
+    loadZones(),
+    loadReferrers(),
+    loadCoupons(),
+    loadHeatmap(),
+    loadZoneAvailability(),
+  ]);
+  await loadOrders();
+  await loadTickets();
+  renderTopbar();
+  renderCurrentView();
+  realtime.connect().then(() => {
+    realtime.on('orders', () => debouncedRefresh());
+    realtime.on('tickets', () => debouncedRefresh());
+    realtime.on('seat_holds', () => debouncedRefresh());
+  });
+}
+
+const debouncedRefresh = debounce(async () => {
+  await Promise.allSettled([loadOrders(), loadTickets(), loadZoneAvailability()]);
+  renderCurrentView();
+}, 500);
+
+async function loadEvent() {
+  try {
+    const r = await api.query('events', { filters: { slug: `eq.${CFG.EVENT_SLUG}` }, limit: 1 });
+    state.event = r[0] || null;
+  } catch (e) { console.warn('loadEvent', e.message); }
+}
+async function loadZones() {
+  if (!state.event) return;
+  try {
+    state.zones = await api.query('zones', {
+      filters: { event_id: `eq.${state.event.id}` },
+      order: 'display_order.asc',
+    });
+  } catch (e) { console.warn('loadZones', e.message); }
+}
+async function loadZoneAvailability() {
+  if (!state.event) return;
+  try {
+    state.zoneAvailability = await api.query('v_zone_availability', {
+      filters: { event_id: `eq.${state.event.id}` },
+    });
+  } catch (e) { console.warn('loadZoneAvail', e.message); state.zoneAvailability = []; }
+}
+async function loadReferrers() {
+  try {
+    state.referrers = await api.query('v_referrer_stats', { order: 'attributed_revenue_cop.desc' });
+  } catch (e) {
+    console.warn('loadReferrers', e.message);
+    try { state.referrers = await api.query('referrers', { order: 'created_at.desc' }); }
+    catch { state.referrers = []; }
+  }
+}
+async function loadCoupons() {
+  try {
+    state.coupons = await api.query('v_coupon_funnel', { order: 'emitted_at.desc' });
+  } catch (e) {
+    console.warn('loadCoupons', e.message);
+    try { state.coupons = await api.query('coupons', { order: 'created_at.desc' }); }
+    catch { state.coupons = []; }
+  }
+}
+async function loadOrders() {
+  if (!state.event) return;
+  try {
+    state.orders = await api.query('orders', {
+      filters: { event_id: `eq.${state.event.id}` },
+      order: 'created_at.desc',
+      limit: 1000,
+    });
+    state.ordersTotal = state.orders.length;
+  } catch (e) { console.warn('loadOrders', e.message); state.orders = []; }
+}
+async function loadTickets() {
+  if (!state.event) return;
+  try {
+    // Solo tickets de ordenes paid del evento (filtramos por order_id en JS si fuera necesario)
+    state.tickets = await api.query('tickets', {
+      select: '*,orders!inner(zone_id,event_id,status,buyer_name,buyer_id_number,order_number,paid_at)',
+      filters: { 'orders.event_id': `eq.${state.event.id}` },
+      order: 'created_at.desc',
+      limit: 2000,
+    });
+  } catch (e) {
+    console.warn('loadTickets', e.message);
+    state.tickets = [];
+  }
+}
+async function loadHeatmap() {
+  try {
+    state.heatmap = await api.query('v_seat_heatmap', { limit: 200 });
+  } catch (e) { console.warn('loadHeatmap', e.message); state.heatmap = []; }
+}
+
+/* =========================
+   Topbar
+   ========================= */
+function renderTopbar() {
+  if (!state.event) {
+    $('#topbar-event-name').textContent = 'NEXT SHOW';
+    $('#topbar-event-meta').textContent = 'Sin conexion al backend';
+    return;
+  }
+  $('#topbar-event-name').textContent = state.event.name || 'NEXT SHOW';
+  const dt = state.event.event_date ? new Date(state.event.event_date) : null;
+  $('#topbar-event-meta').textContent = (dt ? dt.toLocaleDateString('es-CO', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }) : '') +
+    `  ·  ${state.event.venue || ''}  ·  ${state.event.status || ''}`;
+}
+
+/* =========================
+   Routing (sidebar + tabbar)
+   ========================= */
+let currentView = 'dashboard';
+function setView(name) {
+  currentView = name;
+  $$('.view').forEach(v => v.style.display = 'none');
+  const v = $(`#view-${name}`);
+  if (v) v.style.display = 'block';
+  $$('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.view === name));
+  $$('.tabbar .tab').forEach(t => t.classList.toggle('active', t.dataset.view === name));
+  renderCurrentView();
+}
+$$('.nav-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); setView(a.dataset.view); }));
+$$('.tabbar .tab').forEach(t => t.addEventListener('click', () => setView(t.dataset.view)));
+
+function renderCurrentView() {
+  switch (currentView) {
+    case 'dashboard': return renderDashboard();
+    case 'orders':    return renderOrders();
+    case 'coupons':   return renderCoupons();
+    case 'referrers': return renderReferrers();
+    case 'heatmap':   return renderHeatmap();
+    case 'door':      return renderDoor();
+    case 'settings':  return renderSettings();
+  }
+}
+
+/* =========================
+   Empty state SVG
+   ========================= */
+function emptyState(title, sub, icon = 'ticket') {
+  const icons = {
+    ticket: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 9V7a2 2 0 012-2h16a2 2 0 012 2v2a2 2 0 100 6v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-6z"/><path d="M9 5v14M15 5v14" stroke-dasharray="2 2"/></svg>`,
+    chart:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18M7 14l4-4 4 4 5-7"/></svg>`,
+    seat:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 10V6a2 2 0 012-2h10a2 2 0 012 2v4M3 18a3 3 0 013-3h12a3 3 0 013 3v3H3z"/></svg>`,
+    user:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>`,
+  };
+  return `
+    <div class="empty">
+      ${icons[icon] || icons.ticket}
+      <div class="ttl">${escapeHtml(title)}</div>
+      <div>${escapeHtml(sub)}</div>
+    </div>
+  `;
+}
+
+/* =========================
+   DASHBOARD
+   ========================= */
+function renderDashboard() {
+  const root = $('#view-dashboard');
+  const paidOrders   = state.orders.filter(o => o.status === 'paid');
+  const failedOrders = state.orders.filter(o => o.status === 'failed' || o.status === 'expired');
+  const revenue   = paidOrders.reduce((acc, o) => acc + (o.total_cop || 0), 0);
+  const ticketsSold = paidOrders.reduce((acc, o) => acc + (o.quantity || 0), 0);
+  const capacity  = state.event?.total_capacity || 300;
+  const conv = (paidOrders.length + failedOrders.length) > 0
+    ? (paidOrders.length / (paidOrders.length + failedOrders.length)) * 100
+    : 0;
+  const lastHourCutoff = Date.now() - 3600*1000;
+  const lastHourCount = paidOrders.filter(o => new Date(o.paid_at || o.created_at).getTime() >= lastHourCutoff).length;
+
+  root.innerHTML = `
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-sub">Estado del evento en tiempo real.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card green">
+        <div class="label">Ingresos</div>
+        <div class="value">${fmtCOP(revenue)}</div>
+        <div class="delta">${paidOrders.length} ordenes pagadas</div>
+      </div>
+      <div class="stat-card violet">
+        <div class="label">Boletas vendidas</div>
+        <div class="value">${ticketsSold} <small style="font-size:14px; color:var(--muted);">/ ${capacity}</small></div>
+        <div class="progress"><span style="width:${Math.min(100, (ticketsSold/capacity)*100)}%"></span></div>
+      </div>
+      <div class="stat-card magenta">
+        <div class="label">% conversion</div>
+        <div class="value">${conv.toFixed(1)}%</div>
+        <div class="delta">${paidOrders.length} pagadas / ${failedOrders.length} fallidas</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="label">Ultima hora</div>
+        <div class="value">${lastHourCount}</div>
+        <div class="delta">ordenes pagadas en la ultima hora</div>
+      </div>
+    </div>
+
+    <div class="row-2col">
+      <div class="panel">
+        <div class="panel-h"><h3>Ventas por hora · ultimas 24h</h3></div>
+        <div class="chart-box" id="chart-sales-wrap">
+          <canvas id="chart-sales"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><h3>Por zona</h3></div>
+        ${renderZoneBreakdown()}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">
+        <h3>Ultimas 5 ordenes pagadas</h3>
+        <button class="btn ghost sm" id="btn-go-orders">Ver todas</button>
+      </div>
+      ${renderRecentPaid(paidOrders.slice(0, 5))}
+    </div>
+  `;
+
+  $('#btn-go-orders')?.addEventListener('click', () => setView('orders'));
+  drawSalesChart(paidOrders);
+}
+
+function renderZoneBreakdown() {
+  if (!state.zoneAvailability.length) {
+    return emptyState('Sin info de zonas', 'Cuando haya datos aparecen aqui.', 'chart');
+  }
+  return `
+    <div style="display:flex; flex-direction:column; gap:14px;">
+    ${state.zoneAvailability.map(z => {
+      const sold = z.sold || 0;
+      const cap = z.capacity || 1;
+      const pct = (sold / cap) * 100;
+      return `
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <span style="font-family:'Anton',sans-serif; letter-spacing:0.06em; text-transform:uppercase;">${escapeHtml(z.name)}</span>
+            <span style="font-size:13px; color:var(--muted);">${sold} / ${cap}</span>
+          </div>
+          <div class="progress"><span style="width:${pct}%"></span></div>
+          <div style="font-size:12px; color:var(--muted); margin-top:4px;">
+            ${z.held || 0} held · ${z.available || 0} disponibles · ${fmtCOP(z.price_cop)}
+          </div>
+        </div>
+      `;
+    }).join('')}
+    </div>
+  `;
+}
+
+function renderRecentPaid(orders) {
+  if (!orders.length) return emptyState('Aun no hay ventas', 'Las ordenes pagadas aparecen aqui.');
+  return `
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead><tr>
+          <th>Orden #</th><th>Comprador</th><th>Cant</th><th>Total</th><th>Hora</th>
+        </tr></thead>
+        <tbody>
+          ${orders.map(o => `
+            <tr data-order-id="${o.id}">
+              <td><code class="copy-mono">${escapeHtml(o.order_number)}</code></td>
+              <td>${escapeHtml(o.buyer_name)}</td>
+              <td>${o.quantity}</td>
+              <td>${fmtCOP(o.total_cop)}</td>
+              <td>${fmtTime(o.paid_at)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function drawSalesChart(orders) {
+  const ctx = $('#chart-sales')?.getContext('2d');
+  if (!ctx || !window.Chart) return;
+  const now = new Date();
+  now.setMinutes(0, 0, 0);
+  const buckets = Array.from({ length: 24 }, (_, i) => {
+    const d = new Date(now.getTime() - (23 - i) * 3600 * 1000);
+    return { t: d, count: 0, revenue: 0 };
+  });
+  orders.forEach(o => {
+    const t = new Date(o.paid_at || o.created_at).getTime();
+    for (const b of buckets) {
+      if (t >= b.t.getTime() && t < b.t.getTime() + 3600*1000) {
+        b.count++; b.revenue += o.total_cop || 0; break;
+      }
+    }
+  });
+  const labels = buckets.map(b => b.t.toLocaleTimeString('es-CO', { hour: '2-digit' }));
+  if (state.charts.sales) state.charts.sales.destroy();
+  state.charts.sales = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Ordenes pagadas',
+        data: buckets.map(b => b.count),
+        borderColor: '#d946ef',
+        backgroundColor: 'rgba(217,70,239,0.18)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 3,
+        pointBackgroundColor: '#d946ef',
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#a39db8' } },
+        tooltip: { backgroundColor: '#14091f', borderColor: '#2a1947', borderWidth: 1, titleColor: '#f5f3ff', bodyColor: '#f5f3ff' },
+      },
+      scales: {
+        x: { ticks: { color: '#a39db8' }, grid: { color: '#2a1947' } },
+        y: { ticks: { color: '#a39db8', precision: 0 }, grid: { color: '#2a1947' }, beginAtZero: true },
+      },
+    },
+  });
+}
+
+/* =========================
+   ORDERS
+   ========================= */
+function filteredOrders() {
+  const f = state.filters;
+  return state.orders.filter(o => {
+    if (f.status && o.status !== f.status) return false;
+    if (f.zone && o.zone_id !== f.zone) return false;
+    if (f.coupon && o.coupon_id !== f.coupon) return false;
+    if (f.referrer && o.referrer_id !== f.referrer) return false;
+    if (f.from) {
+      const d = new Date(f.from);
+      if (new Date(o.created_at) < d) return false;
+    }
+    if (f.to) {
+      const d = new Date(f.to); d.setHours(23,59,59,999);
+      if (new Date(o.created_at) > d) return false;
+    }
+    if (f.q) {
+      const q = f.q.toLowerCase();
+      const blob = `${o.order_number} ${o.buyer_name} ${o.buyer_id_number} ${o.buyer_phone} ${o.buyer_email}`.toLowerCase();
+      if (!blob.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function renderOrders() {
+  const root = $('#view-orders');
+  const zoneOptions = state.zones.map(z => `<option value="${z.id}">${escapeHtml(z.name)}</option>`).join('');
+  const couponOptions = state.coupons.map(c => `<option value="${c.coupon_id || c.id}">${escapeHtml(c.code)}</option>`).join('');
+  const refOptions = state.referrers.map(r => `<option value="${r.referrer_id || r.id}">${escapeHtml(r.name)}</option>`).join('');
+
+  root.innerHTML = `
+    <h1 class="page-title">Ordenes</h1>
+    <p class="page-sub">Tabla virtualizada con filtros y acciones.</p>
+
+    <div class="filters">
+      <input type="search" class="search-input" id="f-q" placeholder="Buscar por nombre, cedula, orden#, tel, email..." value="${escapeHtml(state.filters.q)}">
+      <select id="f-status">
+        <option value="">Estado: todos</option>
+        <option value="paid">paid</option>
+        <option value="pending">pending</option>
+        <option value="expired">expired</option>
+        <option value="failed">failed</option>
+        <option value="refunded">refunded</option>
+        <option value="manual_review">manual_review</option>
+      </select>
+      <select id="f-zone"><option value="">Zona: todas</option>${zoneOptions}</select>
+      <select id="f-coupon"><option value="">Cupon: todos</option>${couponOptions}</select>
+      <select id="f-referrer"><option value="">Referrer: todos</option>${refOptions}</select>
+      <input type="date" id="f-from" value="${state.filters.from}" title="Desde">
+      <input type="date" id="f-to" value="${state.filters.to}" title="Hasta">
+      <button class="btn ghost sm" id="btn-clear-filters">Limpiar</button>
+      <button class="btn sm" id="btn-export-csv">Exportar CSV</button>
+    </div>
+
+    <div id="orders-virt-wrap" class="table-wrap" style="max-height:62vh; overflow:auto;">
+      <table class="tbl">
+        <thead><tr>
+          <th>Orden #</th><th>Fecha</th><th>Comprador</th><th>Zona</th>
+          <th>Cant</th><th>Total</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody id="orders-tbody"></tbody>
+      </table>
+    </div>
+    <div id="orders-meta" style="margin-top:10px; font-size:12px; color:var(--muted);"></div>
+  `;
+
+  // Sync select states
+  $('#f-status').value = state.filters.status;
+  $('#f-zone').value = state.filters.zone;
+  $('#f-coupon').value = state.filters.coupon;
+  $('#f-referrer').value = state.filters.referrer;
+
+  const onChange = () => {
+    state.filters.status   = $('#f-status').value;
+    state.filters.zone     = $('#f-zone').value;
+    state.filters.coupon   = $('#f-coupon').value;
+    state.filters.referrer = $('#f-referrer').value;
+    state.filters.from     = $('#f-from').value;
+    state.filters.to       = $('#f-to').value;
+    state.filters.q        = $('#f-q').value;
+    renderOrdersTable();
+  };
+  ['#f-status', '#f-zone', '#f-coupon', '#f-referrer', '#f-from', '#f-to'].forEach(s => $(s).addEventListener('change', onChange));
+  $('#f-q').addEventListener('input', debounce(onChange, 200));
+  $('#btn-clear-filters').addEventListener('click', () => {
+    state.filters = { status:'', zone:'', coupon:'', referrer:'', from:'', to:'', q:'' };
+    renderOrders();
+  });
+  $('#btn-export-csv').addEventListener('click', exportOrdersCSV);
+
+  renderOrdersTable();
+}
+
+// Simple windowing: render up to 200 rows max to keep DOM manageable.
+function renderOrdersTable() {
+  const data = filteredOrders();
+  const tbody = $('#orders-tbody');
+  const meta = $('#orders-meta');
+  if (!tbody) return;
+  const MAX = 200;
+  const slice = data.slice(0, MAX);
+
+  if (!slice.length) {
+    tbody.innerHTML = `<tr><td colspan="8">${emptyState('Sin resultados', 'Ajusta filtros o espera nuevas ordenes.')}</td></tr>`;
+    meta.textContent = '';
+    return;
+  }
+
+  const zoneById = Object.fromEntries(state.zones.map(z => [z.id, z]));
+  tbody.innerHTML = slice.map(o => `
+    <tr data-id="${o.id}">
+      <td><code class="copy-mono">${escapeHtml(o.order_number)}</code></td>
+      <td>${fmtDateShort(o.created_at)}</td>
+      <td>
+        <div>${escapeHtml(o.buyer_name)}</div>
+        <div style="font-size:11px; color:var(--muted);">${escapeHtml(o.buyer_id_number)} · ${escapeHtml(o.buyer_phone)}</div>
+      </td>
+      <td>${escapeHtml(zoneById[o.zone_id]?.name || '—')}</td>
+      <td>${o.quantity}</td>
+      <td>${fmtCOP(o.total_cop)}</td>
+      <td><span class="badge ${o.status}">${o.status}</span></td>
+      <td><button class="btn ghost sm" data-act="open">Ver</button></td>
+    </tr>
+  `).join('');
+
+  tbody.querySelectorAll('tr').forEach(tr => {
+    tr.addEventListener('click', () => openOrderModal(tr.dataset.id));
+  });
+
+  meta.textContent = `Mostrando ${slice.length} de ${data.length} ordenes filtradas (total ${state.orders.length}).`;
+}
+
+function exportOrdersCSV() {
+  const data = filteredOrders();
+  const zoneById = Object.fromEntries(state.zones.map(z => [z.id, z]));
+  const headers = [
+    { label: 'order_number', key: 'order_number' },
+    { label: 'created_at',   key: 'created_at' },
+    { label: 'paid_at',      key: 'paid_at' },
+    { label: 'buyer_name',   key: 'buyer_name' },
+    { label: 'buyer_id_number', key: 'buyer_id_number' },
+    { label: 'buyer_phone',  key: 'buyer_phone' },
+    { label: 'buyer_email',  key: 'buyer_email' },
+    { label: 'zone',         get: o => zoneById[o.zone_id]?.name || '' },
+    { label: 'quantity',     key: 'quantity' },
+    { label: 'subtotal_cop', key: 'subtotal_cop' },
+    { label: 'discount_cop', key: 'discount_cop' },
+    { label: 'total_cop',    key: 'total_cop' },
+    { label: 'status',       key: 'status' },
+    { label: 'wompi_reference', key: 'wompi_reference' },
+    { label: 'wompi_transaction_id', key: 'wompi_transaction_id' },
+    { label: 'coupon_id',    key: 'coupon_id' },
+    { label: 'referrer_id',  key: 'referrer_id' },
+  ];
+  const csv = toCSV(data, headers);
+  downloadFile(`nextshow-ordenes-${Date.now()}.csv`, csv);
+  toast.success(`Exportadas ${data.length} ordenes`);
+}
+
+function openOrderModal(id) {
+  const o = state.orders.find(x => x.id === id);
+  if (!o) return;
+  const zone = state.zones.find(z => z.id === o.zone_id);
+  const tickets = state.tickets.filter(t => t.order_id === o.id);
+  modal.open(`
+    <button class="close-x" id="modal-close" aria-label="Cerrar">×</button>
+    <h2>Orden ${escapeHtml(o.order_number)}</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+      <div>
+        <div style="font-size:11px; color:var(--muted);">Comprador</div>
+        <div><strong>${escapeHtml(o.buyer_name)}</strong></div>
+        <div style="font-size:13px; color:var(--muted);">CC ${escapeHtml(o.buyer_id_number)}</div>
+        <div style="font-size:13px; color:var(--muted);">${escapeHtml(o.buyer_phone)} · ${escapeHtml(o.buyer_email)}</div>
+      </div>
+      <div>
+        <div style="font-size:11px; color:var(--muted);">Resumen</div>
+        <div>Zona: <strong>${escapeHtml(zone?.name || '—')}</strong></div>
+        <div>Cantidad: <strong>${o.quantity}</strong></div>
+        <div>Total: <strong>${fmtCOP(o.total_cop)}</strong></div>
+        <div>Status: <span class="badge ${o.status}">${o.status}</span></div>
+        <div style="font-size:12px; color:var(--muted);">Creada: ${fmtDate(o.created_at)}</div>
+        ${o.paid_at ? `<div style="font-size:12px; color:var(--muted);">Pagada: ${fmtDate(o.paid_at)}</div>` : ''}
+      </div>
+    </div>
+
+    <h3 style="font-family:'Anton',sans-serif; font-size:14px; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">Tickets (${tickets.length})</h3>
+    <div class="table-wrap" style="margin-bottom:16px;">
+      <table class="tbl">
+        <thead><tr><th>Codigo</th><th>Asistente</th><th>CC</th><th>Asiento</th><th>Check-in</th></tr></thead>
+        <tbody>
+          ${tickets.length ? tickets.map(t => `
+            <tr>
+              <td><code class="copy-mono">${escapeHtml((t.ticket_code || '').slice(0, 12))}…</code></td>
+              <td>${escapeHtml(t.attendee_name || '—')}</td>
+              <td>${escapeHtml(t.attendee_id_number || '—')}</td>
+              <td>${t.seat_id ? '#' + t.seat_id.slice(0,6) : 'general'}</td>
+              <td>${t.checked_in_at ? '<span class="badge paid">si</span>' : '<span class="badge expired">no</span>'}</td>
+            </tr>
+          `).join('') : '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:18px;">Sin tickets aun (orden pendiente)</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn ghost sm" data-act="resend">Reenviar boleta</button>
+      <button class="btn ghost sm" data-act="regen">Regenerar PDF</button>
+      <button class="btn danger sm" data-act="refund" ${o.status !== 'paid' ? 'disabled' : ''}>Refund (stub)</button>
+    </div>
+  `);
+
+  $('#modal-close').addEventListener('click', () => modal.close());
+  modal.box = $('#modal-box');
+  modal.box.querySelector('[data-act="resend"]').addEventListener('click', async () => {
+    try {
+      await api.fn('send-ticket', { order_id: o.id });
+      toast.success('Reenvio solicitado');
+    } catch (e) { toast.error('Fallo reenvio: ' + e.message); }
+  });
+  modal.box.querySelector('[data-act="regen"]').addEventListener('click', async () => {
+    try {
+      await api.fn('send-ticket', { order_id: o.id, regenerate_pdf: true });
+      toast.success('PDF regenerado');
+    } catch (e) { toast.error('Fallo regeneracion: ' + e.message); }
+  });
+  modal.box.querySelector('[data-act="refund"]').addEventListener('click', async () => {
+    if (!confirm('Marcar la orden como refunded? (stub MVP)')) return;
+    try {
+      await api.patch('orders', { id: `eq.${o.id}` }, { status: 'refunded', refunded_at: new Date().toISOString() });
+      toast.success('Orden marcada refunded');
+      await loadOrders();
+      modal.close();
+      renderOrders();
+    } catch (e) { toast.error('No se pudo refund: ' + e.message); }
+  });
+}
+
+/* =========================
+   COUPONS
+   ========================= */
+function renderCoupons() {
+  const root = $('#view-coupons');
+  const cs = state.coupons || [];
+  const totalEmitted = cs.reduce((a, c) => a + (c.max_uses || 0), 0);
+  const totalUsed    = cs.reduce((a, c) => a + (c.uses_count || 0), 0);
+
+  root.innerHTML = `
+    <h1 class="page-title">Cupones</h1>
+    <p class="page-sub">Crea, edita y desactiva cupones. Lote para influencers.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card violet">
+        <div class="label">Cupones activos</div>
+        <div class="value">${cs.filter(c => c.status === 'active').length}</div>
+      </div>
+      <div class="stat-card magenta">
+        <div class="label">Usos totales</div>
+        <div class="value">${totalUsed}</div>
+        <div class="delta">${totalEmitted} emitidos</div>
+      </div>
+      <div class="stat-card green">
+        <div class="label">Conversion promedio</div>
+        <div class="value">${totalEmitted ? ((totalUsed/totalEmitted)*100).toFixed(1)+'%' : '—'}</div>
+      </div>
+    </div>
+
+    <div class="row-2col">
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Listado</h3>
+          <div style="display:flex; gap:8px;">
+            <button class="btn sm" id="btn-new-coupon">Crear cupon</button>
+            <button class="btn ghost sm" id="btn-batch">Crear lote</button>
+          </div>
+        </div>
+        ${cs.length ? `
+          <div class="table-wrap" style="max-height:60vh; overflow:auto;">
+            <table class="tbl">
+              <thead><tr>
+                <th>Codigo</th><th>Descuento</th><th>Usos</th><th>Status</th><th></th>
+              </tr></thead>
+              <tbody>
+                ${cs.map(c => `
+                  <tr data-id="${c.coupon_id || c.id}">
+                    <td><code class="copy-mono">${escapeHtml(c.code)}</code></td>
+                    <td>${fmtCOP(c.discount_cop)}</td>
+                    <td>${c.uses_count || 0} / ${c.max_uses || 1}</td>
+                    <td><span class="badge ${c.status}">${c.status}</span></td>
+                    <td>${c.status === 'active'
+                        ? '<button class="btn ghost sm" data-act="disable">Desactivar</button>'
+                        : '<button class="btn ghost sm" data-act="enable">Activar</button>'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : emptyState('Aun no hay cupones', 'Crea tu primer cupon o un lote completo.', 'ticket')}
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><h3>Funnel: emitidos vs usados</h3></div>
+        <div class="chart-box short"><canvas id="chart-coupons"></canvas></div>
+      </div>
+    </div>
+  `;
+
+  $('#btn-new-coupon').addEventListener('click', () => openCouponModal());
+  $('#btn-batch').addEventListener('click', () => openBatchCouponModal());
+  $$('#view-coupons tr[data-id]').forEach(tr => {
+    tr.querySelector('[data-act="disable"]')?.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleCoupon(tr.dataset.id, 'disabled');
+    });
+    tr.querySelector('[data-act="enable"]')?.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleCoupon(tr.dataset.id, 'active');
+    });
+  });
+  drawCouponsChart(cs);
+}
+
+function drawCouponsChart(cs) {
+  const ctx = $('#chart-coupons')?.getContext('2d');
+  if (!ctx || !window.Chart) return;
+  const top = (cs || []).slice(0, 8);
+  if (state.charts.coupons) state.charts.coupons.destroy();
+  state.charts.coupons = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: top.map(c => c.code),
+      datasets: [
+        { label: 'Emitidos', data: top.map(c => c.max_uses || 0), backgroundColor: 'rgba(124,58,237,0.7)' },
+        { label: 'Usados', data: top.map(c => c.uses_count || 0), backgroundColor: 'rgba(217,70,239,0.85)' },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#a39db8' } },
+        tooltip: { backgroundColor: '#14091f', borderColor: '#2a1947', borderWidth: 1 },
+      },
+      scales: {
+        x: { ticks: { color: '#a39db8' }, grid: { color: '#2a1947' } },
+        y: { ticks: { color: '#a39db8', precision: 0 }, grid: { color: '#2a1947' }, beginAtZero: true },
+      },
+    },
+  });
+}
+
+function randomCode(len = 5) {
+  const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = '';
+  for (let i = 0; i < len; i++) s += A[Math.floor(Math.random() * A.length)];
+  return s;
+}
+
+function openCouponModal() {
+  const refOpts = state.referrers.map(r => `<option value="${r.referrer_id || r.id}">${escapeHtml(r.name)}</option>`).join('');
+  modal.open(`
+    <button class="close-x" id="modal-close" aria-label="Cerrar">×</button>
+    <h2>Crear cupon</h2>
+    <form id="coupon-form" class="form-grid">
+      <div>
+        <label>Codigo</label>
+        <input id="c-code" required value="${randomCode(5)}" maxlength="20" style="text-transform:uppercase;">
+      </div>
+      <div>
+        <label>Descuento (COP)</label>
+        <input id="c-disc" type="number" min="1000" step="1000" value="20000" required>
+      </div>
+      <div>
+        <label>Max usos</label>
+        <input id="c-max" type="number" min="1" value="1" required>
+      </div>
+      <div>
+        <label>Referrer (opcional)</label>
+        <select id="c-ref"><option value="">— ninguno —</option>${refOpts}</select>
+      </div>
+      <div>
+        <label>Valido hasta (opcional)</label>
+        <input id="c-until" type="date">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost sm" id="btn-cancel">Cancelar</button>
+        <button type="submit" class="btn sm">Crear</button>
+      </div>
+    </form>
+  `);
+  $('#modal-close').addEventListener('click', () => modal.close());
+  $('#btn-cancel').addEventListener('click', () => modal.close());
+  $('#coupon-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const payload = {
+      code: $('#c-code').value.trim().toUpperCase(),
+      event_id: state.event?.id,
+      discount_cop: parseInt($('#c-disc').value, 10),
+      max_uses: parseInt($('#c-max').value, 10),
+      status: 'active',
+    };
+    const ref = $('#c-ref').value;
+    if (ref) payload.referrer_id = ref;
+    const u = $('#c-until').value;
+    if (u) payload.valid_until = new Date(u + 'T23:59:59').toISOString();
+
+    try {
+      await api.insert('coupons', payload);
+      toast.success(`Cupon ${payload.code} creado`);
+      await loadCoupons();
+      modal.close();
+      renderCoupons();
+    } catch (err) {
+      toast.error('No se pudo crear: ' + err.message);
+    }
+  });
+}
+
+function openBatchCouponModal() {
+  const refOpts = state.referrers.map(r => `<option value="${r.referrer_id || r.id}">${escapeHtml(r.name)}</option>`).join('');
+  modal.open(`
+    <button class="close-x" id="modal-close" aria-label="Cerrar">×</button>
+    <h2>Crear lote de cupones</h2>
+    <form id="batch-form" class="form-grid">
+      <div>
+        <label>Cantidad (1-200)</label>
+        <input id="b-n" type="number" min="1" max="200" value="20" required>
+      </div>
+      <div>
+        <label>Prefijo (ej: SOFI)</label>
+        <input id="b-pre" required value="INF" maxlength="8" style="text-transform:uppercase;">
+      </div>
+      <div>
+        <label>Descuento (COP)</label>
+        <input id="b-disc" type="number" min="1000" step="1000" value="20000" required>
+      </div>
+      <div>
+        <label>Max usos por cupon</label>
+        <input id="b-max" type="number" min="1" value="1" required>
+      </div>
+      <div>
+        <label>Referrer</label>
+        <select id="b-ref"><option value="">— ninguno —</option>${refOpts}</select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost sm" id="btn-cancel">Cancelar</button>
+        <button type="submit" class="btn sm">Generar y descargar CSV</button>
+      </div>
+    </form>
+    <div id="batch-result" style="margin-top:16px;"></div>
+  `);
+  $('#modal-close').addEventListener('click', () => modal.close());
+  $('#btn-cancel').addEventListener('click', () => modal.close());
+  $('#batch-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const n = parseInt($('#b-n').value, 10);
+    const pre = $('#b-pre').value.trim().toUpperCase();
+    const disc = parseInt($('#b-disc').value, 10);
+    const maxU = parseInt($('#b-max').value, 10);
+    const ref = $('#b-ref').value || null;
+
+    const codes = Array.from({ length: n }, () => `${pre}-${randomCode(5)}`);
+    const rows = codes.map(code => ({
+      code,
+      event_id: state.event?.id,
+      discount_cop: disc,
+      max_uses: maxU,
+      status: 'active',
+      referrer_id: ref,
+    }));
+
+    try {
+      await api.insert('coupons', rows);
+      toast.success(`${n} cupones creados`);
+      const csv = toCSV(rows, [
+        { label: 'code', key: 'code' },
+        { label: 'discount_cop', key: 'discount_cop' },
+        { label: 'max_uses', key: 'max_uses' },
+      ]);
+      downloadFile(`cupones-${pre}-${Date.now()}.csv`, csv);
+      await loadCoupons();
+      renderCoupons();
+      modal.close();
+    } catch (err) {
+      // Si falla insert (RLS), generamos CSV local igual para que admin tenga los codigos.
+      toast.error('Insert fallo (' + err.message + '). Descargando CSV de codigos.');
+      const csv = toCSV(rows, [
+        { label: 'code', key: 'code' },
+        { label: 'discount_cop', key: 'discount_cop' },
+        { label: 'max_uses', key: 'max_uses' },
+      ]);
+      downloadFile(`cupones-${pre}-PENDIENTE-${Date.now()}.csv`, csv);
+    }
+  });
+}
+
+async function toggleCoupon(id, status) {
+  try {
+    await api.patch('coupons', { id: `eq.${id}` }, { status });
+    toast.success(`Cupon ${status === 'active' ? 'activado' : 'desactivado'}`);
+    await loadCoupons();
+    renderCoupons();
+  } catch (e) { toast.error('No se pudo actualizar: ' + e.message); }
+}
+
+/* =========================
+   REFERRERS
+   ========================= */
+function renderReferrers() {
+  const root = $('#view-referrers');
+  const rs = state.referrers || [];
+  root.innerHTML = `
+    <h1 class="page-title">Referrers</h1>
+    <p class="page-sub">Atribuciones, cupones y comisiones.</p>
+
+    <div class="panel">
+      <div class="panel-h">
+        <h3>Listado</h3>
+        <div style="display:flex; gap:8px;">
+          <button class="btn sm" id="btn-new-ref">Crear referrer</button>
+          <button class="btn ghost sm" id="btn-export-ref">Exportar comisiones</button>
+        </div>
+      </div>
+      ${rs.length ? `
+        <div class="table-wrap" style="max-height:62vh; overflow:auto;">
+          <table class="tbl">
+            <thead><tr>
+              <th>Nombre</th><th>Tipo</th><th>Cupones emitidos</th><th>Cupones usados</th>
+              <th>Ingreso atribuido</th><th>Comision %</th><th>Comision COP</th>
+            </tr></thead>
+            <tbody>
+              ${rs.map(r => `
+                <tr>
+                  <td>${escapeHtml(r.name)}</td>
+                  <td><span class="badge active" style="text-transform:lowercase;">${escapeHtml(r.type || '—')}</span></td>
+                  <td>${r.coupons_emitted ?? 0}</td>
+                  <td>${r.coupons_used ?? 0}</td>
+                  <td>${fmtCOP(r.attributed_revenue_cop || 0)}</td>
+                  <td>${r.commission_pct ?? 0}%</td>
+                  <td><strong>${fmtCOP(r.calculated_commission_cop || 0)}</strong></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      ` : emptyState('Aun no hay referrers', 'Crea uno para comenzar a atribuir ventas.', 'user')}
+    </div>
+  `;
+
+  $('#btn-new-ref').addEventListener('click', openReferrerModal);
+  $('#btn-export-ref').addEventListener('click', exportReferrersCSV);
+}
+
+function openReferrerModal() {
+  modal.open(`
+    <button class="close-x" id="modal-close">×</button>
+    <h2>Crear referrer</h2>
+    <form id="ref-form" class="form-grid">
+      <div>
+        <label>Nombre</label>
+        <input id="r-name" required maxlength="80">
+      </div>
+      <div>
+        <label>Tipo</label>
+        <select id="r-type" required>
+          <option value="lead_propio">Lead propio</option>
+          <option value="influencer">Influencer</option>
+          <option value="staff">Staff</option>
+          <option value="sponsor">Sponsor</option>
+          <option value="organico">Organico</option>
+        </select>
+      </div>
+      <div>
+        <label>Contacto (telefono o email)</label>
+        <input id="r-contact" maxlength="120">
+      </div>
+      <div>
+        <label>Comision %</label>
+        <input id="r-pct" type="number" min="0" max="50" step="0.5" value="10">
+      </div>
+      <div>
+        <label>Notas</label>
+        <textarea id="r-notes" rows="2" maxlength="500"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost sm" id="btn-cancel">Cancelar</button>
+        <button type="submit" class="btn sm">Crear</button>
+      </div>
+    </form>
+  `);
+  $('#modal-close').addEventListener('click', () => modal.close());
+  $('#btn-cancel').addEventListener('click', () => modal.close());
+  $('#ref-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const payload = {
+      name: $('#r-name').value.trim(),
+      type: $('#r-type').value,
+      contact: $('#r-contact').value.trim() || null,
+      commission_pct: parseFloat($('#r-pct').value) || 0,
+      notes: $('#r-notes').value.trim() || null,
+    };
+    try {
+      await api.insert('referrers', payload);
+      toast.success(`Referrer ${payload.name} creado`);
+      await loadReferrers();
+      modal.close();
+      renderReferrers();
+    } catch (err) { toast.error('No se pudo crear: ' + err.message); }
+  });
+}
+
+function exportReferrersCSV() {
+  const rs = state.referrers || [];
+  const headers = [
+    { label: 'name', key: 'name' },
+    { label: 'type', key: 'type' },
+    { label: 'commission_pct', key: 'commission_pct' },
+    { label: 'coupons_emitted', key: 'coupons_emitted' },
+    { label: 'coupons_used', key: 'coupons_used' },
+    { label: 'attributed_revenue_cop', key: 'attributed_revenue_cop' },
+    { label: 'calculated_commission_cop', key: 'calculated_commission_cop' },
+  ];
+  downloadFile(`nextshow-comisiones-${Date.now()}.csv`, toCSV(rs, headers));
+  toast.success(`${rs.length} referrers exportados`);
+}
+
+/* =========================
+   HEATMAP (Cantas) + Risas aggregate
+   ========================= */
+function renderHeatmap() {
+  const root = $('#view-heatmap');
+  const cantas = state.zones.find(z => z.code === 'cantas');
+  const risas  = state.zones.find(z => z.code === 'risas');
+  const risasAvail = state.zoneAvailability.find(z => z.zone_id === risas?.id);
+
+  root.innerHTML = `
+    <h1 class="page-title">Heatmap del venue</h1>
+    <p class="page-sub">Orden de venta por silla. Magenta intenso = vendido primero, violeta claro = vendido despues, gris = no vendido.</p>
+
+    <div class="panel">
+      <div class="panel-h">
+        <h3>Cantas · 4 filas × 25 sillas</h3>
+        <div style="font-size:12px; color:var(--muted);">Hover una silla para ver detalles</div>
+      </div>
+      <div class="map-wrap">
+        <div class="map-stage">Tarima</div>
+        <div id="cantas-svg-wrap" style="text-align:center;"></div>
+        <div class="legend">
+          <span><span class="sw" style="background:#d946ef;"></span>Vendido primero</span>
+          <span><span class="sw" style="background:#a855f7;"></span>Mitad</span>
+          <span><span class="sw" style="background:#3d2466;"></span>Reciente</span>
+          <span><span class="sw" style="background:#1a0d2e; border:1px solid var(--border);"></span>No vendido</span>
+          <span class="heat-bar" title="Gradiente de venta"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h"><h3>Risas (general)</h3></div>
+      ${risasAvail ? `
+        <div class="stats-grid">
+          <div class="stat-card violet">
+            <div class="label">Vendidas</div>
+            <div class="value">${risasAvail.sold || 0}</div>
+            <div class="delta">de ${risasAvail.capacity}</div>
+          </div>
+          <div class="stat-card magenta">
+            <div class="label">Disponibles</div>
+            <div class="value">${risasAvail.available || 0}</div>
+          </div>
+          <div class="stat-card warning">
+            <div class="label">En proceso</div>
+            <div class="value">${risasAvail.held || 0}</div>
+          </div>
+        </div>
+      ` : emptyState('Sin info de Risas', 'Esperando datos de la vista v_zone_availability.', 'chart')}
+    </div>
+  `;
+
+  drawCantasHeatmap();
+}
+
+function drawCantasHeatmap() {
+  const wrap = $('#cantas-svg-wrap');
+  if (!wrap) return;
+  const ROWS = ['A', 'B', 'C', 'D'];
+  const COLS = 25;
+  const seatSize = 18;
+  const gap = 6;
+  const aisleAfter = 12; // pasillo entre 12 y 13
+  const aisleGap = 16;
+  const xFor = (col) => (col - 1) * (seatSize + gap) + (col > aisleAfter ? aisleGap : 0);
+  const width = xFor(COLS) + seatSize + 40;
+  const height = ROWS.length * (seatSize + gap) + 40;
+
+  // Build heatmap index map
+  const heatById = new Map(state.heatmap.map(h => [h.seat_id, h]));
+  const maxIdx = state.heatmap.length || 1;
+
+  // We need seat IDs by row+col; assume v_seat_heatmap has row_label+seat_number.
+  // Build seat lookup from heatmap and from any seats we know.
+  // For coloring we use sale_order_index from heatmap; for non-sold seats, color them gray.
+  const heatByRC = new Map();
+  state.heatmap.forEach(h => heatByRC.set(`${h.row_label}-${h.seat_number}`, h));
+
+  let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa de Cantas">`;
+  ROWS.forEach((row, rIdx) => {
+    svg += `<text x="6" y="${rIdx * (seatSize+gap) + seatSize - 2 + 20}" fill="#a39db8" font-size="11" font-family="Anton">${row}</text>`;
+    for (let col = 1; col <= COLS; col++) {
+      const x = xFor(col) + 24;
+      const y = rIdx * (seatSize+gap) + 20;
+      const h = heatByRC.get(`${row}-${col}`);
+      let fill, stroke = '#2a1947';
+      if (h) {
+        const t = h.sale_order_index / maxIdx;
+        // 0 -> magenta, 1 -> dark violet
+        // Interpolate between #d946ef and #3d2466
+        const lerp = (a, b) => Math.round(a + (b - a) * t);
+        const r = lerp(0xd9, 0x3d), g = lerp(0x46, 0x24), b = lerp(0xef, 0x66);
+        fill = `rgb(${r},${g},${b})`;
+      } else {
+        fill = '#1a0d2e';
+      }
+      svg += `<rect class="seat" x="${x}" y="${y}" width="${seatSize}" height="${seatSize}" rx="3" ry="3" fill="${fill}" stroke="${stroke}"
+                  data-row="${row}" data-col="${col}"
+                  data-idx="${h?.sale_order_index ?? ''}"
+                  data-sold-at="${h?.sold_at ?? ''}"></rect>`;
+    }
+  });
+  svg += '</svg>';
+  wrap.innerHTML = svg;
+
+  const tip = $('#seat-tip');
+  wrap.querySelectorAll('rect.seat').forEach(r => {
+    r.addEventListener('mouseenter', e => {
+      const row = r.dataset.row, col = r.dataset.col;
+      const idx = r.dataset.idx;
+      const sold = r.dataset.soldAt;
+      tip.innerHTML = sold
+        ? `Fila ${row} · Silla ${col} · Vendido como #${idx} el ${fmtDateShort(sold)}`
+        : `Fila ${row} · Silla ${col} · No vendido`;
+      tip.style.display = 'block';
+    });
+    r.addEventListener('mousemove', e => {
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top = (e.clientY + 14) + 'px';
+    });
+    r.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+  });
+}
+
+/* =========================
+   DOOR (live check-in)
+   ========================= */
+function renderDoor() {
+  const root = $('#view-door');
+  const cantas = state.zones.find(z => z.code === 'cantas');
+  const risas  = state.zones.find(z => z.code === 'risas');
+  const cantasTickets = state.tickets.filter(t => t.orders?.zone_id === cantas?.id);
+  const risasTickets  = state.tickets.filter(t => t.orders?.zone_id === risas?.id);
+  const checkedIn = state.tickets.filter(t => t.checked_in_at);
+  const totalSold = state.tickets.length;
+  const aforoPct = totalSold ? (checkedIn.length / totalSold * 100) : 0;
+
+  // velocity: ingresos en ultimos 5 min
+  const fiveMinAgo = Date.now() - 5*60*1000;
+  const recent = checkedIn.filter(t => new Date(t.checked_in_at).getTime() >= fiveMinAgo).length;
+  const perMin = (recent / 5).toFixed(1);
+
+  root.innerHTML = `
+    <h1 class="page-title">Puerta en vivo</h1>
+    <p class="page-sub">Mapa de check-ins en tiempo real con Realtime Postgres.</p>
+
+    <div class="live-stats">
+      <div class="live-stat"><div class="l">Ingresados</div><div class="v">${checkedIn.length}</div></div>
+      <div class="live-stat"><div class="l">% aforo</div><div class="v">${aforoPct.toFixed(1)}%</div></div>
+      <div class="live-stat"><div class="l">Velocidad / min</div><div class="v">${perMin}</div></div>
+      <div class="live-stat"><div class="l">Vendido total</div><div class="v">${totalSold}</div></div>
+    </div>
+
+    ${recent >= 50 ? '<div class="err-msg" style="display:block; margin-bottom:14px;">⚠ Cola alta: >50 ingresos en los ultimos 5 min. Considera abrir mas puertas.</div>' : ''}
+
+    <div class="row-2col">
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Cantas · check-ins</h3>
+          <div style="display:flex; gap:8px;">
+            <button class="btn ghost sm" id="btn-manual">Marcar manual</button>
+            <button class="btn ghost sm" id="btn-print">Imprimir manifest</button>
+          </div>
+        </div>
+        <div class="map-wrap">
+          <div class="map-stage">Tarima</div>
+          <div id="door-svg-wrap" style="text-align:center;"></div>
+          <div class="legend">
+            <span><span class="sw" style="background:#22c55e;"></span>Ingreso</span>
+            <span><span class="sw" style="background:#a39db8;"></span>Vendido sin ingresar</span>
+            <span><span class="sw" style="background:#1a0d2e; border:1px solid var(--border);"></span>No vendido</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h">
+          <h3>Risas (general)</h3>
+        </div>
+        <div class="live-stat" style="margin-bottom:14px;">
+          <div class="l">Ingresados de Risas</div>
+          <div class="v">${risasTickets.filter(t => t.checked_in_at).length} / ${risasTickets.length}</div>
+        </div>
+        <div class="panel-h"><h3>Ultimos ingresos</h3></div>
+        ${renderRecentCheckins(checkedIn.slice(0, 20))}
+      </div>
+    </div>
+
+    <!-- Print-only manifest -->
+    <div class="print-only">
+      <h2 style="text-align:center; font-family:'Anton',sans-serif;">NEXT SHOW · Manifest A4</h2>
+      <table class="tbl">
+        <thead><tr><th>#</th><th>Asistente</th><th>CC</th><th>Zona</th><th>Asiento</th><th>Orden</th></tr></thead>
+        <tbody>
+          ${[...state.tickets]
+            .sort((a, b) => (a.attendee_name || '').localeCompare(b.attendee_name || ''))
+            .map((t, i) => `
+              <tr>
+                <td>${i+1}</td>
+                <td>${escapeHtml(t.attendee_name || '—')}</td>
+                <td>${escapeHtml(t.attendee_id_number || '—')}</td>
+                <td>${escapeHtml(state.zones.find(z => z.id === t.orders?.zone_id)?.name || '—')}</td>
+                <td>${t.seat_id ? '#'+t.seat_id.slice(0,6) : 'general'}</td>
+                <td>${escapeHtml(t.orders?.order_number || '—')}</td>
+              </tr>
+            `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  drawCantasDoorMap();
+  $('#btn-print').addEventListener('click', () => window.print());
+  $('#btn-manual').addEventListener('click', openManualCheckinModal);
+}
+
+function renderRecentCheckins(items) {
+  if (!items.length) return emptyState('Aun no entra nadie', 'Cuando inicien ingresos los ves aqui.', 'user');
+  return `
+    <ul class="feed-list">
+      ${items.map(t => `
+        <li>
+          <div>
+            <div class="name">${escapeHtml(t.attendee_name || t.orders?.buyer_name || '—')}</div>
+            <div class="meta">${escapeHtml(t.orders?.order_number || '')} · ${escapeHtml(t.checked_in_by || 'staff')}</div>
+          </div>
+          <div class="meta">${fmtTime(t.checked_in_at)}</div>
+        </li>
+      `).join('')}
+    </ul>
+  `;
+}
+
+function drawCantasDoorMap() {
+  const wrap = $('#door-svg-wrap');
+  if (!wrap) return;
+  const ROWS = ['A','B','C','D'];
+  const COLS = 25;
+  const seatSize = 18;
+  const gap = 6;
+  const aisleAfter = 12;
+  const aisleGap = 16;
+  const xFor = (col) => (col - 1) * (seatSize + gap) + (col > aisleAfter ? aisleGap : 0);
+  const width = xFor(COLS) + seatSize + 40;
+  const height = ROWS.length * (seatSize + gap) + 40;
+
+  // Map ticket -> seat row/col via heatmap (which has row_label+seat_number for sold seats)
+  const ticketsBySeat = new Map();
+  state.tickets.forEach(t => { if (t.seat_id) ticketsBySeat.set(t.seat_id, t); });
+  const heatByRC = new Map();
+  state.heatmap.forEach(h => heatByRC.set(`${h.row_label}-${h.seat_number}`, h));
+
+  let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa de check-ins de Cantas">`;
+  ROWS.forEach((row, rIdx) => {
+    svg += `<text x="6" y="${rIdx * (seatSize+gap) + seatSize - 2 + 20}" fill="#a39db8" font-size="11" font-family="Anton">${row}</text>`;
+    for (let col = 1; col <= COLS; col++) {
+      const x = xFor(col) + 24;
+      const y = rIdx * (seatSize+gap) + 20;
+      const h = heatByRC.get(`${row}-${col}`);
+      let fill, stroke = '#2a1947';
+      if (h) {
+        const t = ticketsBySeat.get(h.seat_id);
+        if (t?.checked_in_at) { fill = '#22c55e'; stroke = '#15803d'; }
+        else { fill = '#a39db8'; stroke = '#6b6480'; }
+      } else {
+        fill = '#1a0d2e';
+      }
+      svg += `<rect class="seat" x="${x}" y="${y}" width="${seatSize}" height="${seatSize}" rx="3" ry="3" fill="${fill}" stroke="${stroke}" data-row="${row}" data-col="${col}"></rect>`;
+    }
+  });
+  svg += '</svg>';
+  wrap.innerHTML = svg;
+}
+
+function openManualCheckinModal() {
+  modal.open(`
+    <button class="close-x" id="modal-close">×</button>
+    <h2>Check-in manual</h2>
+    <p style="color:var(--muted); font-size:13px; margin-bottom:14px;">Buscar por cedula, nombre, orden#, telefono, email.</p>
+    <input id="m-q" class="pin-input" type="search" placeholder="Buscar..." style="font-size:14px; letter-spacing:0;">
+    <div id="m-results" style="margin-top:14px; max-height:55vh; overflow:auto;"></div>
+  `);
+  $('#modal-close').addEventListener('click', () => modal.close());
+  const onSearch = debounce(() => {
+    const q = $('#m-q').value.trim().toLowerCase();
+    if (!q) return $('#m-results').innerHTML = '';
+    const matches = state.tickets.filter(t => {
+      const blob = `${t.attendee_name || ''} ${t.attendee_id_number || ''} ${t.orders?.buyer_name || ''} ${t.orders?.buyer_id_number || ''} ${t.orders?.order_number || ''} ${t.ticket_code || ''}`.toLowerCase();
+      return blob.includes(q);
+    }).slice(0, 30);
+    $('#m-results').innerHTML = matches.length ? `
+      <ul class="feed-list">
+        ${matches.map(t => `
+          <li>
+            <div>
+              <div class="name">${escapeHtml(t.attendee_name || t.orders?.buyer_name || '—')}</div>
+              <div class="meta">CC ${escapeHtml(t.attendee_id_number || t.orders?.buyer_id_number || '—')} · ${escapeHtml(t.orders?.order_number || '')}</div>
+            </div>
+            <button class="btn sm" data-id="${t.id}" data-act="ci" ${t.checked_in_at ? 'disabled' : ''}>${t.checked_in_at ? 'Ya ingreso' : 'Check-in'}</button>
+          </li>
+        `).join('')}
+      </ul>
+    ` : '<div class="empty"><div>Sin resultados</div></div>';
+
+    $('#m-results').querySelectorAll('button[data-act="ci"]').forEach(b => {
+      b.addEventListener('click', async () => {
+        try {
+          await api.patch('tickets', { id: `eq.${b.dataset.id}` }, {
+            checked_in_at: new Date().toISOString(),
+            checked_in_by: 'admin-manual',
+          });
+          toast.success('Check-in marcado');
+          await loadTickets();
+          renderCurrentView();
+          onSearch();
+        } catch (e) { toast.error('No se pudo: ' + e.message); }
+      });
+    });
+  }, 200);
+  $('#m-q').addEventListener('input', onSearch);
+  $('#m-q').focus();
+}
+
+/* =========================
+   SETTINGS
+   ========================= */
+function renderSettings() {
+  const root = $('#view-settings');
+  const settings = state.event?.settings || {};
+  const adminPins = (settings.admin_pins || []).join(', ');
+  const staffNames = (settings.staff_names || []).join(', ');
+
+  root.innerHTML = `
+    <h1 class="page-title">Configuracion del evento</h1>
+    <p class="page-sub">Ajustes que afectan el flujo de compra, scanner y refunds.</p>
+
+    <div class="panel">
+      <div class="panel-h"><h3>Generales</h3></div>
+      <form id="settings-form" class="form-grid">
+        <div>
+          <label>Door PIN (4 digitos)</label>
+          <input id="s-door-pin" type="text" inputmode="numeric" pattern="\\d{4}" maxlength="4" value="${escapeHtml(settings.door_pin || '')}">
+        </div>
+        <div>
+          <label>Admin PINs (separados por coma)</label>
+          <input id="s-admin-pins" value="${escapeHtml(adminPins)}">
+        </div>
+        <div>
+          <label>Staff names (separados por coma)</label>
+          <input id="s-staff" value="${escapeHtml(staffNames)}">
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>Refund cutoff (dias)</label>
+            <input id="s-refund-days" type="number" min="0" max="60" value="${settings.refund_cutoff_days ?? 7}">
+          </div>
+          <div>
+            <label>Max sillas por orden</label>
+            <input id="s-max-seats" type="number" min="1" max="20" value="${settings.max_seats_per_order ?? 10}">
+          </div>
+        </div>
+        <div>
+          <label>Hold minutos (timeout)</label>
+          <input id="s-hold" type="number" min="2" max="60" value="${settings.hold_minutes ?? 10}">
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn sm">Guardar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="danger-zone">
+      <h3>Zona peligrosa</h3>
+      <p style="font-size:13px; margin: 8px 0 14px;">Estas acciones son irreversibles. Confirmacion doble requerida.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn danger sm" id="btn-cancel-event">Cancelar evento</button>
+        <button class="btn danger sm" id="btn-change-date">Cambiar fecha</button>
+      </div>
+      <p style="font-size:11px; color:var(--muted); margin-top:10px;">
+        TODO: integrar con refund batch + WA masivo en Phase 2.
+      </p>
+    </div>
+  `;
+
+  $('#settings-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!state.event) return toast.error('Sin evento cargado');
+    const newSettings = {
+      ...(settings || {}),
+      door_pin: $('#s-door-pin').value.trim(),
+      admin_pins: $('#s-admin-pins').value.split(',').map(s => s.trim()).filter(Boolean),
+      staff_names: $('#s-staff').value.split(',').map(s => s.trim()).filter(Boolean),
+      refund_cutoff_days: parseInt($('#s-refund-days').value, 10) || 7,
+      max_seats_per_order: parseInt($('#s-max-seats').value, 10) || 10,
+      hold_minutes: parseInt($('#s-hold').value, 10) || 10,
+    };
+    try {
+      await api.patch('events', { id: `eq.${state.event.id}` }, { settings: newSettings });
+      toast.success('Configuracion guardada');
+      await loadEvent();
+      renderTopbar();
+    } catch (err) { toast.error('No se pudo guardar: ' + err.message); }
+  });
+
+  $('#btn-cancel-event').addEventListener('click', () => {
+    if (!confirm('¿Seguro? El evento sera cancelado.')) return;
+    if (!confirm('CONFIRMAR cancelacion. Esto disparara refunds masivos (TODO Phase 2).')) return;
+    api.patch('events', { id: `eq.${state.event.id}` }, { status: 'cancelled' })
+      .then(() => { toast.success('Evento cancelado'); loadEvent().then(renderTopbar); })
+      .catch(e => toast.error('No se pudo: ' + e.message));
+  });
+
+  $('#btn-change-date').addEventListener('click', () => {
+    const nuevaFecha = prompt('Nueva fecha y hora ISO (YYYY-MM-DD HH:mm):');
+    if (!nuevaFecha) return;
+    const iso = new Date(nuevaFecha).toISOString();
+    api.patch('events', { id: `eq.${state.event.id}` }, { event_date: iso })
+      .then(() => { toast.success('Fecha actualizada'); loadEvent().then(renderTopbar); })
+      .catch(e => toast.error('No se pudo: ' + e.message));
+  });
+}
+
+/* =========================
+   Initial render after boot
+   ========================= */
+function renderAllOnce() { renderCurrentView(); }
+window.__nextshow_admin = { state, api, realtime, renderAllOnce };
+
+</script>
+</body>
+</html>
