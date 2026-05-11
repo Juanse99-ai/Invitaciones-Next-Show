@@ -1,0 +1,32 @@
+{
+  "name": "NEXT SHOW · Puerta",
+  "short_name": "NS Puerta",
+  "description": "Validador de boletas NEXT SHOW en puerta del evento",
+  "id": "/scanner.html",
+  "start_url": "/scanner.html",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
+  "background_color": "#0a0612",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "lang": "es-CO",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    { "src": "/assets/icons/scanner-icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/assets/icons/scanner-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/scanner-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/scanner-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "prefer_related_applications": false,
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Modo admin",
+      "short_name": "Admin",
+      "description": "Ingresar al modo administrador con stats en vivo",
+      "url": "/scanner.html?admin=1"
+    }
+  ]
+}

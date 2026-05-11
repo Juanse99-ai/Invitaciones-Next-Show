@@ -12,6 +12,16 @@
   to = "/index.html#boletas"
   status = 301
 
+# Proxy de Edge Functions Supabase a same-origin para que el Service Worker
+# (registrado en el dominio del sitio) pueda interceptar /functions/v1/*
+# y mantener la cola offline. La variable SUPABASE_URL se define en
+# Netlify > Site settings > Environment variables.
+[[redirects]]
+  from = "/functions/v1/*"
+  to = "${SUPABASE_URL}/functions/v1/:splat"
+  status = 200
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
