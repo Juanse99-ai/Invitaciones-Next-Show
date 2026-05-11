@@ -1,0 +1,29 @@
+[build]
+  publish = "public"
+  command = ""
+
+[[redirects]]
+  from = "/v"
+  to = "/scanner.html"
+  status = 200
+
+[[redirects]]
+  from = "/comprar"
+  to = "/index.html#boletas"
+  status = 301
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.wompi.co https://challenges.cloudflare.com https://www.googletagmanager.com https://connect.facebook.net https://analytics.tiktok.com https://cdn.jsdelivr.net https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.wompi.co https://challenges.cloudflare.com; frame-src 'self' https://checkout.wompi.co https://challenges.cloudflare.com;"
+
+[[headers]]
+  for = "/scanner-sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Service-Worker-Allowed = "/"

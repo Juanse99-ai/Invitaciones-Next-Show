@@ -1,0 +1,62 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# supabase
+supabase/.branches
+supabase/.temp
+**/supabase/.env
+
+# build artifacts
+dist/
+.netlify/
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# logs
+*.log
+npm-debug.log*
+
+# test
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# secrets
+*.pem
+*.key
+*.p8
+*.cer
+*.pkpass
+secrets/
+
+# original backup of landing
+public/index.html.original
+
+# lighthouse reports
+lighthouse-*.html
+
+# marketing assets folders (sync via iCloud, not git)
+/FOTOS ARTISTAS/
+/NEXTSHOW-LOGO-KIT/
+/NEXT SHOW · Propuesta · Natalya Ruiz Blel.pdf
+/next_show_4k.png
+/landing-nextshow-v6_1.html
+
+# original landing backup (kept locally only)
+public/index.html.original

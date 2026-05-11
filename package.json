@@ -1,0 +1,29 @@
+{
+  "name": "nextshow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "NEXT SHOW · plataforma de venta e ingreso de boletas",
+  "scripts": {
+    "dev": "npx serve public -p 8000",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:reset": "supabase db reset",
+    "supabase:functions": "supabase functions serve --env-file .env.local --no-verify-jwt",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "lint": "eslint public supabase/functions",
+    "format": "prettier --write \"public/**/*.{html,css,js}\" \"supabase/**/*.ts\""
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
+    "serve": "^14.2.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0",
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
