@@ -1517,7 +1517,14 @@ function comprarBoleta(tipo) {
     const zonaTxt = tipo === 'cantas'
       ? 'Cantas (asiento numerado · $150.000)'
       : 'Risas (orden de llegada · $100.000)';
-    const msg = `Hola NEXT SHOW \u{1F44B} Quiero comprar boletas zona ${zonaTxt} para Toromobolo + Jair Luquez en Sabanalarga.\n\n¿Me pasás instrucciones de pago (Nequi / Bancolombia)?`;
+    // Preserva UTMs / ref de la URL para atribución del lead
+    const params = new URLSearchParams(location.search);
+    const utm = ['utm_source','utm_medium','utm_campaign','utm_content','ref']
+      .filter(k => params.get(k))
+      .map(k => `${k}=${params.get(k)}`)
+      .join('|');
+    const utmTag = utm ? `\n\n[${utm}]` : '';
+    const msg = `Hola NEXT SHOW \u{1F44B} Quiero comprar boletas zona ${zonaTxt} para Toromobolo + Jair Luquez en Sabanalarga.\n\n¿Me pasás instrucciones de pago (Nequi / Bancolombia)?${utmTag}`;
     const url = `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank', 'noopener');
     if (window.fbq)  window.fbq('track', 'InitiateCheckout', { content_name: tipo });

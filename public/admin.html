@@ -950,6 +950,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V5a2 2 0 012-2h8a2 2 0 012 2v16M4 21h12M9 12h.01M16 8h4v13h-4"/></svg>
         Puerta en vivo
       </a>
+      <a class="nav-link" data-view="groups">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Grupos
+      </a>
       <a class="nav-link" data-view="settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 01-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3h.1a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5h.1a1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8v.1a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
         Configuracion
@@ -981,6 +985,7 @@
     <section id="view-referrers" class="view" style="display:none;"></section>
     <section id="view-heatmap" class="view" style="display:none;"></section>
     <section id="view-door" class="view" style="display:none;"></section>
+    <section id="view-groups" class="view" style="display:none;"></section>
     <section id="view-settings" class="view" style="display:none;"></section>
   </main>
 
@@ -1001,6 +1006,10 @@
     <div class="tab" data-view="heatmap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="15" width="6" height="6"/></svg>
       <span>Mapa</span>
+    </div>
+    <div class="tab" data-view="groups">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      <span>Grupos</span>
     </div>
     <div class="tab" data-view="settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
@@ -1577,6 +1586,7 @@ function renderCurrentView() {
     case 'referrers': return renderReferrers();
     case 'heatmap':   return renderHeatmap();
     case 'door':      return renderDoor();
+    case 'groups':    return renderGroups();
     case 'settings':  return renderSettings();
   }
 }
@@ -2817,6 +2827,75 @@ function renderSettings() {
       .then(() => { toast.success('Fecha actualizada'); loadEvent().then(renderTopbar); })
       .catch(e => toast.error('No se pudo: ' + e.message));
   });
+}
+
+/* =========================
+   Grupos pendientes (group handoff)
+   ========================= */
+let _groupsTimer = null;
+
+async function loadGroups() {
+  const root = $('#view-groups');
+  if (!root) return;
+  try {
+    const rows = await api.query('orders', {
+      select: 'id,buyer_name,wa_phone,quantity',
+      filters: { status: 'eq.manual_review', is_group: 'eq.true' },
+    });
+    const tbody = root.querySelector('#group-tbody');
+    if (!tbody) return;
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px;">Sin grupos pendientes</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = rows.map(o => `
+      <tr>
+        <td>${escapeHtml(o.buyer_name || '—')}</td>
+        <td>${escapeHtml(o.wa_phone || '—')}</td>
+        <td>${escapeHtml(String(o.quantity ?? '?'))}</td>
+        <td><button class="btn sm" data-take="${escapeHtml(o.wa_phone || '')}">Tomar</button></td>
+      </tr>`).join('');
+  } catch (e) {
+    console.warn('[groups] loadGroups:', e.message);
+  }
+}
+
+async function renderGroups() {
+  const root = $('#view-groups');
+  if (!root) return;
+  root.innerHTML = `
+    <div class="view-header">
+      <h2>Grupos pendientes</h2>
+      <p style="color:var(--muted);font-size:13px;">Ordenes con 6+ personas en revisión manual. Se actualiza cada 15 s.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Cliente</th><th>WA</th><th>Cant.</th><th>Acción</th></tr></thead>
+        <tbody id="group-tbody"></tbody>
+      </table>
+    </div>`;
+
+  // Claim button handler (delegated)
+  root.addEventListener('click', async (e) => {
+    if (!e.target.matches('[data-take]')) return;
+    const phone = e.target.dataset.take;
+    e.target.disabled = true;
+    try {
+      await api.fn('operator-handoff', { phone, action: 'take' });
+    } catch (err) {
+      console.warn('[groups] handoff error:', err.message);
+    }
+    loadGroups();
+  }, { once: false });
+
+  await loadGroups();
+
+  // Auto-refresh every 15 s while view is active
+  clearInterval(_groupsTimer);
+  _groupsTimer = setInterval(() => {
+    if (currentView === 'groups') loadGroups();
+    else clearInterval(_groupsTimer);
+  }, 15_000);
 }
 
 /* =========================
