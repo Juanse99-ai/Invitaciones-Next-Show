@@ -26,6 +26,27 @@
   };
 </script>
 
+<!-- Desregistrar Service Worker del scanner si quedo registrado en scope '/'.
+     El SW solo debe vivir cuando el usuario esta en /scanner.html.
+     scanner.html lo re-registra al entrar. -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      regs.forEach((r) => {
+        const url = r.active?.scriptURL || r.installing?.scriptURL || r.waiting?.scriptURL || '';
+        if (url.includes('scanner-sw.js')) {
+          r.unregister().then(() => console.log('[ns] scanner SW desregistrado del landing'));
+        }
+      });
+      if ('caches' in window) {
+        caches.keys().then((names) => {
+          names.filter((n) => n.startsWith('ns-scanner-')).forEach((n) => caches.delete(n));
+        });
+      }
+    }).catch(() => {});
+  }
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Great+Vibes&family=Allura&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
