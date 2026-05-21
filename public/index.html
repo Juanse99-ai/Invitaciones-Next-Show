@@ -12,14 +12,17 @@
 <!-- NEXT SHOW runtime config (overridden por build/env en prod) -->
 <script>
   window.NEXTSHOW_CONFIG = {
-    SUPABASE_URL: 'http://127.0.0.1:54321',
-    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+    SUPABASE_URL: 'https://djqewlbziatqatclysio.supabase.co',
+    SUPABASE_ANON_KEY: 'sb_publishable_Viv0eIItecZDUIe_bJij6Q_0JdW8hyN',
+    LEADS_TABLE: 'nextshow_leads',
     EVENT_SLUG: 'nextshow-torombolo-jair-2026',
-    WOMPI_PUBLIC_KEY: 'pub_test_REPLACE_ME',
+    WHATSAPP_SALES: '573106619353',
+    WOMPI_PUBLIC_KEY: '',
     META_PIXEL_ID: '',
     TIKTOK_PIXEL_ID: '',
     GA4_MEASUREMENT_ID: '',
     DEFAULT_LANG: 'es',
+    SALES_MODE: 'whatsapp',
   };
 </script>
 
@@ -1416,7 +1419,7 @@
       <div class="patrocinador-slot">[Tu marca aquí]</div>
     </div>
     <div class="patrocinador-cta">
-      <a href="https://wa.me/573000000000?text=Hola%20Next%20Show%2C%20me%20interesa%20patrocinar%20el%20evento" target="_blank">
+      <a href="https://wa.me/573106619353?text=Hola%20Next%20Show%2C%20me%20interesa%20patrocinar%20el%20evento" target="_blank">
         Conviértete en patrocinador →
       </a>
     </div>
@@ -1441,10 +1444,10 @@
 <script>
 const CONFIG = {
   eventDate: '2026-08-15T20:00:00-05:00',
-  eventbriteRisasUrl: 'https://eventbrite.com/e/REEMPLAZAR',
-  eventbriteCantasUrl: 'https://eventbrite.com/e/REEMPLAZAR',
-  supabaseUrl: '',
-  supabaseAnonKey: '',
+  supabaseUrl: window.NEXTSHOW_CONFIG?.SUPABASE_URL || '',
+  supabaseAnonKey: window.NEXTSHOW_CONFIG?.SUPABASE_ANON_KEY || '',
+  leadsTable: window.NEXTSHOW_CONFIG?.LEADS_TABLE || 'nextshow_leads',
+  whatsappSales: window.NEXTSHOW_CONFIG?.WHATSAPP_SALES || '573106619353',
 };
 
 const nav = document.getElementById('nav');
@@ -1483,14 +1486,28 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Delegado al modal de checkout (definido en el <script type="module"> al final del body).
-// Si por algun motivo el modal aun no se inicializo, hacemos fallback al lead form.
+// SALES_MODE 'whatsapp': el botón abre WhatsApp con mensaje pre-armado.
+// SALES_MODE 'wompi' (futuro): abre el checkout modal con Wompi widget.
 function comprarBoleta(tipo) {
+  const mode = (window.NEXTSHOW_CONFIG?.SALES_MODE) || 'whatsapp';
+
+  if (mode === 'whatsapp') {
+    const num = CONFIG.whatsappSales;
+    const zonaTxt = tipo === 'cantas'
+      ? 'Cantas (asiento numerado · $150.000)'
+      : 'Risas (orden de llegada · $100.000)';
+    const msg = `Hola NEXT SHOW \u{1F44B} Quiero comprar boletas zona ${zonaTxt} para Toromobolo + Jair Luquez en Sabanalarga.\n\n¿Me pasás instrucciones de pago (Nequi / Bancolombia)?`;
+    const url = `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank', 'noopener');
+    if (window.fbq)  window.fbq('track', 'InitiateCheckout', { content_name: tipo });
+    if (window.gtag) window.gtag('event', 'click_whatsapp_buy', { zone: tipo });
+    return;
+  }
+
   if (typeof window.openCheckoutModal === 'function') {
     window.openCheckoutModal(tipo);
     return;
   }
-  console.warn('[checkout] modal aun no listo, scroll a lead form');
   const lead = document.getElementById('lead-form');
   if (lead) lead.scrollIntoView({ behavior: 'smooth' });
 }
@@ -1523,7 +1540,7 @@ async function submitLead(e) {
 
   if (CONFIG.supabaseUrl && CONFIG.supabaseAnonKey) {
     try {
-      const res = await fetch(`${CONFIG.supabaseUrl}/rest/v1/leads`, {
+      const res = await fetch(`${CONFIG.supabaseUrl}/rest/v1/${CONFIG.leadsTable}`, {
         method: 'POST',
         headers: {
           'apikey': CONFIG.supabaseAnonKey,

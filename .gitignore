@@ -60,3 +60,6 @@ lighthouse-*.html
 
 # original landing backup (kept locally only)
 public/index.html.original
+
+# brainstorming visual companion sessions
+.superpowers/
