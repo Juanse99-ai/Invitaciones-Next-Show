@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXT SHOW · Invitación especial</title>
+<meta name="description" content="Invitación especial a NEXT SHOW. 13 de junio de 2026, La Zona Deportiva, Sabanalarga.">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<meta property="og:title" content="NEXT SHOW · Invitación especial">
+<meta property="og:description" content="Te queremos en una noche que va a quedar en la memoria de Sabanalarga. 13 de junio · 7:00 PM · La Zona Deportiva.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* === FONT === */
+@font-face {
+  font-family: 'Allison';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/allison-latin-400-normal.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* === RESET === */
+html, body { margin: 0; padding: 0; }
+html {
+  background: #0d0a1f;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+body {
+  background: #0d0a1f;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+* { box-sizing: border-box; }
+
+/* === TOKENS === */
+:root {
+  --ns-bg-base: #0d0a1f;
+  --ns-cyan: #00d4ff;
+  --ns-violet: #8b5cf6;
+  --ns-magenta: #d946ef;
+  --ns-pink: #ff3d8a;
+  --ns-muted: #c4bfd6;
+  --ns-dim: #7c7a90;
+  --ns-whatsapp: #25D366;
+  --ns-grad: linear-gradient(90deg, #00d4ff 0%, #2196f3 24%, #8b5cf6 56%, #d946ef 82%, #e91e63 100%);
+}
+
+/* === KEYFRAMES === */
+@keyframes ns-billow-cyan {
+  0% { transform: translate(-8%, 4%) scale(1) rotate(0deg); }
+  25% { transform: translate(12%, -6%) scale(1.25) rotate(6deg); }
+  50% { transform: translate(18%, 10%) scale(1.15) rotate(-4deg); }
+  75% { transform: translate(-4%, -8%) scale(1.32) rotate(8deg); }
+  100% { transform: translate(-8%, 4%) scale(1) rotate(0deg); }
+}
+@keyframes ns-billow-magenta {
+  0% { transform: translate(8%, -4%) scale(1) rotate(0deg); }
+  25% { transform: translate(-14%, 8%) scale(1.28) rotate(-6deg); }
+  50% { transform: translate(-6%, -10%) scale(1.18) rotate(4deg); }
+  75% { transform: translate(12%, 6%) scale(1.3) rotate(-8deg); }
+  100% { transform: translate(8%, -4%) scale(1) rotate(0deg); }
+}
+@keyframes ns-billow-violet {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(-12%, 6%) scale(1.3) rotate(10deg); }
+  66% { transform: translate(10%, -8%) scale(1.35) rotate(-12deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+@keyframes ns-wisps-drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-16%, -6%); }
+  100% { transform: translate(-32%, 0); }
+}
+@keyframes ns-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 28px rgba(0,212,255,0.55)) drop-shadow(0 0 64px rgba(217,70,239,0.35)); }
+  50% { filter: drop-shadow(0 0 42px rgba(0,212,255,0.85)) drop-shadow(0 0 96px rgba(217,70,239,0.55)); }
+}
+@keyframes ns-grad-shift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes ns-fade-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ns-spark-travel {
+  0% { left: -10%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { left: 110%; opacity: 0; }
+}
+@keyframes ns-soft-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes ns-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes ns-pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* === CARD === */
+.web-card {
+  min-height: 100vh;
+  background: var(--ns-bg-base);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* === BACKGROUND === */
+/* Un solo "stage" fixed: todas las capas del fondo viven aquí dentro como
+   position:absolute, así se mueven JUNTAS y nunca se desincronizan durante el
+   scroll en móvil (antes cada capa era fixed por separado y se desfasaban un
+   instante: se veía el video sin la capa de humo/tinte encima). */
+.web-card .bg-stage {
+  position: fixed; inset: 0; z-index: 0;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.web-card .bg-stage .bg-base,
+.web-card .bg-stage .bg-smoke-cyan,
+.web-card .bg-stage .bg-smoke-violet,
+.web-card .bg-stage .bg-smoke-magenta,
+.web-card .bg-stage .bg-smoke-wisps,
+.web-card .bg-stage .bg-video,
+.web-card .bg-stage .bg-tint,
+.web-card .bg-stage .bg-vignette,
+.web-card .bg-stage .ns-twinkle {
+  position: absolute;
+}
+.web-card .bg-base {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 110% 70% at 50% 110%, #1a0820 0%, transparent 60%),
+    radial-gradient(ellipse 110% 70% at 50% -10%, #261140 0%, transparent 55%),
+    linear-gradient(165deg, #0d0a1f 0%, #120a26 50%, #15071f 100%);
+}
+/* Smoke layers — hidden by default, only shown when video fails */
+.web-card .bg-smoke-cyan,
+.web-card .bg-smoke-violet,
+.web-card .bg-smoke-magenta,
+.web-card .bg-smoke-wisps {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.web-card.bg-smoke .bg-smoke-cyan,
+.web-card.bg-smoke .bg-smoke-violet,
+.web-card.bg-smoke .bg-smoke-magenta,
+.web-card.bg-smoke .bg-smoke-wisps { opacity: 1; }
+
+.web-card .bg-smoke-cyan {
+  position: fixed; inset: 0; z-index: 1;
+  background:
+    radial-gradient(ellipse 60% 50% at 18% 30%, rgba(0,212,255,0.85) 0%, rgba(0,170,255,0.5) 28%, rgba(0,140,255,0.2) 55%, transparent 75%),
+    radial-gradient(ellipse 50% 40% at 28% 75%, rgba(77,219,245,0.6) 0%, rgba(0,212,255,0.25) 35%, transparent 65%);
+  filter: blur(28px);
+  mix-blend-mode: screen;
+  animation: ns-billow-cyan 16s ease-in-out infinite;
+  will-change: transform;
+}
+.web-card .bg-smoke-violet {
+  position: fixed; inset: 0; z-index: 1;
+  background:
+    radial-gradient(ellipse 55% 50% at 50% 45%, rgba(139,92,246,0.7) 0%, rgba(124,58,237,0.35) 35%, transparent 70%),
+    radial-gradient(ellipse 40% 35% at 60% 80%, rgba(168,85,247,0.5) 0%, transparent 60%);
+  filter: blur(32px);
+  mix-blend-mode: screen;
+  animation: ns-billow-violet 22s ease-in-out infinite;
+  will-change: transform;
+}
+.web-card .bg-smoke-magenta {
+  position: fixed; inset: 0; z-index: 1;
+  background:
+    radial-gradient(ellipse 60% 50% at 85% 55%, rgba(217,70,239,0.85) 0%, rgba(255,61,138,0.5) 28%, rgba(217,70,239,0.2) 55%, transparent 75%),
+    radial-gradient(ellipse 50% 40% at 75% 22%, rgba(236,72,153,0.6) 0%, transparent 60%);
+  filter: blur(28px);
+  mix-blend-mode: screen;
+  animation: ns-billow-magenta 18s ease-in-out infinite;
+  will-change: transform;
+}
+.web-card .bg-smoke-wisps {
+  position: fixed; inset: -10% -25%; z-index: 1;
+  background:
+    radial-gradient(ellipse 25% 7% at 30% 45%, rgba(255,255,255,0.28) 0%, transparent 60%),
+    radial-gradient(ellipse 22% 6% at 70% 60%, rgba(0,212,255,0.3) 0%, transparent 60%),
+    radial-gradient(ellipse 24% 6% at 55% 25%, rgba(217,70,239,0.28) 0%, transparent 60%),
+    radial-gradient(ellipse 20% 5% at 45% 80%, rgba(139,92,246,0.3) 0%, transparent 60%);
+  filter: blur(16px);
+  mix-blend-mode: screen;
+  animation: ns-wisps-drift 24s linear infinite;
+  will-change: transform;
+}
+/* Video — fades in when playing */
+.web-card .bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.web-card.bg-video .bg-video,
+.web-card.bg-loading .bg-video { opacity: 1; }
+.web-card.bg-smoke .bg-video { opacity: 0; }
+.web-card .bg-tint {
+  position: fixed; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(13,10,31,0.32) 0%,
+    rgba(13,10,31,0.1) 35%,
+    rgba(13,10,31,0.1) 65%,
+    rgba(13,10,31,0.42) 100%);
+}
+.web-card .bg-vignette {
+  position: fixed; inset: 0; z-index: 4; pointer-events: none;
+  background: radial-gradient(ellipse 100% 95% at 50% 50%, transparent 60%, rgba(0,0,0,0.4) 100%);
+}
+.ns-twinkle {
+  position: fixed;
+  width: 3px; height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 6px 1px #fff;
+  animation: ns-twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* === LAYOUT === */
+.web-card .wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+  z-index: 10;
+}
+.web-card section { padding: 70px 0; position: relative; z-index: 10; }
+.web-card .hero { padding: 70px 0 60px; min-height: 100vh; display: flex; align-items: center; }
+.web-card .hero .wrap { text-align: center; width: 100%; }
+
+/* === ANIMS === */
+.web-card .anim-up { opacity: 0; animation: ns-fade-up 0.8s ease forwards; }
+.web-card .anim-up.d-1 { animation-delay: 0.15s; }
+.web-card .anim-up.d-2 { animation-delay: 0.30s; }
+.web-card .anim-up.d-3 { animation-delay: 0.50s; }
+.web-card .anim-up.d-4 { animation-delay: 0.70s; }
+.web-card .anim-up.d-5 { animation-delay: 0.95s; }
+.web-card .anim-up.d-6 { animation-delay: 1.15s; }
+.web-card .anim-up.d-7 { animation-delay: 1.35s; }
+.web-card .anim-up.d-8 { animation-delay: 1.55s; }
+/* Sections visible from the start — animation on scroll is enhancement */
+.web-card .sec-reveal {
+  opacity: 1; transform: translateY(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* === HERO === */
+.web-card .fecha-tag {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 12px 28px 12px 22px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(0,212,255,0.45);
+  border-radius: 60px;
+  font-weight: 800; font-size: 15px; letter-spacing: 0.34em;
+  color: var(--ns-cyan); text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 0 1px rgba(0,212,255,0.08), 0 0 32px rgba(0,212,255,0.25);
+  margin-bottom: 32px;
+}
+.web-card .fecha-tag .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ns-cyan);
+  box-shadow: 0 0 12px var(--ns-cyan), 0 0 24px var(--ns-cyan);
+  animation: ns-glow-pulse 2.4s ease-in-out infinite;
+}
+.web-card .logo-oficial {
+  display: inline-block;
+  padding: 18px 42px;
+  background: #000;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06),
+    0 24px 70px rgba(0,212,255,0.32),
+    0 24px 70px rgba(217,70,239,0.32);
+  margin-bottom: 46px;
+}
+.web-card .logo-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: clamp(54px, 13vw, 92px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.web-card .logo-text.small { font-size: 32px; }
+.web-card .logo-text .next { color: #fff; }
+.web-card .logo-text .show {
+  background: var(--ns-grad); background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ns-grad-shift 6s linear infinite;
+}
+@supports not (background-clip: text) {
+  .web-card .logo-text .show { -webkit-text-fill-color: #d946ef; color: #d946ef; }
+}
+.web-card .invita-label {
+  font-weight: 700; font-size: 13px; letter-spacing: 0.42em;
+  color: var(--ns-muted); text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.web-card .nombre {
+  font-family: 'Allison', cursive;
+  font-size: clamp(76px, 18vw, 150px);
+  line-height: 1.0;
+  color: #fff; font-weight: 400;
+  padding: 0 12px;
+  margin: 0 0 8px;
+  word-wrap: break-word;
+  text-shadow:
+    0 0 30px rgba(0,212,255,0.55),
+    0 0 60px rgba(217,70,239,0.4),
+    0 4px 20px rgba(0,0,0,0.6);
+  animation: ns-fade-up 0.8s ease 0.70s forwards, ns-glow-pulse 4s ease-in-out 2.5s infinite;
+}
+.web-card .nombre.l2 { font-size: clamp(68px, 16vw, 130px); }
+.web-card .nombre.l3 { font-size: clamp(58px, 14vw, 110px); }
+.web-card .nombre.l4 { font-size: clamp(50px, 12vw, 92px); }
+.web-card .nombre.l5 { font-size: clamp(42px, 10vw, 76px); }
+
+/* Generic mode — no personalized greeting */
+.web-card .nombre-generic {
+  font-family: 'Allison', cursive;
+  font-size: clamp(64px, 14vw, 110px);
+  line-height: 1.0;
+  color: #fff;
+  font-weight: 400;
+  margin: 0 0 8px;
+  padding: 0 12px;
+  text-shadow:
+    0 0 30px rgba(0,212,255,0.55),
+    0 0 60px rgba(217,70,239,0.4),
+    0 4px 20px rgba(0,0,0,0.6);
+  animation: ns-fade-up 0.8s ease 0.70s forwards, ns-glow-pulse 4s ease-in-out 2.5s infinite;
+}
+
+.web-card .divider {
+  position: relative;
+  width: 200px; height: 3px;
+  margin: 14px auto 22px;
+  border-radius: 3px;
+  background: var(--ns-grad);
+  box-shadow: 0 0 20px rgba(0,212,255,0.5), 0 0 30px rgba(217,70,239,0.35);
+  overflow: visible;
+}
+.web-card .divider::after {
+  content: ''; position: absolute; top: -2px; width: 50px; height: 7px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  filter: blur(2px);
+  animation: ns-spark-travel 3.4s linear 2s infinite;
+}
+.web-card .mensaje {
+  font-size: clamp(16px, 4vw, 19px);
+  color: var(--ns-muted);
+  line-height: 1.5;
+  max-width: 520px;
+  margin: 0 auto 38px;
+}
+.web-card .mensaje strong { color: #fff; font-weight: 700; }
+
+/* === COUNTDOWN === */
+.web-card .countdown {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 480px; width: 100%;
+  margin: 0 auto 36px;
+}
+.web-card .cd-item {
+  position: relative;
+  background: linear-gradient(180deg, rgba(13,10,31,0.92), rgba(13,10,31,0.82));
+  border: 1px solid rgba(139,92,246,0.4);
+  border-radius: 14px;
+  padding: 16px 6px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+.web-card .cd-num {
+  font-weight: 900;
+  font-size: clamp(26px, 6.5vw, 38px);
+  color: #00d4ff;
+  background: var(--ns-grad);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+@supports not (background-clip: text) {
+  .web-card .cd-num { -webkit-text-fill-color: #00d4ff; color: #00d4ff; }
+}
+.web-card .cd-label {
+  font-size: 10px; color: var(--ns-muted);
+  text-transform: uppercase; letter-spacing: 0.22em;
+  font-weight: 700;
+}
+
+/* === CTA BUTTONS === */
+.web-card .cta-hero, .web-card .cta-wa-big {
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 18px 36px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #fff; text-decoration: none;
+  font-weight: 800; font-size: 17px;
+  border-radius: 60px;
+  box-shadow:
+    0 0 0 4px rgba(37,211,102,0.15),
+    0 14px 40px rgba(37,211,102,0.5);
+  transition: transform 0.3s;
+}
+.web-card .cta-hero { animation: ns-fade-up 0.8s ease 1.55s forwards, ns-soft-bob 2.8s ease-in-out 3.5s infinite; }
+.web-card .cta-wa-big { animation: ns-soft-bob 2.8s ease-in-out 3s infinite; }
+.web-card .cta-hero:hover, .web-card .cta-wa-big:hover { transform: translateY(-3px); }
+.web-card .cta-hero svg, .web-card .cta-wa-big svg { width: 24px; height: 24px; fill: #fff; }
+.web-card .cta-wa-big {
+  padding: 22px 42px; font-size: clamp(17px, 4.5vw, 21px); font-weight: 900;
+}
+.web-card .cta-wa-big svg { width: 30px; height: 30px; }
+
+/* === SECTION HEADER === */
+.web-card .sec-header { text-align: center; margin-bottom: 38px; }
+.web-card .eyebrow {
+  font-weight: 800; font-size: 11px; letter-spacing: 0.42em;
+  color: var(--ns-cyan); text-transform: uppercase; margin-bottom: 10px;
+  display: inline-flex; align-items: center; gap: 14px;
+}
+.web-card .eyebrow::before, .web-card .eyebrow::after {
+  content: ''; width: 28px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.5), transparent);
+}
+.web-card .sec-header h2 {
+  font-weight: 900;
+  font-size: clamp(30px, 8vw, 48px);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.web-card .grad {
+  background: var(--ns-grad); background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ns-grad-shift 6s linear infinite;
+}
+@supports not (background-clip: text) {
+  .web-card .grad { -webkit-text-fill-color: #d946ef; color: #d946ef; }
+}
+
+/* === NATALYA === */
+.web-card .natalya-wrap {
+  display: flex; justify-content: center;
+}
+.web-card .natalya-wrap .artista-card {
+  width: clamp(240px, 72vw, 320px);
+}
+
+/* === ARTISTAS === */
+.web-card .artistas-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.web-card .artista-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(20,12,38,0.95), rgba(10,6,20,0.98));
+  border: 1px solid rgba(139,92,246,0.4);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+}
+.web-card .artista-img {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+}
+.web-card .artista-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 15%;
+  display: block;
+}
+.web-card .art-fade {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(10,6,20,0.8));
+  pointer-events: none;
+}
+.web-card .artista-info {
+  padding: 20px 14px 24px; text-align: center;
+}
+.web-card .art-nombre {
+  font-family: 'Allison', cursive;
+  font-size: clamp(40px, 10vw, 60px);
+  line-height: 0.88; color: #fff; font-weight: 400;
+  text-shadow: 0 0 18px rgba(0,212,255,0.4);
+}
+.web-card .art-apellido {
+  font-family: 'Allison', cursive;
+  font-size: clamp(28px, 7vw, 42px);
+  line-height: 0.88; color: #fff; font-weight: 400;
+  text-shadow: 0 0 16px rgba(217,70,239,0.4);
+}
+.web-card .art-role {
+  margin-top: 6px;
+  font-weight: 700; font-size: 10px; letter-spacing: 0.34em;
+  color: var(--ns-dim); text-transform: uppercase;
+}
+
+/* === DETALLES === */
+.web-card .info-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 520px; margin: 0 auto;
+}
+.web-card .info-item {
+  position: relative;
+  background: linear-gradient(180deg, rgba(13,10,31,0.92), rgba(13,10,31,0.82));
+  border: 1px solid rgba(139,92,246,0.35);
+  border-radius: 16px;
+  padding: 22px 16px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+.web-card .info-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(217,70,239,0.15));
+  border: 1px solid rgba(0,212,255,0.25);
+  margin-bottom: 12px;
+  color: var(--ns-cyan);
+}
+.web-card .info-ico svg { width: 22px; height: 22px; }
+.web-card .info-label {
+  font-weight: 800; font-size: 11px; letter-spacing: 0.34em;
+  color: var(--ns-cyan); text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.web-card .info-valor {
+  font-weight: 800; font-size: clamp(15px, 4vw, 17px);
+  color: #fff; line-height: 1.25;
+  text-transform: uppercase;
+}
+.web-card .info-valor small {
+  display: block;
+  font-size: 10px;
+  color: var(--ns-muted);
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* === INCLUYE === */
+.web-card .incluye-list {
+  max-width: 520px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 12px;
+  list-style: none; padding: 0;
+}
+.web-card .incluye-item {
+  display: block;
+  padding: 16px 20px 16px 60px;
+  background: rgba(13,10,31,0.85);
+  border: 1px solid rgba(139,92,246,0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.45;
+  text-align: left;
+}
+.web-card .incluye-item .check {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--ns-grad);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 900; font-size: 14px;
+  box-shadow: 0 6px 18px rgba(0,212,255,0.3);
+}
+.web-card .incluye-item strong { color: #fff; font-weight: 700; }
+
+/* === CTA FINAL === */
+.web-card .cta-final { text-align: center; padding: 70px 0 30px; }
+.web-card .cta-final-title {
+  font-weight: 900;
+  font-size: clamp(28px, 7vw, 42px);
+  line-height: 1.1;
+  margin: 0 0 14px;
+  text-transform: uppercase;
+}
+.web-card .cta-final-sub {
+  color: var(--ns-muted);
+  font-size: 15px;
+  margin: 0 auto 28px;
+  max-width: 460px;
+}
+.web-card .reservas-num {
+  margin-top: 18px;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.1em;
+}
+
+/* === TE INVITA === */
+.web-card .te-invita {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 32px;
+  background: linear-gradient(180deg, rgba(217,70,239,0.18), rgba(139,92,246,0.12));
+  border: 1px solid rgba(217,70,239,0.45);
+  border-radius: 60px;
+  margin: 0 auto 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 24px rgba(217,70,239,0.25);
+}
+.web-card .te-invita .ti-label {
+  font-weight: 800; font-size: 11px; letter-spacing: 0.46em;
+  color: var(--ns-cyan); text-transform: uppercase;
+}
+.web-card .te-invita .ti-name {
+  font-family: 'Allison', cursive;
+  font-size: 42px; line-height: 0.9; color: #fff; font-weight: 400;
+  text-shadow: 0 0 16px rgba(217,70,239,0.5);
+}
+
+/* === PREVENTA === */
+.web-card .preventa { padding: 50px 0; }
+.web-card .preventa-card {
+  position: relative;
+  max-width: 480px; margin: 0 auto;
+  padding: 36px 28px 32px;
+  background: linear-gradient(180deg, rgba(13,10,31,0.92), rgba(13,10,31,0.85));
+  border-radius: 22px;
+  text-align: center;
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,212,255,0.25), 0 24px 60px rgba(217,70,239,0.25);
+}
+.web-card .preventa-card::before {
+  content: ''; position: absolute; inset: 0; padding: 2px;
+  border-radius: 22px;
+  background: var(--ns-grad);
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+  animation: ns-grad-shift 6s linear infinite;
+}
+.web-card .preventa-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(0,212,255,0.15);
+  border: 1px solid rgba(0,212,255,0.5);
+  border-radius: 40px;
+  font-weight: 800; font-size: 11px; letter-spacing: 0.42em;
+  color: var(--ns-cyan); text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.web-card .preventa-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.web-card .prev-currency {
+  font-weight: 700; font-size: 28px;
+  color: var(--ns-cyan);
+  line-height: 1;
+}
+.web-card .prev-amount {
+  font-weight: 900;
+  font-size: clamp(56px, 14vw, 80px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: var(--ns-grad); background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ns-grad-shift 6s linear infinite;
+}
+@supports not (background-clip: text) {
+  .web-card .prev-amount { -webkit-text-fill-color: #d946ef; color: #d946ef; }
+}
+.web-card .prev-cop {
+  font-weight: 700; font-size: 14px;
+  color: var(--ns-muted);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.web-card .preventa-deadline {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,200,120,0.08);
+  border: 1px solid rgba(255,200,120,0.35);
+  border-radius: 40px;
+  color: #ffc070;
+  font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
+  margin-bottom: 16px;
+}
+.web-card .preventa-deadline svg { width: 16px; height: 16px; }
+.web-card .preventa-deadline strong { font-weight: 900; color: #fff; }
+.web-card .preventa-note {
+  font-size: 14px; color: var(--ns-muted);
+  margin-bottom: 22px;
+  line-height: 1.4;
+}
+
+/* === PATROCINADORES === */
+.web-card .patrocinadores { padding: 40px 0 60px; }
+.web-card .patro-label {
+  text-align: center;
+  font-weight: 800; font-size: 11px; letter-spacing: 0.46em;
+  color: var(--ns-muted); text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+}
+.web-card .patro-label::before, .web-card .patro-label::after {
+  content: ''; width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196,191,214,0.5), transparent);
+}
+.web-card .patro-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 620px; margin: 0 auto;
+}
+@media (max-width: 560px) {
+  .web-card .patro-grid { grid-template-columns: 1fr 1fr; gap: 10px; max-width: 380px; }
+  /* On mobile, drop placeholders so the 4 real sponsors fill a clean 2x2 grid */
+  .web-card .patro-card.patro-empty { display: none; }
+  .web-card .patro-card.patro-bistro { grid-column: span 2; }
+}
+.web-card .patro-card {
+  position: relative;
+  padding: 14px 10px;
+  background: #000;
+  border-radius: 14px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  min-height: 110px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45),
+              inset 0 1px 0 rgba(255,255,255,0.05),
+              0 0 16px rgba(0,212,255,0.1),
+              0 0 16px rgba(217,70,239,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+/* Animated gradient border that cycles through brand colors */
+.web-card .patro-card::before {
+  content: ''; position: absolute; inset: 0; padding: 1.5px;
+  border-radius: 14px;
+  background: var(--ns-grad);
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+  animation: ns-grad-shift 6s linear infinite;
+}
+.web-card .patro-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.55),
+              inset 0 1px 0 rgba(255,255,255,0.08),
+              0 0 24px rgba(0,212,255,0.2),
+              0 0 24px rgba(217,70,239,0.2);
+}
+/* All logos same height in their slot */
+.web-card .patro-card img {
+  width: auto;
+  height: 60px;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+.web-card .patro-card.patro-dago img { height: 80px; }
+.web-card .patro-card.patro-multi img { height: 72px; }
+.web-card .patro-card.patro-bistro {
+  grid-column: span 2;
+  background: #000;
+}
+.web-card .patro-card.patro-bistro::before {
+  background: var(--ns-grad);
+  background-size: 200% 100%;
+  animation: ns-grad-shift 6s linear infinite;
+}
+.web-card .patro-card.patro-bistro img {
+  height: 110px;
+  max-width: 80%;
+  object-fit: contain;
+}
+.web-card .patro-card.patro-bistro .patro-name {
+  color: rgba(255,255,255,0.85);
+}
+@media (max-width: 560px) {
+  .web-card .patro-card.patro-bistro { grid-column: span 2; }
+  .web-card .patro-card.patro-bistro img { height: 90px; }
+}
+/* Empty sponsor slot */
+.web-card .patro-card.patro-empty {
+  background: rgba(0,0,0,0.5);
+  opacity: 0.7;
+}
+.web-card .patro-card.patro-empty::before {
+  background: linear-gradient(160deg,
+    rgba(0,212,255,0.3),
+    rgba(139,92,246,0.15) 50%,
+    rgba(217,70,239,0.3));
+  animation: none;
+}
+.web-card .patro-empty-plus {
+  font-size: 32px; font-weight: 200; line-height: 1;
+  color: rgba(255,255,255,0.35);
+}
+.web-card .patro-empty-text {
+  font-weight: 700; font-size: 9px; letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.5); text-transform: uppercase;
+  line-height: 1.3;
+  max-width: 100%;
+}
+.web-card .patro-name {
+  font-weight: 800; font-size: 8.5px; letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.7); text-transform: uppercase;
+  word-wrap: break-word; overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.3;
+  max-width: 100%;
+}
+.web-card .patro-name.patro-name-dc { letter-spacing: 0.1em; }
+.web-card .patro-name.patro-name-dc span { display: block; white-space: nowrap; }
+
+/* === FOOTER === */
+.web-card .footer {
+  text-align: center;
+  padding: 40px 0 30px;
+  border-top: 1px solid rgba(139,92,246,0.18);
+  margin-top: 30px;
+  position: relative; z-index: 10;
+}
+.web-card .footer-logo { margin-bottom: 12px; }
+.web-card .productora {
+  font-size: 11px; color: var(--ns-muted);
+  letter-spacing: 0.32em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 6px;
+}
+.web-card .productora .nexo { color: #fff; font-weight: 800; }
+.web-card .copyright { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 14px; }
+
+/* === WA FLOAT === */
+.web-card .wa-float {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  z-index: 100;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: var(--ns-whatsapp);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 30px rgba(37,211,102,0.55);
+  color: #fff;
+  text-decoration: none;
+}
+.web-card .wa-float svg { width: 32px; height: 32px; fill: #fff; }
+.web-card .wa-float::before {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--ns-whatsapp);
+  opacity: 0;
+  animation: ns-pulse-ring 2s ease-out infinite;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .web-card .wrap { padding: 0 22px; }
+  .web-card section { padding: 56px 0; }
+  .web-card .hero { padding: 56px 0 44px; min-height: auto; }
+}
+@media (max-width: 480px) {
+  .web-card .wrap { padding: 0 18px; }
+  .web-card section { padding: 48px 0; }
+  .web-card .hero { padding: 44px 0 36px; }
+  .web-card .fecha-tag { font-size: 12px; letter-spacing: 0.28em; padding: 10px 22px 10px 18px; margin-bottom: 24px; }
+  .web-card .logo-oficial { padding: 12px 24px; margin-bottom: 32px; border-radius: 8px; }
+  .web-card .invita-label { font-size: 11px; letter-spacing: 0.36em; }
+  .web-card .divider { width: 140px; margin: 8px auto 18px; }
+  .web-card .mensaje { font-size: 15px; margin-bottom: 28px; padding: 0 6px; }
+  .web-card .countdown { gap: 6px; }
+  .web-card .cd-item { padding: 12px 2px; border-radius: 10px; }
+  .web-card .cd-label { font-size: 9px; letter-spacing: 0.18em; }
+  .web-card .cta-hero, .web-card .cta-wa-big { padding: 16px 28px; font-size: 15px; gap: 10px; }
+  .web-card .cta-hero svg, .web-card .cta-wa-big svg { width: 22px; height: 22px; }
+  .web-card .sec-header { margin-bottom: 30px; }
+  .web-card .artistas-grid { gap: 12px; }
+  .web-card .artista-info { padding: 16px 10px 20px; }
+  .web-card .info-grid { gap: 10px; }
+  .web-card .info-item { padding: 18px 10px; border-radius: 14px; }
+  .web-card .info-ico { width: 38px; height: 38px; margin-bottom: 10px; }
+  .web-card .info-ico svg { width: 18px; height: 18px; }
+  .web-card .info-label { font-size: 10px; letter-spacing: 0.28em; }
+  .web-card .incluye-item { padding: 14px 14px 14px 52px; font-size: 14px; }
+  .web-card .incluye-item .check { width: 24px; height: 24px; font-size: 12px; left: 14px; }
+  .web-card .cta-final-sub { font-size: 14px; }
+  .web-card .reservas-num { font-size: 16px; }
+  .web-card .te-invita { padding: 12px 22px; }
+  .web-card .te-invita .ti-name { font-size: 36px; }
+  .web-card .preventa-card { padding: 28px 20px 26px; }
+  .web-card .prev-amount { font-size: clamp(48px, 13vw, 64px); }
+  .web-card .preventa-note { font-size: 13px; }
+  .web-card .patro-grid { gap: 10px; }
+  .web-card .patro-card { padding: 14px 8px; min-height: 100px; }
+  .web-card .patro-card img { height: 52px; }
+  .web-card .patro-card.patro-dago img { height: 52px; }
+  .web-card .patro-name { font-size: 9px; letter-spacing: 0.12em; }
+  .web-card .patro-empty-plus { font-size: 26px; }
+  .web-card .patro-empty-text { font-size: 8.5px; letter-spacing: 0.15em; }
+  .web-card .wa-float { width: 54px; height: 54px; bottom: 16px; right: 16px; }
+  .web-card .wa-float svg { width: 28px; height: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .web-card *, .web-card *::before, .web-card *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* === CURVE SWIPE INTRO (cortina de borde curvo que barre hacia arriba) === */
+.curtain {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 108vh;
+  z-index: 9999;
+  background: #08060f;
+  border-radius: 0 0 50% 50% / 0 0 8vh 8vh;
+  display: grid; place-items: center;
+  will-change: transform;
+  box-shadow: 0 16px 80px rgba(0,212,255,0.18), 0 8px 50px rgba(217,70,239,0.16);
+}
+.curtain .ns-logo {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.4rem, 12vw, 5.2rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateY(-2vh);
+  /* Sombra estática y simple: la cortina se mueve como capa compuesta sin
+     re-rasterizar cada frame (clave para que el barrido sea fluido en móvil). */
+  filter: drop-shadow(0 0 30px rgba(0,212,255,0.35));
+}
+.curtain .ns-logo .n { color: #fff; }
+.curtain .ns-logo .s {
+  /* Gradiente ESTÁTICO (sin animación) mientras la cortina se desliza. */
+  background: linear-gradient(90deg, #00d4ff 0%, #2196f3 24%, #8b5cf6 56%, #d946ef 82%, #e91e63 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@supports not (background-clip: text) {
+  .curtain .ns-logo .s { -webkit-text-fill-color: #d946ef; color: #d946ef; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .curtain { display: none !important; }
+}
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="curtain" id="curtain" aria-hidden="true">
+  <span class="ns-logo"><span class="n">NEXT</span><span class="s">SHOW</span></span>
+</div>
+<noscript><style>.curtain{display:none!important}</style></noscript>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo } = React;
+
+const EVENT = {
+  date: '2026-06-13T19:00:00-05:00',
+  dateLabel: '13 · Junio · 2026',
+  dateLong: '13 de Junio',
+  dateYear: '2026',
+  hourLabel: '7:00 PM',
+  waNumber: '573106619353',
+  waDisplay: '+57 310 661 9353',
+};
+
+function buildWaUrl(nombre) {
+  const msg = `Hola Next Show! Soy ${nombre} y quiero reservar mi cupo para el evento del 13 de junio. Por favor envíenme info de boletas.`;
+  return `https://wa.me/${EVENT.waNumber}?text=${encodeURIComponent(msg)}`;
+}
+
+const WAIcon = () => (
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+);
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function computeDiff(iso) {
+  const diff = new Date(iso).getTime() - Date.now();
+  if (diff <= 0) return { d: 0, h: 0, m: 0, s: 0 };
+  return {
+    d: Math.floor(diff / 86400000),
+    h: Math.floor((diff % 86400000) / 3600000),
+    m: Math.floor((diff % 3600000) / 60000),
+    s: Math.floor((diff % 60000) / 1000),
+  };
+}
+
+function Twinkles({ count = 24 }) {
+  const stars = useMemo(() => {
+    return Array.from({ length: count }, (_, i) => {
+      const rng = (n) => { const x = Math.sin(i * 9301 + n * 49297) * 233280; return x - Math.floor(x); };
+      return { left: `${rng(1) * 100}%`, top: `${rng(2) * 100}%`, delay: rng(3) * 8, dur: 2 + rng(4) * 3 };
+    });
+  }, [count]);
+  return stars.map((p, i) => (
+    <span key={i} className="ns-twinkle" style={{
+      left: p.left, top: p.top, animationDelay: `${p.delay}s`, animationDuration: `${p.dur}s`
+    }}/>
+  ));
+}
+
+function App() {
+  // Resolve guest data from either URL params (?nombre=...) or short slug (/nextshowinvitacionum01)
+  // Also supports a GENERIC mode (/nextshowinvitacion or ?generic=1) that hides the personalized greeting.
+  const [guestData, setGuestData] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const isGenericPath = /nextshowinvitacion\/?$/i.test(window.location.pathname);
+    const generic = params.get('generic') === '1' || isGenericPath;
+    if (generic) {
+      return { nombre: '', invita: '', generic: true, resolved: true };
+    }
+    const nombre = params.get('nombre') || params.get('name');
+    if (nombre) {
+      return {
+        nombre: nombre.trim(),
+        invita: (params.get('invita') || params.get('responsable') || '').trim(),
+        generic: false,
+        resolved: true,
+      };
+    }
+    return { nombre: 'Juan Sebastián', invita: '', generic: false, resolved: false };
+  });
+
+  useEffect(() => {
+    if (guestData.resolved) return;
+    // Try to extract a slug from the URL pathname
+    const slugMatch = window.location.pathname.match(/(nextshowinvitacionum\d+)/i);
+    if (!slugMatch) { setGuestData(g => ({...g, resolved: true})); return; }
+    const slug = slugMatch[1].toLowerCase();
+    fetch('invitados.json?v=' + Date.now())
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        const entry = data[slug];
+        if (entry) {
+          setGuestData({
+            nombre: [entry.nombre, entry.apellido].filter(Boolean).join(' ').trim() || 'Invitado especial',
+            invita: (entry.responsable || '').trim(),
+            resolved: true,
+          });
+        } else {
+          setGuestData({ nombre: 'Invitado especial', invita: '', resolved: true });
+        }
+      })
+      .catch(() => setGuestData({ nombre: 'Invitado especial', invita: '', resolved: true }));
+  }, []);
+
+  const nombre = guestData.nombre;
+  const invita = guestData.invita;
+  const isGeneric = guestData.generic;
+  const [t, setT] = useState(() => computeDiff(EVENT.date));
+  const videoRef = useRef(null);
+  const [bgState, setBgState] = useState('loading');
+  const waUrl = buildWaUrl(nombre);
+
+  useEffect(() => {
+    document.title = `NEXT SHOW · Invitación especial para ${nombre}`;
+    const id = setInterval(() => setT(computeDiff(EVENT.date)), 1000);
+    return () => clearInterval(id);
+  }, [nombre]);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    // Only fall back to smoke on an ACTUAL error, never on a timer.
+    // (Previously a 2.5s timeout flashed the smoke before slow videos loaded.)
+    const onPlay = () => setBgState('video');
+    const onError = () => setBgState('smoke');
+    v.addEventListener('playing', onPlay);
+    v.addEventListener('error', onError);
+    const p = v.play && v.play();
+    if (p && p.catch) p.catch(() => setBgState('smoke'));
+    return () => {
+      v.removeEventListener('playing', onPlay);
+      v.removeEventListener('error', onError);
+    };
+  }, []);
+
+  const nameClass = nombre.length > 22 ? 'l5' : nombre.length > 17 ? 'l4' : nombre.length > 13 ? 'l3' : nombre.length > 8 ? 'l2' : 'l1';
+
+  return (
+    <div className={`web-card bg-${bgState}`}>
+      <div className="bg-stage">
+        <div className="bg-base"></div>
+        <div className="bg-smoke-cyan"></div>
+        <div className="bg-smoke-violet"></div>
+        <div className="bg-smoke-magenta"></div>
+        <div className="bg-smoke-wisps"></div>
+        <video ref={videoRef} className="bg-video" autoPlay muted loop playsInline preload="auto">
+          <source media="(min-width: 769px)" src="assets/fondo-pc.mp4" type="video/mp4"/>
+          <source src="assets/fondo.mp4" type="video/mp4"/>
+        </video>
+        <div className="bg-tint"></div>
+        <Twinkles count={24}/>
+        <div className="bg-vignette"></div>
+      </div>
+
+      {/* HERO */}
+      <section className="hero">
+        <div className="wrap">
+          <div className="fecha-tag anim-up d-1"><span className="dot"></span>{EVENT.dateLabel}</div>
+          <div className="logo-oficial anim-up d-2">
+            <div className="logo-text"><span className="next">NEXT</span><span className="show">SHOW</span></div>
+          </div>
+          {!isGeneric && <div className="invita-label anim-up d-3">Invitación especial para</div>}
+          {!isGeneric && <h1 className={`nombre anim-up d-4 ${nameClass}`}>{nombre}</h1>}
+          {isGeneric && <h1 className="nombre-generic anim-up d-4">Una noche en vivo</h1>}
+          <div className="divider anim-up d-5"></div>
+          {invita && !isGeneric && (
+            <div className="te-invita anim-up d-5">
+              <span className="ti-label">Te invita</span>
+              <span className="ti-name">{invita}</span>
+            </div>
+          )}
+          <p className="mensaje anim-up d-6">
+            Te queremos en una noche que va a quedar en la <strong>memoria de Sabanalarga</strong>
+          </p>
+          <div className="countdown anim-up d-7">
+            <div className="cd-item"><div className="cd-num">{pad(t.d)}</div><div className="cd-label">Días</div></div>
+            <div className="cd-item"><div className="cd-num">{pad(t.h)}</div><div className="cd-label">Horas</div></div>
+            <div className="cd-item"><div className="cd-num">{pad(t.m)}</div><div className="cd-label">Minutos</div></div>
+            <div className="cd-item"><div className="cd-num">{pad(t.s)}</div><div className="cd-label">Segundos</div></div>
+          </div>
+          <a href={waUrl} className="cta-hero anim-up d-8" target="_blank" rel="noopener">
+            <WAIcon/> Reservar mi cupo
+          </a>
+        </div>
+      </section>
+
+      {/* PRESENTADORA */}
+      <section className="sec sec-reveal">
+        <div className="wrap">
+          <div className="sec-header">
+            <div className="eyebrow">Conducido por</div>
+            <h2><span className="grad">La presentadora</span></h2>
+          </div>
+          <div className="natalya-wrap">
+            <div className="artista-card">
+              <div className="artista-img">
+                <img src="assets/natalya_3x4.jpg" alt="Natalya Ruiz"/>
+                <div className="art-fade"></div>
+              </div>
+              <div className="artista-info">
+                <div className="art-nombre">Natalya</div>
+                <div className="art-apellido">Ruiz</div>
+                <div className="art-role">Presentadora</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ARTISTAS */}
+      <section className="sec sec-reveal">
+        <div className="wrap">
+          <div className="sec-header">
+            <div className="eyebrow">En tarima</div>
+            <h2><span className="grad">Los artistas</span></h2>
+          </div>
+          <div className="artistas-grid">
+            <div className="artista-card">
+              <div className="artista-img">
+                <img src="assets/toromobolo.jpg" alt="Torombolo Welc'h"/>
+                <div className="art-fade"></div>
+              </div>
+              <div className="artista-info">
+                <div className="art-nombre">Torombolo</div>
+                <div className="art-apellido">Welc'h</div>
+                <div className="art-role">Comediante</div>
+              </div>
+            </div>
+            <div className="artista-card">
+              <div className="artista-img">
+                <img src="assets/jair_luquez.jpg" alt="Jair Luquez"/>
+                <div className="art-fade"></div>
+              </div>
+              <div className="artista-info">
+                <div className="art-nombre">Jair</div>
+                <div className="art-apellido">Luquez</div>
+                <div className="art-role">Música en vivo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* DETALLES */}
+      <section className="sec sec-reveal">
+        <div className="wrap">
+          <div className="sec-header">
+            <div className="eyebrow">Detalles</div>
+            <h2><span className="grad">El evento</span></h2>
+          </div>
+          <div className="info-grid">
+            <div className="info-item">
+              <span className="info-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              <div className="info-label">Fecha</div>
+              <div className="info-valor">{EVENT.dateLong}<br/>{EVENT.dateYear}</div>
+            </div>
+            <div className="info-item">
+              <span className="info-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+              <div className="info-label">Hora</div>
+              <div className="info-valor">{EVENT.hourLabel}<br/><small>Apertura puertas</small></div>
+            </div>
+            <div className="info-item">
+              <span className="info-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+              <div className="info-label">Lugar</div>
+              <div className="info-valor">La Zona<br/>Deportiva</div>
+            </div>
+            <div className="info-item">
+              <span className="info-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg></span>
+              <div className="info-label">Ciudad</div>
+              <div className="info-valor">Sabanalarga<br/>Atlántico</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* VAS A VIVIR */}
+      <section className="sec sec-reveal">
+        <div className="wrap">
+          <div className="sec-header">
+            <div className="eyebrow">Experiencias</div>
+            <h2><span className="grad">Disfrutarás</span></h2>
+          </div>
+          <ul className="incluye-list">
+            <li className="incluye-item"><span className="check">✓</span> Host del show: <strong>Natalya Ruiz</strong></li>
+            <li className="incluye-item"><span className="check">✓</span> Música en vivo con <strong>Jair Luquez</strong> y humor con <strong>Torombolo Welc'h</strong></li>
+            <li className="incluye-item"><span className="check">✓</span> Invitados sorpresa</li>
+            <li className="incluye-item"><span className="check">✓</span> Food Experience By <strong>Bistro 22</strong></li>
+            <li className="incluye-item"><span className="check">✓</span> Una noche que vas a recordar</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* PREVENTA */}
+      <section className="sec sec-reveal preventa">
+        <div className="wrap">
+          <div className="preventa-card">
+            <div className="preventa-badge">Boleta en preventa</div>
+            <div className="preventa-price">
+              <span className="prev-currency">$</span>
+              <span className="prev-amount">75.000</span>
+              <span className="prev-cop">COP</span>
+            </div>
+            <div className="preventa-deadline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Válida hasta el <strong>31 de mayo</strong></span>
+            </div>
+            <div className="preventa-note">Asegura tu cupo a precio especial antes de que suba</div>
+            <a href={waUrl} className="cta-wa-big" target="_blank" rel="noopener">
+              <WAIcon/> Reservar mi preventa
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* PATROCINADORES */}
+      <section className="sec sec-reveal patrocinadores">
+        <div className="wrap">
+          <div className="patro-label">Sponsors</div>
+          <div className="patro-grid">
+            <div className="patro-card">
+              <img src="assets/logo-zona.png" alt="La Zona Deportiva"/>
+              <div className="patro-name">La Zona Deportiva</div>
+            </div>
+            <div className="patro-card patro-dago">
+              <img src="assets/logo-dago.png" alt="Distrimateriales Dago"/>
+              <div className="patro-name">Distrimateriales Dago</div>
+            </div>
+            <div className="patro-card patro-multi">
+              <img src="assets/logo-multidiagnosticos.png" alt="Multidiagnósticos AS"/>
+              <div className="patro-name">Multidiagnósticos AS</div>
+            </div>
+            <div className="patro-card">
+              <img src="assets/logo-daniel-cepeda.png" alt="Dr. Daniel Cepeda"/>
+              <div className="patro-name patro-name-dc"><span>Dr. Daniel Cepeda</span><span>Cirujano Plástico</span></div>
+            </div>
+            <div className="patro-card">
+              <img src="assets/logo-pa.png" alt="P&amp;A Proyectos Arquitectónicos"/>
+              <div className="patro-name">P&amp;A Proyectos Arquitectónicos</div>
+            </div>
+            <div className="patro-card">
+              <img src="assets/logo-veterinaria-pena.png" alt="Veterinaria Peña"/>
+              <div className="patro-name">Veterinaria Peña</div>
+            </div>
+            <div className="patro-card patro-bistro">
+              <img src="assets/logo-bistro22.png" alt="Bistro 22"/>
+              <div className="patro-name">Bistro 22 · Cocina Artesanal</div>
+            </div>
+            <div className="patro-card patro-empty">
+              <div className="patro-empty-plus">+</div>
+              <div className="patro-empty-text">Anuncia tu marca aquí</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div className="wrap">
+          <div className="footer-logo">
+            <div className="logo-text small"><span className="next">NEXT</span><span className="show">SHOW</span></div>
+          </div>
+          <div className="productora">Una producción de <span className="nexo">Nexo Productions</span></div>
+          <div className="copyright">© 2026 NEXT SHOW · Sabanalarga, Atlántico</div>
+        </div>
+      </footer>
+
+      <a href={waUrl} className="wa-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </a>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+<!-- CURVE SWIPE INTRO: cortina con borde curvo que barre hacia arriba al cargar -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+(function(){
+  var c = document.getElementById('curtain');
+  if (!c) return;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var done = false;
+  function hide(){ if (done) return; done = true; c.style.display = 'none'; }
+  function sweep(){
+    if (done) return;
+    if (window.gsap && !reduce) {
+      gsap.to(c, { yPercent: -118, duration: 1.1, ease: 'power3.inOut', onComplete: hide });
+    } else { hide(); }
+  }
+  if (reduce) { hide(); return; }
+  // La invitación es una app React: esperamos a que monte para revelar contenido real,
+  // con un tiempo mínimo en pantalla para que el intro se lea.
+  var start = Date.now();
+  function mounted(){ var r = document.getElementById('root'); return r && r.children.length > 0; }
+  (function wait(){
+    var el = Date.now() - start;
+    if (mounted() && el >= 700) { sweep(); }
+    else if (el < 2000) { requestAnimationFrame(wait); }
+    else { sweep(); }
+  })();
+  setTimeout(hide, 3500); // FAILSAFE OBLIGATORIO: la cortina SIEMPRE se quita
+})();
+</script>
+
+<script>
+/* Botón flotante WhatsApp: pop + wiggle periódico con GSAP (respeta reduced-motion) */
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function start(btn){
+    gsap.set(btn, { transformOrigin: '50% 50%' });
+    var tl = gsap.timeline({ repeat: -1, repeatDelay: 3 });
+    tl.to(btn, { scale: 1.18, duration: 0.30, ease: 'back.out(3)' })
+      .to(btn, { scale: 1, duration: 0.30, ease: 'power2.inOut' })
+      .to(btn, { rotation: 14, duration: 0.09 })
+      .to(btn, { rotation: -12, duration: 0.09 })
+      .to(btn, { rotation: 9, duration: 0.09 })
+      .to(btn, { rotation: -6, duration: 0.09 })
+      .to(btn, { rotation: 0, duration: 0.12, ease: 'power1.out' });
+  }
+  var n = 0;
+  var iv = setInterval(function(){
+    var btn = document.querySelector('.wa-float');
+    if ((btn && window.gsap) || n++ > 80) {
+      clearInterval(iv);
+      if (btn && window.gsap) start(btn);
+    }
+  }, 80);
+})();
+</script>
+
+</body>
+</html>

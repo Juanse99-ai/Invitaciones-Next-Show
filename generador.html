@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<style data-omelette-injected>html,body{background:transparent}</style><script data-omelette-injected>(()=>{var j=["https://claude.ai","https://preview.claude.ai"];var x=true;var S=30000;var f=3000;document.addEventListener("DOMContentLoaded",()=>{const H=window.Babel;const G="om-src-id";if(H&&H.registerPlugin&&!(H.availablePlugins&&H.availablePlugins[G])){H.registerPlugin(G,({types:Y})=>({visitor:{JSXOpeningElement(U,Q){const J=U.node;if(J.name&&J.name.type==="JSXMemberExpression")return;for(let V=0;V<J.attributes.length;V++){const L=J.attributes[V];if(L.type==="JSXAttribute"&&L.name&&L.name.name==="data-om-id")return}const W=Q.file&&Q.file.opts&&Q.file.opts.filename||"?";const Z=J.loc&&J.loc.start;const z=`jsx:${W}:${J.start??0}:${Z?Z.line:0}:${Z?Z.column+1:0}`;J.attributes.push(Y.jsxAttribute(Y.jsxIdentifier("data-om-id"),Y.stringLiteral(z)))}}}))}const k="om-text-extract";let A=false;if(x&&H&&H.registerPlugin&&!(H.availablePlugins&&H.availablePlugins[k])){const Y=window.React;if(Y&&Y.useSyncExternalStore&&Y.createElement){A=true;const U={};const Q=new Set;let J=0;window.__omTextO=U;window.__omTextSet=(z)=>{for(const V in z){const L=z[V];if(L==null)delete U[V];else U[V]=L}J++;Q.forEach((V)=>V())};const W=(z)=>{Q.add(z);return()=>Q.delete(z)};const Z=()=>J;window.__OmT=function z(V){Y.useSyncExternalStore(W,Z,Z);return Y.createElement("span",{"data-om-text":V.i,className:"__om-t"},V.i in U?U[V.i]:V.children)};H.registerPlugin(k,({types:z})=>{const V={style:1,script:1,noscript:1,textarea:1,title:1,option:1,text:1,tspan:1,textPath:1};const L={placeholder:1,alt:1,title:1,label:1,"aria-label":1,"aria-description":1,"aria-placeholder":1};const _=($,C)=>z.logicalExpression("??",z.memberExpression(z.logicalExpression("||",z.memberExpression(z.identifier("window"),z.identifier("__omTextO")),z.objectExpression([])),z.stringLiteral($),true),C);const E=($)=>$.file&&$.file.opts&&$.file.opts.filename||"?";const B=($)=>$.file&&$.file.code||"";const b=($,C)=>{const X=(F)=>F&&F.start!=null&&F.end!=null&&(F.type==="StringLiteral"||F.type==="TemplateLiteral"&&F.expressions.length===0)?[F.start,F.end]:null;const N=X(C);if(N)return N;if(C&&C.type==="Identifier"){const F=$.scope.getBinding(C.name);if(F&&F.constant&&F.path.node.type==="VariableDeclarator"){return X(F.path.node.init)}}return null};const M=($,C,X)=>{const N=$.node;let F=false;const w=(K,q)=>{F=true;return z.jsxElement(z.jsxOpeningElement(z.jsxIdentifier("__OmT"),[z.jsxAttribute(z.jsxIdentifier("i"),z.stringLiteral(K))],false),z.jsxClosingElement(z.jsxIdentifier("__OmT")),[q],false)};const D=N.children.map((K)=>{if(K.type==="JSXText"){if(K.start==null||K.end==null)return K;const q=X.slice(K.start,K.end);const R=q.length-q.trimStart().length;const m=q.length-q.trimEnd().length;if(R+m>=q.length)return K;return w(`txt:${C}:${K.start+R}:${K.end-m}`,K)}if(K.type==="JSXExpressionContainer"){const q=b($,K.expression);if(q)return w(`str:${C}:${q[0]}:${q[1]}`,K)}return K});if(F)N.children=D};return{visitor:{JSXOpeningElement($,C){const X=$.node;const N=E(C);const F={};for(let w=0;w<X.attributes.length;w++){const D=X.attributes[w];if(D.type!=="JSXAttribute"||!D.name)continue;const K=D.name.name;if(!L[K])continue;if(!D.value||D.value.type!=="StringLiteral")continue;if(D.value.start==null||D.value.end==null)continue;const q=`txt:${N}:${D.value.start}:${D.value.end}`;F[K]=q;D.value=z.jsxExpressionContainer(_(q,z.stringLiteral(D.value.value)))}if(Object.keys(F).length){X.attributes.push(z.jsxAttribute(z.jsxIdentifier("data-om-text-attrs"),z.stringLiteral(JSON.stringify(F))))}},JSXElement($,C){const X=$.node.openingElement;const N=X&&X.name&&X.name.name;if(N==="__OmT")return;if(typeof N==="string"&&V[N])return;M($,E(C),B(C))},JSXFragment($,C){M($,E(C),B(C))}}}})}}const u=A?["transform-react-jsx-source",G,k]:["transform-react-jsx-source",G];document.querySelectorAll('script[type="text/babel"],script[type="text/jsx"]').forEach((Y,U)=>{const Q=Y.getAttribute("data-plugins")||"";const J=u.filter((W)=>Q.indexOf(W)<0);if(J.length){Y.setAttribute("data-plugins",Q?`${Q},${J.join(",")}`:J.join(","))}if(!Y.hasAttribute("data-filename")){Y.setAttribute("data-filename",Y.getAttribute("src")||`inline-${U}`)}})});var y=window.parent;if(y&&y!==window){const H=(Q,J)=>{try{y.postMessage({__omelette_log:true,type:Q,data:J},"*")}catch{}};["log","warn","error"].forEach((Q)=>{const J=console[Q];console[Q]=(...W)=>{const Z=W.map((z)=>{try{return typeof z==="object"?JSON.stringify(z):String(z)}catch{try{return String(z)}catch{return"[unstringifiable]"}}}).join(" ");H(Q,Z);J.apply(console,W)}});window.addEventListener("error",(Q)=>{const J=Q.target;if(J&&J!==window&&J.tagName){const W=J.src||J.href||"";H("resource_error",`${J.tagName} failed to load: ${W}`)}else{H("error",`${Q.message||"Unknown error"} at ${Q.filename||"?"}:${Q.lineno||0}:${Q.colno||0}`)}},true);window.addEventListener("unhandledrejection",(Q)=>{const J=Q.reason;const W=J instanceof Error?`${J.message} ${J.stack}`:String(J);H("error",`Unhandled rejection: ${W}`)});const G=()=>{try{y.postMessage({type:"omelette:height",height:document.documentElement.scrollHeight},"*")}catch{}};if(document.readyState==="complete")G();else window.addEventListener("load",G);if(window.ResizeObserver)new ResizeObserver(G).observe(document.documentElement);const k={};let A=0;window.claude={complete(Q){return new Promise((J,W)=>{if(!j.length){W(new Error("claude.complete: no parent origin"));return}const Z=`c${++A}`;const z=()=>setTimeout(()=>{delete k[Z];W(new Error(`claude.complete: no data for ${S/1000}s`))},S);const V=z();k[Z]={resolve:J,reject:W,text:"",t:V,arm:z};try{for(const L of j){y.postMessage({__om_api:true,id:Z,body:Q},L)}}catch(L){clearTimeout(V);delete k[Z];W(L)}})}};const u={};let Y=0;window.omelette={writeFile:(Q,J)=>new Promise((W,Z)=>{if(!j.length){W();return}const z=`f${++Y}`;const V=setTimeout(()=>{delete u[z];W()},f);u[z]={resolve:W,reject:Z,t:V};try{for(const L of j){y.postMessage({__om_file:true,id:z,op:"write",path:Q,content:J},L)}}catch{clearTimeout(V);delete u[z];W()}})};const U=(Q)=>{try{return JSON.stringify(Q)}catch{return JSON.stringify(String(Q))}};window.addEventListener("message",(Q)=>{if(j.indexOf(Q.origin)<0)return;if(Q.source!==y)return;const J=Q.data;if(!J)return;if(J.type==="omelette-preview-refresh"){if(typeof J.token!=="string"||!/^[0-9a-f.-]+(\.(rc|pr-[0-9]+))?(\.[0-9]+\.[0-9a-f]{16})?$/.test(J.token))return;const z=Math.max(1,Math.floor((J.expiresAt||0)-Date.now()/1000));document.cookie="__Host-omelette-preview="+J.token+"; Path=/; Secure; SameSite=None; Partitioned; Max-Age="+z;return}if(J.__om_file_r){const z=u[J.id];if(!z)return;clearTimeout(z.t);delete u[J.id];if(J.ok)z.resolve();else z.reject(new Error(J.error||"write failed"));return}if(J.__om_api_r){const z=k[J.id];if(!z)return;if(J.error!=null){clearTimeout(z.t);delete k[J.id];z.reject(new Error(J.error));return}if(J.chunk!=null){clearTimeout(z.t);z.t=z.arm();z.text+=J.chunk;return}if(J.done){clearTimeout(z.t);delete k[J.id];z.resolve(J.text!=null?J.text:z.text);return}return}if(!J.__om_eval)return;const W=J;const Z=(z)=>{Q.source.postMessage({...z,__om_eval_r:1,id:W.id},Q.origin)};try{const z=(0,eval)(W.code);if(z&&typeof z.then==="function"){z.then((V)=>Z({ok:1,v:U(V)}),(V)=>Z({ok:0,e:String(V)}))}else{Z({ok:1,v:U(z)})}}catch(z){Z({ok:0,e:String(z)})}})}})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXT SHOW · Compartir invitaciones</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  :root {
+    --gen-bg: #0a0614;
+    --gen-line: rgba(139,92,246,0.18);
+    --gen-text: #fff;
+    --gen-muted: #8a849f;
+    --gen-dim: #5b576b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--gen-bg); color: var(--gen-text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+  .shell { max-width: 1400px; margin: 0 auto; padding: 48px 56px 80px; }
+
+  /* === Header === */
+  .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; gap: 24px; flex-wrap: wrap; }
+  .brand { display: inline-flex; align-items: center; gap: 14px; }
+  .brand-mark {
+    background: #000; padding: 8px 16px; border-radius: 6px;
+    font-weight: 900; font-size: 22px; letter-spacing: -0.04em; line-height: 1;
+    box-shadow: 0 8px 24px rgba(0,212,255,0.3), 0 8px 24px rgba(217,70,239,0.3);
+  }
+  .brand-mark .show {
+    background: var(--ns-grad); background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: ns-grad-shift 6s linear infinite;
+  }
+  .brand-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.35em; text-transform: uppercase; color: var(--ns-cyan); }
+  h1 {
+    font-size: 40px; font-weight: 900; line-height: 1.05;
+    letter-spacing: -0.02em; margin: 0 0 14px;
+  }
+  h1 .grad {
+    background: var(--ns-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .lede { font-size: 17px; line-height: 1.55; color: var(--gen-muted); max-width: 720px; margin-bottom: 36px; }
+
+  /* === Steps === */
+  .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 36px; }
+  @media (max-width: 900px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    padding: 26px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--gen-line);
+    border-radius: 16px;
+  }
+  .step-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--ns-grad); background-size: 200% 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 15px;
+    animation: ns-grad-shift 6s linear infinite;
+  }
+  .step-title { font-weight: 800; font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  .field-label { font-size: 11px; font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gen-dim); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .field-label .count strong { color: #fff; font-weight: 800; }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--gen-line);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    transition: border 0.15s, background 0.15s;
+  }
+  textarea { min-height: 200px; resize: vertical; }
+  textarea:focus, input[type="text"]:focus {
+    outline: none; border-color: rgba(0,212,255,0.55); background: rgba(0,212,255,0.04);
+  }
+  textarea::placeholder, input::placeholder { color: rgba(255,255,255,0.22); }
+
+  .helper { font-size: 13px; color: var(--gen-dim); margin-top: 10px; line-height: 1.5; }
+  .helper a { color: var(--ns-cyan); text-decoration: none; border-bottom: 1px solid rgba(0,212,255,0.3); }
+  .helper a:hover { border-bottom-color: var(--ns-cyan); }
+
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 12px 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--gen-line);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .btn:hover:not(:disabled) { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary {
+    background: var(--ns-grad); background-size: 200% 100%; border: none;
+    color: #fff; font-weight: 800; font-size: 15px;
+    padding: 14px 22px;
+    box-shadow: 0 14px 36px rgba(0,212,255,0.28), 0 14px 36px rgba(217,70,239,0.28);
+    animation: ns-grad-shift 6s linear infinite;
+  }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-wa {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    border: none; color: #fff; font-weight: 700;
+  }
+  .btn-wa:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(37,211,102,0.4); }
+
+  /* === Guest list === */
+  .guests {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--gen-line);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .guests-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--gen-line);
+    background: rgba(0,212,255,0.04);
+  }
+  .guests-head h2 { font-size: 14px; font-weight: 800; letter-spacing: 0.34em; text-transform: uppercase; color: var(--ns-cyan); margin: 0; }
+  .guests-head .actions { display: flex; gap: 8px; }
+  .guests-body { max-height: 580px; overflow-y: auto; }
+  .guest {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 18px; align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(139,92,246,0.08);
+    transition: background 0.15s;
+  }
+  .guest:hover { background: rgba(255,255,255,0.02); }
+  .guest:last-child { border-bottom: none; }
+  .guest-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px; color: var(--ns-cyan);
+    font-variant-numeric: tabular-nums;
+  }
+  .guest-info { min-width: 0; }
+  .guest-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+  .guest-meta {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 4px 0 6px;
+  }
+  .meta-chip {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 50px;
+    letter-spacing: 0.04em;
+  }
+  .meta-chip.invita {
+    background: rgba(217,70,239,0.15);
+    border: 1px solid rgba(217,70,239,0.4);
+    color: #f4a8ff;
+  }
+  .meta-chip.phone {
+    background: rgba(37,211,102,0.12);
+    border: 1px solid rgba(37,211,102,0.4);
+    color: #6ee9a3;
+    font-variant-numeric: tabular-nums;
+  }
+  .meta-chip.phone-bad {
+    background: rgba(255,200,120,0.1);
+    border: 1px solid rgba(255,200,120,0.3);
+    color: #ffc070;
+  }
+  .meta-chip.sent-chip {
+    background: rgba(37,211,102,0.18);
+    border: 1px solid rgba(37,211,102,0.5);
+    color: #6ee9a3;
+  }
+
+  /* Filter toolbar */
+  .guests-toolbar {
+    display: flex; gap: 12px; align-items: flex-end;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--gen-line);
+    background: rgba(0,0,0,0.25);
+    flex-wrap: wrap;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group.grow { flex: 1; min-width: 180px; }
+  .filter-group label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--gen-muted);
+  }
+  .filter-group select, .filter-group input {
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--gen-line);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    min-width: 180px;
+  }
+  .filter-group select:focus, .filter-group input:focus {
+    outline: none; border-color: rgba(0,212,255,0.55);
+  }
+  .filter-counter {
+    text-align: center;
+    padding: 4px 14px;
+    border-left: 1px solid var(--gen-line);
+    align-self: stretch;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .filter-counter .fc-num {
+    font-weight: 800; font-size: 18px; color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .filter-counter .fc-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--gen-muted);
+  }
+  .filter-counter.sent .fc-num { color: #6ee9a3; }
+
+  /* Sent state on guest row */
+  .guest.sent { opacity: 0.55; }
+  .guest.sent .guest-name { text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.3); }
+
+  /* Check icon for marking sent */
+  .icon-btn.check { color: var(--gen-muted); }
+  .icon-btn.check.on {
+    background: rgba(37,211,102,0.2);
+    border-color: rgba(37,211,102,0.5);
+    color: #6ee9a3;
+  }
+  .guest-url {
+    font-size: 12px; color: var(--gen-muted); font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .guest-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--gen-line);
+    border-radius: 8px;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { background: rgba(255,255,255,0.1); }
+  .icon-btn.wa { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); border-color: transparent; }
+  .icon-btn.wa:hover { box-shadow: 0 6px 18px rgba(37,211,102,0.4); }
+  .icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .icon-btn.wa svg { fill: #fff; stroke: none; }
+  .copied { background: rgba(0,212,255,0.18); border-color: var(--ns-cyan); }
+
+  .empty { padding: 60px 24px; text-align: center; color: var(--gen-dim); font-size: 14px; }
+
+  /* === Toast === */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ns-grad); background-size: 200% 100%;
+    padding: 12px 22px;
+    border-radius: 50px;
+    font-size: 14px; font-weight: 700;
+    box-shadow: 0 14px 40px rgba(0,212,255,0.4), 0 14px 40px rgba(217,70,239,0.4);
+    animation: ns-grad-shift 4s linear infinite, ns-fade-up 0.3s ease;
+    z-index: 1000;
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useMemo, useEffect } = React;
+
+const SAMPLE_NAMES = `Fernando	Moreno	3001234567	Juan Sebastián
+Fabio	Acuña	3009876543	Juan Sebastián
+María Fernanda	Castro		María José
+Juan Sebastián	Pérez	3151112233	Sebastián
+Ana Lucía	Rodríguez		Sebastián`;
+
+const SLUG_PREFIX = 'nextshowinvitacionum';
+
+function shortSlug(i) {
+  return SLUG_PREFIX + String(i + 1).padStart(2, '0');
+}
+
+const SITE_FILES = [
+  'tarjeta.html',
+  'generador.html',
+  'vercel.json',
+  'assets/toromobolo.jpg',
+  'assets/jair_luquez.jpg',
+  'assets/natalya_3x4.jpg',
+  'assets/allison-latin-400-normal.woff2',
+  'assets/fondo.mp4',
+  'assets/fondo-pc.mp4',
+  'assets/logo-dago.png',
+  'assets/logo-zona.png',
+  'assets/logo-multidiagnosticos.png',
+  'assets/logo-bistro22.png',
+];
+
+/* Parse pasted text from Excel/Sheets.
+   Accepts:
+   - 4-column TSV/CSV (Nombre, Apellido, Celular, Responsable)
+   - Or just plain names (one per line) for backwards compat. */
+function parseGuests(text) {
+  return text.split('\n').map(line => {
+    const raw = line.trim();
+    if (!raw) return null;
+    // Split by tab (Excel paste) or comma
+    const parts = raw.split(/\t|,(?=\S)/).map(p => p.trim());
+    if (parts.length === 1) {
+      // Plain name only
+      return { nombre: parts[0], apellido: '', celular: '', responsable: '' };
+    }
+    return {
+      nombre: parts[0] || '',
+      apellido: parts[1] || '',
+      celular: parts[2] || '',
+      responsable: parts[3] || '',
+    };
+  }).filter(Boolean).filter(g => g.nombre || g.apellido);
+}
+
+function fullName(g) {
+  return [g.nombre, g.apellido].filter(Boolean).join(' ').trim();
+}
+
+function buildUrl(base, guest, idx) {
+  const b = (base || '').trim().replace(/\/+$/, '');
+  // Short personalized URL (works after site is uploaded with _redirects)
+  if (b) return `${b}/${shortSlug(idx)}`;
+  // Local fallback when no base URL yet — direct query-param link
+  const params = new URLSearchParams();
+  params.set('nombre', fullName(guest));
+  if (guest.responsable) params.set('invita', guest.responsable);
+  return `tarjeta.html?${params.toString()}`;
+}
+
+/* Normalize CO phone numbers to E.164 (57XXXXXXXXXX). Returns null if invalid. */
+function normalizePhone(raw) {
+  if (!raw) return null;
+  const digits = String(raw).replace(/\D/g, '');
+  if (!digits) return null;
+  // Already has country code
+  if (digits.startsWith('57') && digits.length === 12) return digits;
+  // Mobile starting with 3
+  if (digits.length === 10 && digits.startsWith('3')) return '57' + digits;
+  // Last-ditch: if 11-12 digits, hope it's correct
+  if (digits.length >= 11) return digits;
+  return null;
+}
+
+function waLink(guest, url) {
+  const name = fullName(guest);
+  const msg = `Hola ${name}! 🎤 Tienes una invitación especial a NEXT SHOW.\n\n` +
+              `📅 13 de junio · 7:00 PM\n` +
+              `📍 La Zona Deportiva · Sabanalarga\n\n` +
+              `Una noche con Toromobolo Welc'h y Jair Luquez en vivo, conducida por Natalya Ruiz.\n\n` +
+              `Mira tu invitación personalizada aquí 👇\n${url}`;
+  const phone = normalizePhone(guest.celular);
+  return phone
+    ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
+    : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+}
+
+function App() {
+  // Auto-load from localStorage so a refresh doesn't lose the list
+  const [namesText, setNamesText] = useState(() => {
+    try { return localStorage.getItem('nextshow_names') ?? SAMPLE_NAMES; }
+    catch { return SAMPLE_NAMES; }
+  });
+  const [baseUrl, setBaseUrl] = useState(() => {
+    try { return localStorage.getItem('nextshow_baseurl') ?? ''; }
+    catch { return ''; }
+  });
+  const [filter, setFilter] = useState('__all__');
+  const [search, setSearch] = useState('');
+  const [sentSet, setSentSet] = useState(() => {
+    try { return new Set(JSON.parse(localStorage.getItem('nextshow_sent') || '[]')); }
+    catch { return new Set(); }
+  });
+  const [copiedIdx, setCopiedIdx] = useState(null);
+  const [siteCount, setSiteCount] = useState(null);
+  const [loadingSite, setLoadingSite] = useState(false);
+
+  // Discover invitados.json on the same hosting — count guests for the "Load from site" button
+  useEffect(() => {
+    fetch('invitados.json?v=' + Date.now())
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && typeof data === 'object') {
+          setSiteCount(Object.keys(data).length);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  async function loadFromSite() {
+    setLoadingSite(true);
+    try {
+      const res = await fetch('invitados.json?v=' + Date.now());
+      if (!res.ok) throw new Error('No se encontró invitados.json');
+      const data = await res.json();
+      // Order entries by slug numeric tail so 01, 02, ... is preserved
+      const entries = Object.entries(data).sort((a, b) => {
+        const na = parseInt(a[0].replace(/\D+/g, ''), 10) || 0;
+        const nb = parseInt(b[0].replace(/\D+/g, ''), 10) || 0;
+        return na - nb;
+      });
+      const lines = entries.map(([_, g]) =>
+        [g.nombre || '', g.apellido || '', g.celular || '', g.responsable || ''].join('\t')
+      );
+      setNamesText(lines.join('\n'));
+      showToast(`✓ Cargados ${entries.length} invitados del sitio`);
+    } catch (e) {
+      showToast('Error: ' + (e.message || e));
+    } finally {
+      setLoadingSite(false);
+    }
+  }
+
+  // Persist on every change
+  useEffect(() => {
+    try { localStorage.setItem('nextshow_names', namesText); } catch {}
+  }, [namesText]);
+  useEffect(() => {
+    try { localStorage.setItem('nextshow_baseurl', baseUrl); } catch {}
+  }, [baseUrl]);
+  useEffect(() => {
+    try { localStorage.setItem('nextshow_sent', JSON.stringify([...sentSet])); } catch {}
+  }, [sentSet]);
+  const [toast, setToast] = useState('');
+  const [zipping, setZipping] = useState(false);
+
+  // All guests, with their original index (slug position) preserved
+  const allGuests = useMemo(
+    () => parseGuests(namesText).map((g, i) => ({...g, idx: i})),
+    [namesText]
+  );
+
+  // Unique responsables for the filter dropdown
+  const responsables = useMemo(() => {
+    const map = new Map();
+    allGuests.forEach(g => {
+      const r = g.responsable || '(Sin responsable)';
+      map.set(r, (map.get(r) || 0) + 1);
+    });
+    return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [allGuests]);
+
+  // Filter + search applied
+  const guests = useMemo(() => {
+    const s = search.trim().toLowerCase();
+    return allGuests.filter(g => {
+      if (filter !== '__all__') {
+        const r = g.responsable || '(Sin responsable)';
+        if (r !== filter) return false;
+      }
+      if (s) {
+        const hay = `${g.nombre} ${g.apellido} ${g.responsable}`.toLowerCase();
+        if (!hay.includes(s)) return false;
+      }
+      return true;
+    });
+  }, [allGuests, filter, search]);
+
+  function isSent(g) { return sentSet.has(g.idx); }
+  function toggleSent(g) {
+    setSentSet(prev => {
+      const next = new Set(prev);
+      if (next.has(g.idx)) next.delete(g.idx);
+      else next.add(g.idx);
+      return next;
+    });
+  }
+  function resetSent() {
+    if (confirm('¿Marcar todos como NO enviados?')) setSentSet(new Set());
+  }
+
+  const totalSent = useMemo(
+    () => allGuests.filter(g => sentSet.has(g.idx)).length,
+    [allGuests, sentSet]
+  );
+  const filteredPending = guests.filter(g => !sentSet.has(g.idx));
+
+  // Auto-fill baseUrl with current page's location once on mount
+  useEffect(() => {
+    if (!baseUrl) {
+      try {
+        const here = window.location.href.replace(/\/[^/]*$/, '');
+        setBaseUrl(here);
+      } catch {}
+    }
+  }, []);
+
+  function showToast(msg) {
+    setToast(msg);
+    setTimeout(() => setToast(''), 1800);
+  }
+
+  async function copy(text, idx) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIdx(idx);
+      showToast('Link copiado');
+      setTimeout(() => setCopiedIdx(null), 1500);
+    } catch {
+      showToast('No se pudo copiar — selecciona manualmente');
+    }
+  }
+
+  function copyAllLinks() {
+    const text = guests.map((g) => {
+      const name = fullName(g);
+      const tail = g.responsable ? `\t${g.responsable}` : '';
+      return `${name}\t${buildUrl(baseUrl, g, g.idx)}${tail}`;
+    }).join('\n');
+    navigator.clipboard.writeText(text).then(() =>
+      showToast(`${guests.length} links copiados`)
+    );
+  }
+
+  // Sequentially open WhatsApp for each pending guest in the current filter.
+  // Marks each as sent and waits 1.5s between opens so the browser doesn't block popups.
+  async function sendAllPending() {
+    if (!filteredPending.length) {
+      showToast('No hay invitados pendientes en este filtro');
+      return;
+    }
+    const phoned = filteredPending.filter(g => normalizePhone(g.celular));
+    if (!phoned.length) {
+      showToast('Ninguno de los pendientes tiene celular válido');
+      return;
+    }
+    const ok = confirm(
+      `Enviar a ${phoned.length} invitados${filter !== '__all__' ? ` de ${filter}` : ''}?\n\n` +
+      `WhatsApp Web abrirá una pestaña por cada uno. Cada uno se marca como enviado automáticamente.\n\n` +
+      `⚠️ Asegúrate de tener WhatsApp Web abierto y permitir pop-ups en este sitio.`
+    );
+    if (!ok) return;
+    for (let i = 0; i < phoned.length; i++) {
+      const g = phoned[i];
+      const url = buildUrl(baseUrl, g, g.idx);
+      const wa = waLink(g, url);
+      window.open(wa, '_blank');
+      setSentSet(prev => new Set(prev).add(g.idx));
+      // small delay between opens
+      if (i < phoned.length - 1) await new Promise(r => setTimeout(r, 1500));
+    }
+    showToast(`Abiertas ${phoned.length} pestañas de WhatsApp`);
+  }
+
+  async function downloadSite() {
+    setZipping(true);
+    try {
+      const zip = new JSZip();
+      for (const path of SITE_FILES) {
+        try {
+          const res = await fetch(path);
+          if (!res.ok) throw new Error(`No se pudo leer ${path}`);
+          const blob = await res.blob();
+          zip.file(path, blob);
+        } catch (e) {
+          console.warn('Falta archivo:', path, e);
+        }
+      }
+      // === Short URL plumbing ===
+      // Generate _redirects file for Netlify so /nextshowinvitacionum01 serves
+      // tarjeta.html (which then reads invitados.json to know who this guest is)
+      const redirects = allGuests.map((g) =>
+        `/${shortSlug(g.idx)}  /tarjeta.html  200`
+      ).join('\n') +
+        '\n/nextshowinvitacion  /tarjeta.html?generic=1  200\n';
+      zip.file('_redirects', redirects);
+
+      // Manifest that tarjeta.html reads to resolve slug → guest data
+      const manifest = {};
+      allGuests.forEach((g) => {
+        manifest[shortSlug(g.idx)] = {
+          nombre: g.nombre,
+          apellido: g.apellido,
+          celular: g.celular,
+          responsable: g.responsable,
+        };
+      });
+      zip.file('invitados.json', JSON.stringify(manifest, null, 2));
+
+      // Add an index.html that lists every guest's link
+      const baseForLinks = (baseUrl || '').trim().replace(/\/+$/, '');
+      const indexHtml = `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>NEXT SHOW · Invitaciones</title><style>
+body{font-family:system-ui;background:#0d0a1f;color:#fff;padding:40px 24px;max-width:780px;margin:0 auto;}
+h1{font-size:28px;margin:0 0 8px}
+.sub{color:#7c7a90;margin-bottom:32px;font-size:14px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px;padding:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(139,92,246,0.25);border-radius:14px}
+.cta a{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:50px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.02em;transition:transform 0.15s}
+.cta a:hover{transform:translateY(-2px)}
+.cta .primary{background:linear-gradient(135deg,#00d4ff 0%,#8b5cf6 50%,#d946ef 100%);color:#fff;box-shadow:0 14px 36px rgba(0,212,255,0.3),0 14px 36px rgba(217,70,239,0.3)}
+.cta .secondary{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.15)}
+.list-label{font-size:11px;letter-spacing:0.34em;text-transform:uppercase;color:#00d4ff;font-weight:800;margin:0 0 12px}
+a.guest-link{color:#00d4ff;display:block;padding:10px 0;border-bottom:1px solid #1f1438;text-decoration:none;font-size:14px}
+a.guest-link:hover{color:#d946ef}
+small{color:#7c7a90;font-size:12px;margin-left:8px}
+</style></head><body>
+<h1>NEXT SHOW · ${allGuests.length} invitaciones</h1>
+<div class="sub">13 de junio · 7:00 PM · La Zona Deportiva · Sabanalarga</div>
+<div class="cta">
+  <a class="primary" href="generador.html">🚀 Abrir generador (enviar invitaciones)</a>
+  <a class="secondary" href="tarjeta.html">👁 Previsualizar tarjeta</a>
+</div>
+<div class="list-label">— Todos los invitados —</div>
+${allGuests.map((g)=>`<a class="guest-link" href="${shortSlug(g.idx)}">${String(g.idx+1).padStart(3,'0')} · ${fullName(g)}${g.responsable?`<small>— invita ${g.responsable}</small>`:''}</a>`).join('')}
+</body></html>`;
+      zip.file('index.html', indexHtml);
+
+      // CSV using short URLs
+      const baseForCsv = baseForLinks || 'TU-DOMINIO-AQUI';
+      const csv = 'nombre,apellido,celular,responsable,slug,url\n' + allGuests.map((g) => {
+        const slug = shortSlug(g.idx);
+        const u = `${baseForCsv}/${slug}`;
+        return [g.nombre, g.apellido, g.celular, g.responsable, slug, u]
+          .map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',');
+      }).join('\n');
+      zip.file('links.csv', csv);
+
+      const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+      const stamp = new Date().toISOString().slice(0,10);
+      saveAs(blob, `nextshow-sitio-${stamp}.zip`);
+      showToast('ZIP descargado · súbelo a Vercel o Netlify');
+    } catch (e) {
+      console.error(e);
+      showToast('Error al armar el ZIP: ' + (e.message || e));
+    } finally {
+      setZipping(false);
+    }
+  }
+
+  return (
+    <div className="shell">
+      <div className="head">
+        <div className="brand">
+          <div className="brand-mark"><span style={{color:'#fff'}}>NEXT</span><span className="show">SHOW</span></div>
+          <div className="brand-tag">Compartir invitaciones</div>
+        </div>
+      </div>
+
+      <h1>Envía <span className="grad">invitaciones animadas</span> por WhatsApp.</h1>
+      <p className="lede">
+        Cada invitado abre su link y ve la tarjeta completa con humo, glow y todos los efectos.
+        Pega tu lista de Excel con las columnas <strong>Nombre, Apellido, Celular, Responsable</strong> y se generan los links automáticamente.
+      </p>
+
+      <div className="steps">
+        <div className="step">
+          <div className="step-head"><div className="step-num">1</div><div className="step-title">Pega la lista del Excel</div></div>
+          <div className="field-label">
+            <span>Columnas: Nombre → Apellido → Celular → Responsable</span>
+            <span className="count"><strong>{guests.length}</strong> invitado{guests.length === 1 ? '' : 's'}</span>
+          </div>
+          <textarea
+            value={namesText}
+            onChange={e => setNamesText(e.target.value)}
+            placeholder="Fernando&#9;Moreno&#9;3001234567&#9;Juan Sebastián&#10;Fabio&#9;Acuña&#9;3009876543&#9;Juan Sebastián&#10;..."
+          />
+          <div className="row">
+            <button className="btn" onClick={() => setNamesText(SAMPLE_NAMES)}>Cargar ejemplo</button>
+            <button className="btn" onClick={() => { if (confirm('¿Borrar toda la lista?')) setNamesText(''); }}>Limpiar</button>
+            {siteCount > 0 && (
+              <button className="btn-primary btn" onClick={loadFromSite} disabled={loadingSite}>
+                {loadingSite ? 'Cargando...' : `📥 Cargar ${siteCount} invitados del sitio`}
+              </button>
+            )}
+          </div>
+          <div className="helper" style={{marginTop: '10px'}}>
+            ✓ Copia las 4 columnas en Excel/Sheets (selecciona y Ctrl+C) y pégalas aquí. Tu lista se guarda automáticamente al refrescar.
+          </div>
+        </div>
+
+        <div className="step">
+          <div className="step-head"><div className="step-num">2</div><div className="step-title">Hospeda el sitio</div></div>
+          <div className="field-label">URL pública donde está el sitio</div>
+          <input type="text" value={baseUrl} onChange={e => setBaseUrl(e.target.value)}
+                 placeholder="https://nextshow-juanse.vercel.app"/>
+          <div className="helper">
+            Descarga el ZIP y arrástralo en <a href="https://vercel.com/new" target="_blank">Vercel</a> o <a href="https://app.netlify.com/drop" target="_blank">Netlify Drop</a>. Te dan una URL pública gratis en menos de 1 minuto.
+          </div>
+          <div className="row">
+            <button className="btn-primary btn" onClick={downloadSite} disabled={zipping}>
+              {zipping ? 'Empaquetando...' : '↓ Descargar sitio (.zip)'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="guests">
+        <div className="guests-head">
+          <h2>3 · Comparte los {allGuests.length} links</h2>
+          <div className="actions">
+            <button className="btn" onClick={resetSent} disabled={!totalSent}>Reset enviados</button>
+            <button className="btn" onClick={copyAllLinks} disabled={!guests.length}>Copiar filtrados</button>
+            <button className="btn-primary btn" onClick={sendAllPending} disabled={!filteredPending.length}>
+              🚀 Enviar pendientes ({filteredPending.filter(g => normalizePhone(g.celular)).length})
+            </button>
+          </div>
+        </div>
+
+        <div className="guests-toolbar">
+          <div className="filter-group">
+            <label>Filtrar por responsable</label>
+            <select value={filter} onChange={e => setFilter(e.target.value)}>
+              <option value="__all__">Todos ({allGuests.length})</option>
+              {responsables.map(([r, count]) => (
+                <option key={r} value={r}>{r} ({count})</option>
+              ))}
+            </select>
+          </div>
+          <div className="filter-group grow">
+            <label>Buscar</label>
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+                   placeholder="Nombre, apellido o responsable..."/>
+          </div>
+          <div className="filter-counter">
+            <div className="fc-num">{guests.length}</div>
+            <div className="fc-label">Mostrando</div>
+          </div>
+          <div className="filter-counter sent">
+            <div className="fc-num">{totalSent}/{allGuests.length}</div>
+            <div className="fc-label">Enviados</div>
+          </div>
+        </div>
+
+        <div className="guests-body">
+          {guests.length === 0 ? (
+            <div className="empty">
+              {allGuests.length === 0
+                ? 'Pega al menos una fila arriba para generar los links.'
+                : 'No hay invitados que coincidan con tu filtro.'}
+            </div>
+          ) : guests.map((g) => {
+            const url = buildUrl(baseUrl, g, g.idx);
+            const wa = waLink(g, url);
+            const phone = normalizePhone(g.celular);
+            const sent = isSent(g);
+            return (
+              <div key={g.idx} className={`guest ${sent ? 'sent' : ''}`}>
+                <div className="guest-num">{String(g.idx+1).padStart(2, '0')}</div>
+                <div className="guest-info">
+                  <div className="guest-name">{fullName(g)}</div>
+                  <div className="guest-meta">
+                    {g.responsable && <span className="meta-chip invita">Invita {g.responsable}</span>}
+                    {phone
+                      ? <span className="meta-chip phone">📱 {g.celular}</span>
+                      : g.celular
+                        ? <span className="meta-chip phone-bad">⚠️ Cel inválido</span>
+                        : <span className="meta-chip phone-bad">Sin celular</span>}
+                    {sent && <span className="meta-chip sent-chip">✓ Enviado</span>}
+                  </div>
+                  <div className="guest-url">{url}</div>
+                </div>
+                <div className="guest-actions">
+                  <button className={`icon-btn check ${sent ? 'on' : ''}`} onClick={() => toggleSent(g)} title={sent ? 'Marcar como NO enviado' : 'Marcar como enviado'}>
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                  <button className={`icon-btn ${copiedIdx === g.idx ? 'copied' : ''}`} onClick={() => copy(url, g.idx)} title="Copiar link">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                  </button>
+                  <a className="icon-btn" href={url} target="_blank" title="Previsualizar">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </a>
+                  <a className="icon-btn wa" href={wa} target="_blank" onClick={() => setSentSet(p => new Set(p).add(g.idx))} title={phone ? `Enviar a ${g.celular}` : 'Enviar por WhatsApp (escoge contacto)'}>
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {toast && <div className="toast">{toast}</div>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+</body>
+</html>

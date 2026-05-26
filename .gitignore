@@ -1,0 +1,4 @@
+.DS_Store
+.netlify/
+qa-frames.html
+node_modules/
