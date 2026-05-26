@@ -1,4 +1,30 @@
+# Sistema
 .DS_Store
+Thumbs.db
+
+# Deploy / build
 .netlify/
-qa-frames.html
 node_modules/
+
+# Secrets
+.env
+.env.local
+.env.*.local
+
+# Archivos pesados / temporales locales
+*.mov
+*.mp4.bak
+Descarga */
+FOTOS ARTISTAS/
+NEXTSHOW-LOGO-KIT/
+
+# Agentes IA / herramientas locales
+.claude/
+.superpowers/
+
+# QA
+qa-frames.html
+
+# Logs
+*.log
+npm-debug.log*
