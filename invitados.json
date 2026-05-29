@@ -1372,5 +1372,17 @@
     "apellido": "",
     "celular": "",
     "responsable": "Natalya Ruiz Blel"
+  },
+  "familiaruiz": {
+    "nombre": "Familia Ruiz",
+    "apellido": "",
+    "celular": "",
+    "responsable": "Natalya Ruiz Blel"
+  },
+  "familiablel": {
+    "nombre": "Familia Blel",
+    "apellido": "",
+    "celular": "",
+    "responsable": "Natalya Ruiz Blel"
   }
 }

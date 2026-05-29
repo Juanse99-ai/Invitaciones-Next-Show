@@ -1077,9 +1077,16 @@ function App() {
   useEffect(() => {
     if (guestData.resolved) return;
     // Try to extract a slug from the URL pathname
-    const slugMatch = window.location.pathname.match(/(nextshowinvitacionum\d+)/i);
-    if (!slugMatch) { setGuestData(g => ({...g, resolved: true})); return; }
-    const slug = slugMatch[1].toLowerCase();
+    // Slug: numerado (nextshowinvitacionumN) o personalizado (familiablel, etc.)
+    const path = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+    let slug = null;
+    const numMatch = path.match(/^(nextshowinvitacionum\d+)$/i);
+    if (numMatch) {
+      slug = numMatch[1].toLowerCase();
+    } else if (path && !path.includes('/') && !path.includes('.')) {
+      slug = path;
+    }
+    if (!slug) { setGuestData(g => ({...g, resolved: true})); return; }
     fetch('invitados.json?v=' + Date.now())
       .then(r => r.ok ? r.json() : Promise.reject())
       .then(data => {
