@@ -1384,5 +1384,17 @@
     "apellido": "",
     "celular": "",
     "responsable": "Natalya Ruiz Blel"
+  },
+  "juanjosealvarez": {
+    "nombre": "Juan Jose",
+    "apellido": "Alvarez",
+    "celular": "",
+    "responsable": "Juan Cervantes"
+  },
+  "fabiansolano": {
+    "nombre": "Fabian",
+    "apellido": "Solano",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
   }
 }
