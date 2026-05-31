@@ -1594,5 +1594,17 @@
     "apellido": "Lewis",
     "celular": "",
     "responsable": "Ismael Cervantes"
+  },
+  "enriquegiraldo": {
+    "nombre": "Enrique",
+    "apellido": "Giraldo",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "edwinnavas": {
+    "nombre": "Edwin",
+    "apellido": "Navas",
+    "celular": "",
+    "responsable": "Juan Cervantes"
   }
 }
