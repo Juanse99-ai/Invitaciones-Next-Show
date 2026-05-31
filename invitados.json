@@ -1528,5 +1528,59 @@
     "apellido": "Barraza",
     "celular": "",
     "responsable": "Ismael Cervantes"
+  },
+  "hermesnavarro": {
+    "nombre": "Hermes",
+    "apellido": "Navarro",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "oscargiraldo": {
+    "nombre": "Oscar",
+    "apellido": "Giraldo",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "josedavidnavarropolo": {
+    "nombre": "Jose David Navarro",
+    "apellido": "Polo",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "luisreyes": {
+    "nombre": "Luis",
+    "apellido": "Reyes",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "samirrodriguez": {
+    "nombre": "Samir",
+    "apellido": "Rodriguez",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "gearlymanotas": {
+    "nombre": "Gearly",
+    "apellido": "Manotas",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "juancarlosariza": {
+    "nombre": "Juan Carlos",
+    "apellido": "Ariza",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "wilsonbarros": {
+    "nombre": "Wilson",
+    "apellido": "Barros",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "torneoamitadprofesional": {
+    "nombre": "Torneo Amitad",
+    "apellido": "Profesional",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
   }
 }
