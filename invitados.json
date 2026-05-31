@@ -1578,7 +1578,13 @@
     "responsable": "Ismael Cervantes"
   },
   "torneoamitadprofesional": {
-    "nombre": "Torneo Amitad",
+    "nombre": "Torneo Amistad",
+    "apellido": "Profesional",
+    "celular": "",
+    "responsable": "Ismael Cervantes"
+  },
+  "torneoamistadprofesional": {
+    "nombre": "Torneo Amistad",
     "apellido": "Profesional",
     "celular": "",
     "responsable": "Ismael Cervantes"
